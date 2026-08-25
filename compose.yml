@@ -1,0 +1,98 @@
+name: mymine
+
+services:
+  auth-config:
+    image: alpine@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc1f695dce
+    restart: "no"
+    environment:
+      AUTH_DOMAIN: "${AUTH_DOMAIN:?AUTH_DOMAIN is required}"
+      AUTH_BASE_URL: "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
+      DRASL_ADMIN: "${DRASL_ADMIN:-admin}"
+      DRASL_REQUIRE_INVITE: "${DRASL_REQUIRE_INVITE:-false}"
+    volumes:
+      - "${AUTH_DATA_DIR:-./auth-data}/config:/out"
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        cat > /out/config.toml <<EOF
+        Domain = "$${AUTH_DOMAIN}"
+        BaseURL = "$${AUTH_BASE_URL}"
+        DefaultAdmins = ["$${DRASL_ADMIN}"]
+        PlayerUUIDGeneration = "offline"
+        SignPublicKeys = false
+        AllowPasswordLogin = true
+        EnableWebFrontEnd = true
+        [CreateNewPlayer]
+        Allow = true
+        [RegistrationNewPlayer]
+        Allow = true
+        RequireInvite = $${DRASL_REQUIRE_INVITE}
+        EOF
+
+  drasl:
+    image: unmojang/drasl@sha256:4fe6b1c102a8c9def2229284e6bb824bff4b70f5b1c7ef97f5815d6161ede12f
+    container_name: ${AUTH_CONTAINER_NAME:-mymine-auth}
+    restart: unless-stopped
+    depends_on:
+      auth-config:
+        condition: service_completed_successfully
+    ports:
+      - "${WEB_BIND_ADDR:-127.0.0.1}:${AUTH_PORT:-25585}:25585/tcp"
+    volumes:
+      - "${AUTH_DATA_DIR:-./auth-data}/config:/etc/drasl:ro"
+      - "${AUTH_DATA_DIR:-./auth-data}/data:/var/lib/drasl"
+    mem_limit: "${AUTH_MEMORY_LIMIT:-384m}"
+
+  landing:
+    image: ${LANDING_IMAGE:-ghcr.io/mirivlad/mymine-landing}:${IMAGE_TAG:-latest}
+    container_name: ${LANDING_CONTAINER_NAME:-mymine-landing}
+    restart: unless-stopped
+    ports:
+      - "${WEB_BIND_ADDR:-127.0.0.1}:${LANDING_PORT:-8080}:80/tcp"
+    environment:
+      AUTH_BASE_URL: "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
+      MC_ADDRESS: "${MC_ADDRESS:?MC_ADDRESS is required}"
+      MC_VERSION: "${MC_VERSION:-26.2}"
+      HMCL_VERSION: "${HMCL_VERSION:-3.16.3}"
+    mem_limit: "${LANDING_MEMORY_LIMIT:-128m}"
+
+  minecraft:
+    image: ${IMAGE:-ghcr.io/mirivlad/mymine}:${IMAGE_TAG:-latest}
+    container_name: ${CONTAINER_NAME:-mymine}
+    restart: unless-stopped
+    depends_on:
+      - drasl
+    ports:
+      - "${MC_PORT:-25565}:25565/tcp"
+    environment:
+      EULA: "TRUE"
+      TZ: "${TZ:-Asia/Irkutsk}"
+      MEMORY: "${MEMORY:-4G}"
+      SERVER_NAME: "${SERVER_NAME:-MyMine}"
+      MOTD: "${MOTD:-MyMine — Fabric 26.2}"
+      MODE: "${MODE:-survival}"
+      DIFFICULTY: "${DIFFICULTY:-normal}"
+      MAX_PLAYERS: "${MAX_PLAYERS:-20}"
+      ONLINE_MODE: "true"
+      ENFORCE_SECURE_PROFILE: "false"
+      ENABLE_WHITELIST: "${ENABLE_WHITELIST:-false}"
+      ENFORCE_WHITELIST: "${ENFORCE_WHITELIST:-false}"
+      PVP: "${PVP:-true}"
+      VIEW_DISTANCE: "${VIEW_DISTANCE:-10}"
+      SIMULATION_DISTANCE: "${SIMULATION_DISTANCE:-8}"
+      SPAWN_PROTECTION: "${SPAWN_PROTECTION:-0}"
+      ENABLE_COMMAND_BLOCK: "${ENABLE_COMMAND_BLOCK:-false}"
+      ALLOW_FLIGHT: "${ALLOW_FLIGHT:-true}"
+      ENABLE_RCON: "${ENABLE_RCON:-false}"
+      JVM_OPTS: >-
+        -Dminecraft.api.env=custom
+        -Dminecraft.api.auth.host=http://drasl:25585/auth
+        -Dminecraft.api.account.host=http://drasl:25585/account
+        -Dminecraft.api.profiles.host=http://drasl:25585/account
+        -Dminecraft.api.session.host=http://drasl:25585/session
+        -Dminecraft.api.services.host=http://drasl:25585/services
+    volumes:
+      - "${DATA_DIR:-./data}:/data"
+    mem_limit: "${CONTAINER_MEMORY_LIMIT:-6g}"
+    stop_grace_period: 2m
