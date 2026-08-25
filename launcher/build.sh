@@ -4,6 +4,8 @@ set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 HMCL_VERSION=${HMCL_VERSION:-3.16.3}
 MYMINE_AUTH_URL=${MYMINE_AUTH_URL:-https://auth.mymine.mirv.top/}
+MYMINE_SERVER_NAME=${MYMINE_SERVER_NAME:-MyMine}
+MYMINE_SERVER_ADDRESS=${MYMINE_SERVER_ADDRESS:-mymine.mirv.top:25565}
 WORKDIR=${WORKDIR:-$ROOT/.build/hmcl}
 DIST_DIR=${DIST_DIR:-$ROOT/landing/downloads}
 VERSION_ROOT=${HMCL_VERSION%.*}
@@ -17,6 +19,8 @@ git clone --depth 1 --branch "v${HMCL_VERSION}" \
   https://github.com/HMCL-dev/HMCL.git "$WORKDIR"
 
 MYMINE_AUTH_URL="$MYMINE_AUTH_URL" \
+MYMINE_SERVER_NAME="$MYMINE_SERVER_NAME" \
+MYMINE_SERVER_ADDRESS="$MYMINE_SERVER_ADDRESS" \
   python3 "$ROOT/launcher/patch-hmcl.py" "$WORKDIR"
 
 (
@@ -58,5 +62,6 @@ tar \
     > SHA256SUMS
 )
 
-printf 'Built MyMine Launcher %s with auth %s\n' "$HMCL_VERSION" "$MYMINE_AUTH_URL"
+printf 'Built MyMine Launcher %s with auth %s and server %s (%s)\n' \
+  "$HMCL_VERSION" "$MYMINE_AUTH_URL" "$MYMINE_SERVER_NAME" "$MYMINE_SERVER_ADDRESS"
 ls -lh "$DIST_DIR"
