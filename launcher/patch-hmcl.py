@@ -240,7 +240,7 @@ final class MyMineServerList {
                 FileUtils.saveSafely(serversFile, output -> NBTCodec.of().writeTag(output, root));
             }
 
-            Files.writeString(marker, SERVER_ADDRESS + "\\n", StandardCharsets.UTF_8,
+            Files.writeString(marker, SERVER_ADDRESS + "\n", StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING,
                     StandardOpenOption.WRITE);
@@ -364,6 +364,7 @@ final class MyMineServerListTest {
 }
 '''
 test = root / "HMCL/src/test/java/org/jackhuang/hmcl/game/MyMineServerListTest.java"
+test.parent.mkdir(parents=True, exist_ok=True)
 test.write_text(test_source, encoding="utf-8")
 
 print(f"Patched HMCL for MyMine auth: {auth_url}")
