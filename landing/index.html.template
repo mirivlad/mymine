@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MyMine — Minecraft ${MC_VERSION}</title>
+  <style>
+    :root{color-scheme:dark;--bg:#101312;--card:#171c19;--text:#eef5ef;--muted:#9cb0a2;--line:#2a352e;--accent:#75d48d}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#193021 0,#101312 45%);color:var(--text);font:16px/1.55 system-ui,sans-serif}
+    main{max-width:920px;margin:auto;padding:72px 24px}.hero{padding:48px 0 38px}h1{font-size:clamp(46px,10vw,92px);line-height:.95;margin:0 0 20px;letter-spacing:-.055em}
+    h2{margin-top:0}.lead{font-size:21px;max-width:700px;color:var(--muted)}.tag{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:7px 12px;color:var(--muted);margin-bottom:20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+    a.btn{display:inline-block;background:var(--accent);color:#07130a;text-decoration:none;font-weight:700;padding:11px 16px;border-radius:10px;margin:5px 6px 5px 0}a.alt{background:transparent;color:var(--text);border:1px solid var(--line)}
+    code{background:#0b0e0c;border:1px solid var(--line);padding:3px 7px;border-radius:6px;word-break:break-all}.muted{color:var(--muted)}footer{padding:35px 0;color:var(--muted)}
+  </style>
+</head>
+<body><main>
+  <section class="hero">
+    <div class="tag">Minecraft Java ${MC_VERSION} · Fabric</div>
+    <h1>MyMine</h1>
+    <p class="lead">Наш Minecraft-сервер с собственным набором модов и собственной системой аккаунтов. Microsoft-аккаунт для входа не требуется.</p>
+    <p><strong>Адрес сервера:</strong> <code>${MC_ADDRESS}</code></p>
+  </section>
+  <section class="grid">
+    <article class="card">
+      <h2>1. Создай аккаунт</h2>
+      <p class="muted">Аккаунт хранится на нашем Drasl-сервере. Ник, UUID и скин принадлежат этой игровой сети.</p>
+      <a class="btn" href="${AUTH_BASE_URL}/web/registration">Регистрация</a>
+      <a class="btn alt" href="${AUTH_BASE_URL}/">Войти / личный кабинет</a>
+    </article>
+    <article class="card">
+      <h2>2. Установи HMCL</h2>
+      <p class="muted">Open-source лаунчер. Стабильная версия ${HMCL_VERSION}.</p>
+      <a class="btn" href="https://github.com/HMCL-dev/HMCL/releases/download/v${HMCL_VERSION}/HMCL-${HMCL_VERSION}.exe">Windows</a>
+      <a class="btn alt" href="https://github.com/HMCL-dev/HMCL/releases/download/v${HMCL_VERSION}/HMCL-${HMCL_VERSION}.jar">JAR</a>
+      <a class="btn alt" href="https://github.com/HMCL-dev/HMCL/releases/download/v${HMCL_VERSION}/HMCL-${HMCL_VERSION}.deb">DEB</a>
+    </article>
+    <article class="card">
+      <h2>3. Добавь нашу авторизацию</h2>
+      <p class="muted">Положи файл рядом с новым HMCL до первого запуска либо добавь сервер авторизации вручную.</p>
+      <a class="btn" href="/authlib-injectors.json" download>Скачать конфиг HMCL</a>
+      <p><code>${AUTH_BASE_URL}</code></p>
+    </article>
+    <article class="card">
+      <h2>4. Запускай игру</h2>
+      <p class="muted">В HMCL выбери внешний аккаунт MyMine, установи Minecraft Java ${MC_VERSION} и подключись к:</p>
+      <p><code>${MC_ADDRESS}</code></p>
+    </article>
+  </section>
+  <footer>MyMine · независимый Minecraft-сервер</footer>
+</main></body></html>
