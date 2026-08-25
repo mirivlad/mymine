@@ -59,7 +59,7 @@ replace_exact(
     '''                        ObservableValue<String> title = BindingMapping.of(server, AuthlibInjectorServer::getName);
                         item.titleProperty().bind(title);''',
     f'''                        ObservableValue<String> title;
-                        if ("{auth_url}".equals(server.getUrl())) {{
+                        if (server.getUrl().equals("{auth_url}") || server.getUrl().startsWith("{auth_url}")) {{
                             item.setTitle("MyMine");
                             title = item.titleProperty();
                         }} else {{
