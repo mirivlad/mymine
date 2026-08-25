@@ -78,6 +78,26 @@ replace_exact(
     }''',
 )
 
+default_servers_test = root / "HMCL/src/test/java/org/jackhuang/hmcl/setting/AuthlibInjectorServerListTest.java"
+replace_exact(
+    default_servers_test,
+    '''    /// Tests that newly created server lists contain LittleSkin by default.
+    @Test
+    public void defaultListContainsLittleSkin() {
+        AuthlibInjectorServerList list = AuthlibInjectorServerList.createDefault();
+
+        assertEquals(1, list.getServers().size());
+        assertEquals(AuthlibInjectorServerList.LITTLE_SKIN_URL, list.getServers().get(0).getUrl());
+    }''',
+    '''    /// MyMine starts with no third-party authlib-injector providers.
+    @Test
+    public void defaultListContainsNoThirdPartyServers() {
+        AuthlibInjectorServerList list = AuthlibInjectorServerList.createDefault();
+
+        assertTrue(list.getServers().isEmpty());
+    }''',
+)
+
 auth_servers = root / "HMCL/src/main/java/org/jackhuang/hmcl/setting/AuthlibInjectorServers.java"
 old = '''        if (SettingsManager.isNewlyCreated() && Files.exists(configLocation)) {
             AuthlibInjectorServers configInstance;
