@@ -57,7 +57,7 @@
           <article class="step"><div class="num">02</div><div><h3>Установи MyMine Launcher</h3><p>Скачай версию под свою систему ниже. Сервер авторизации MyMine уже встроен в лаунчер.</p></div><span class="mini">Microsoft не нужен</span></article>
           <article class="step"><div class="num">03</div><div><h3>Добавь аккаунт</h3><p>В лаунчере открой управление аккаунтами → добавление аккаунта → <strong>MyMine</strong>. Введи данные, с которыми зарегистрировался на сайте.</p></div><span class="mini">Аккаунт → MyMine</span></article>
           <article class="step"><div class="num">04</div><div><h3>Установи игру</h3><p>Открой раздел загрузки новой игры и выбери <strong>Minecraft ${MC_VERSION}</strong>. Загрузчик модов оставь без установки: Fabric / Forge / NeoForge выбирать не надо.</p></div><span class="mini">${MC_VERSION} · Vanilla</span></article>
-          <article class="step"><div class="num">05</div><div><h3>Подключись к серверу</h3><p>Запусти Minecraft, открой «Сетевая игра» → «Добавить сервер» и укажи <strong>${MC_ADDRESS}</strong>.</p></div><button class="mini copy" type="button" data-copy="${MC_ADDRESS}">скопировать адрес</button></article>
+          <article class="step"><div class="num">05</div><div><h3>Зайди на MyMine</h3><p>Запусти Minecraft и открой «Сетевая игра». Сервер <strong>MyMine</strong> уже будет в списке. Если его нет, добавь вручную: <strong>${MC_ADDRESS}</strong>.</p></div><button class="mini copy" type="button" data-copy="${MC_ADDRESS}">скопировать адрес</button></article>
         </div>
       </section>
 
