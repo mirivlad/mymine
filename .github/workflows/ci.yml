@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '25'
@@ -32,6 +32,8 @@ jobs:
         env:
           HMCL_VERSION: '3.16.3'
           MYMINE_AUTH_URL: https://auth.example.org/
+          MYMINE_SERVER_NAME: MyMine CI
+          MYMINE_SERVER_ADDRESS: mc.example.org:25565
           DIST_DIR: ${{ runner.temp }}/mymine-launcher
         run: ./launcher/build.sh
 
