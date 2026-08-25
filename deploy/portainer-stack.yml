@@ -45,7 +45,7 @@ services:
     mem_limit: "${AUTH_MEMORY_LIMIT:-384m}"
 
   landing:
-    image: ghcr.io/mirivlad/mymine-landing:${IMAGE_TAG:-0.2.0}
+    image: ghcr.io/mirivlad/mymine-landing:${IMAGE_TAG:-0.2.1}
     container_name: mymine-landing
     restart: unless-stopped
     ports:
@@ -58,7 +58,7 @@ services:
     mem_limit: "${LANDING_MEMORY_LIMIT:-128m}"
 
   minecraft:
-    image: ghcr.io/mirivlad/mymine:${IMAGE_TAG:-0.2.0}
+    image: ghcr.io/mirivlad/mymine:${IMAGE_TAG:-0.2.1}
     container_name: mymine
     restart: unless-stopped
     depends_on:
