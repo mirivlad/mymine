@@ -7,6 +7,7 @@ services:
     environment:
       AUTH_DOMAIN: "${AUTH_DOMAIN:-auth.mymine.mirv.top}"
       AUTH_BASE_URL: "${AUTH_BASE_URL:-https://auth.mymine.mirv.top}"
+      AUTH_INSTANCE_NAME: "${AUTH_INSTANCE_NAME:-MyMine}"
       DRASL_ADMIN: "${DRASL_ADMIN:-mirivlad}"
       DRASL_REQUIRE_INVITE: "${DRASL_REQUIRE_INVITE:-false}"
     volumes:
@@ -18,6 +19,7 @@ services:
         cat > /out/config.toml <<EOF
         Domain = "$${AUTH_DOMAIN}"
         BaseURL = "$${AUTH_BASE_URL}"
+        InstanceName = "$${AUTH_INSTANCE_NAME}"
         DefaultAdmins = ["$${DRASL_ADMIN}"]
         PlayerUUIDGeneration = "offline"
         SignPublicKeys = false
