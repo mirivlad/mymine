@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate compose
+        env:
+          AUTH_DOMAIN: auth.example.org
+          AUTH_BASE_URL: https://auth.example.org
+          MC_ADDRESS: mc.example.org:25565
+        run: docker compose -f compose.yml config >/dev/null
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: server
+            context: .
+            tag: mymine:ci
+          - name: landing
+            context: ./landing
+            tag: mymine-landing:ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build ${{ matrix.name }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          push: false
+          tags: ${{ matrix.tag }}
