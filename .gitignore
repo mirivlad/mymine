@@ -3,3 +3,6 @@
 !.env.example
 data/
 *.log
+.build/
+landing/downloads/*
+!landing/downloads/.gitkeep

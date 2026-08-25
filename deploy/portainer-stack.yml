@@ -10,7 +10,7 @@ services:
       DRASL_ADMIN: "${DRASL_ADMIN:-mirivlad}"
       DRASL_REQUIRE_INVITE: "${DRASL_REQUIRE_INVITE:-false}"
     volumes:
-      - "${AUTH_DATA_DIR:-/home/mirivlad/mymine-auth-data}/config:/out"
+      - "${AUTH_DATA_DIR:-/home/mirivlad/mymine/auth-data}/config:/out"
     command:
       - /bin/sh
       - -ec
@@ -40,12 +40,12 @@ services:
     ports:
       - "127.0.0.1:${AUTH_PORT:-44446}:25585/tcp"
     volumes:
-      - "${AUTH_DATA_DIR:-/home/mirivlad/mymine-auth-data}/config:/etc/drasl:ro"
-      - "${AUTH_DATA_DIR:-/home/mirivlad/mymine-auth-data}/data:/var/lib/drasl"
+      - "${AUTH_DATA_DIR:-/home/mirivlad/mymine/auth-data}/config:/etc/drasl:ro"
+      - "${AUTH_DATA_DIR:-/home/mirivlad/mymine/auth-data}/data:/var/lib/drasl"
     mem_limit: "${AUTH_MEMORY_LIMIT:-384m}"
 
   landing:
-    image: ghcr.io/mirivlad/mymine-landing:${IMAGE_TAG:-0.1.0}
+    image: ghcr.io/mirivlad/mymine-landing:${IMAGE_TAG:-0.2.0}
     container_name: mymine-landing
     restart: unless-stopped
     ports:
@@ -58,7 +58,7 @@ services:
     mem_limit: "${LANDING_MEMORY_LIMIT:-128m}"
 
   minecraft:
-    image: ghcr.io/mirivlad/mymine:${IMAGE_TAG:-0.1.0}
+    image: ghcr.io/mirivlad/mymine:${IMAGE_TAG:-0.2.0}
     container_name: mymine
     restart: unless-stopped
     depends_on:
@@ -93,6 +93,6 @@ services:
         -Dminecraft.api.session.host=http://drasl:25585/session
         -Dminecraft.api.services.host=http://drasl:25585/services
     volumes:
-      - "${DATA_DIR:-/home/mirivlad/mymine-data}:/data"
+      - "${DATA_DIR:-/home/mirivlad/mymine/data}:/data"
     mem_limit: "${CONTAINER_MEMORY_LIMIT:-6g}"
     stop_grace_period: 2m

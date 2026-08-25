@@ -29,23 +29,23 @@
       <a class="btn alt" href="${AUTH_BASE_URL}/">Войти / личный кабинет</a>
     </article>
     <article class="card">
-      <h2>2. Установи HMCL</h2>
-      <p class="muted">Open-source лаунчер. Стабильная версия ${HMCL_VERSION}.</p>
-      <a class="btn" href="https://github.com/HMCL-dev/HMCL/releases/download/v${HMCL_VERSION}/HMCL-${HMCL_VERSION}.exe">Windows</a>
-      <a class="btn alt" href="https://github.com/HMCL-dev/HMCL/releases/download/v${HMCL_VERSION}/HMCL-${HMCL_VERSION}.jar">JAR</a>
-      <a class="btn alt" href="https://github.com/HMCL-dev/HMCL/releases/download/v${HMCL_VERSION}/HMCL-${HMCL_VERSION}.deb">DEB</a>
+      <h2>2. Скачай MyMine Launcher</h2>
+      <p class="muted">Основан на open-source HMCL ${HMCL_VERSION}. Наш сервер авторизации уже настроен, Microsoft-аккаунт не нужен.</p>
+      <a class="btn" href="/downloads/MyMineLauncher-${HMCL_VERSION}.exe" download>Windows</a>
+      <a class="btn alt" href="/downloads/MyMineLauncher-${HMCL_VERSION}.deb" download>Linux DEB</a>
+      <a class="btn alt" href="/downloads/MyMineLauncher-${HMCL_VERSION}.jar" download>JAR</a>
     </article>
     <article class="card">
-      <h2>3. Добавь нашу авторизацию</h2>
-      <p class="muted">Положи файл рядом с новым HMCL до первого запуска либо добавь сервер авторизации вручную.</p>
-      <a class="btn" href="/authlib-injectors.json" download>Скачать конфиг HMCL</a>
+      <h2>3. Войди в MyMine</h2>
+      <p class="muted">Добавь аккаунт через уже встроенный сервер MyMine и используй логин с регистрации выше. Никакой Microsoft-авторизации не требуется.</p>
       <p><code>${AUTH_BASE_URL}</code></p>
     </article>
     <article class="card">
-      <h2>4. Запускай игру</h2>
-      <p class="muted">В HMCL выбери внешний аккаунт MyMine, установи Minecraft Java ${MC_VERSION} и подключись к:</p>
+      <h2>4. Играй</h2>
+      <p class="muted">Установи Minecraft Java ${MC_VERSION} в лаунчере и подключайся к серверу:</p>
       <p><code>${MC_ADDRESS}</code></p>
+      <p class="muted"><a href="/downloads/SHA256SUMS">SHA256</a> · <a href="/downloads/MyMineLauncher-${HMCL_VERSION}-source.tar.gz">Исходники лаунчера (GPLv3)</a></p>
     </article>
   </section>
-  <footer>MyMine · независимый Minecraft-сервер</footer>
+  <footer>MyMine · независимый Minecraft-сервер · MyMine Launcher основан на HMCL и распространяется по GPLv3</footer>
 </main></body></html>

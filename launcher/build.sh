@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT=$(cd "$(dirname "$0")/.." && pwd)
+HMCL_VERSION=${HMCL_VERSION:-3.16.3}
+MYMINE_AUTH_URL=${MYMINE_AUTH_URL:-https://auth.mymine.mirv.top/}
+WORKDIR=${WORKDIR:-$ROOT/.build/hmcl}
+DIST_DIR=${DIST_DIR:-$ROOT/landing/downloads}
+
+rm -rf "$WORKDIR"
+mkdir -p "$(dirname "$WORKDIR")" "$DIST_DIR"
+find "$DIST_DIR" -mindepth 1 ! -name .gitkeep -delete
+
+git clone --depth 1 --branch "v${HMCL_VERSION}" \
+  https://github.com/HMCL-dev/HMCL.git "$WORKDIR"
+
+MYMINE_AUTH_URL="$MYMINE_AUTH_URL" \
+  python3 "$ROOT/launcher/patch-hmcl.py" "$WORKDIR"
+
+(
+  cd "$WORKDIR"
+  git diff --check
+  ./gradlew clean makeExecutables --no-daemon
+)
+for ext in exe jar deb sh; do
+  src=$(find "$WORKDIR/HMCL/build/libs" -maxdepth 1 -type f \
+    -name "HMCL-${HMCL_VERSION}.${ext}" -print -quit)
+  if [[ -z "$src" ]]; then
+    echo "Missing HMCL ${ext} artifact" >&2
+    exit 1
+  fi
+  cp "$src" "$DIST_DIR/MyMineLauncher-${HMCL_VERSION}.${ext}"
+done
+
+tar \
+  --exclude=.git \
+  --exclude=.gradle \
+  --exclude='*/build' \
+  --exclude='*/build/*' \
+  -C "$WORKDIR" -czf \
+  "$DIST_DIR/MyMineLauncher-${HMCL_VERSION}-source.tar.gz" .
+
+(
+  cd "$DIST_DIR"
+  sha256sum MyMineLauncher-${HMCL_VERSION}.* \
+    MyMineLauncher-${HMCL_VERSION}-source.tar.gz > SHA256SUMS
+)
+
+printf 'Built MyMine Launcher %s with auth %s\n' "$HMCL_VERSION" "$MYMINE_AUTH_URL"
+ls -lh "$DIST_DIR"

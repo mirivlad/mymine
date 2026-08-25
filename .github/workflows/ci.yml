@@ -19,6 +19,22 @@ jobs:
           AUTH_BASE_URL: https://auth.example.org
           MC_ADDRESS: mc.example.org:25565
         run: docker compose -f compose.yml config >/dev/null
+
+  launcher:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Build MyMine Launcher
+        env:
+          HMCL_VERSION: '3.16.3'
+          MYMINE_AUTH_URL: https://auth.example.org/
+          DIST_DIR: ${{ runner.temp }}/mymine-launcher
+        run: ./launcher/build.sh
+
   build:
     runs-on: ubuntu-latest
     strategy:
