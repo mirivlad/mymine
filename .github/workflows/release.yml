@@ -14,6 +14,8 @@ permissions:
 env:
   HMCL_VERSION: '3.16.3'
   MYMINE_AUTH_URL: https://auth.mymine.mirv.top/
+  MYMINE_SERVER_NAME: MyMine
+  MYMINE_SERVER_ADDRESS: mymine.mirv.top:25565
 
 jobs:
   create-release-tag:

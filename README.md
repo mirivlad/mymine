@@ -36,7 +36,7 @@ Internet
 2. Скачать MyMine Launcher с лендинга.
 3. В лаунчере добавить аккаунт **MyMine**.
 4. Установить Minecraft Java 26.2 без mod loader.
-5. Подключиться к серверу на стандартный TCP-порт 25565.
+5. Запустить игру и открыть **«Сетевая игра»** — сервер **MyMine** уже будет добавлен в список автоматически. Адрес `mymine.mirv.top:25565` остаётся для ручного подключения и диагностики.
 
 ## MyMine Launcher
 
@@ -47,7 +47,12 @@ Internet
 - Microsoft скрыт из списка добавления аккаунта;
 - LittleSkin не добавляется новым профилям и удаляется из старых списков;
 - ограничение, требующее Microsoft-аккаунт перед external/offline login, отключено;
-- обычный offline-аккаунт HMCL остаётся доступен как локальный режим.
+- обычный offline-аккаунт HMCL остаётся доступен как локальный режим;
+- при первом запуске конкретной установки Minecraft сервер MyMine аккуратно добавляется первым в `servers.dat`;
+- существующие серверы игрока сохраняются, одинаковый адрес не дублируется;
+- добавление выполняется как одноразовая миграция: если игрок потом удалит MyMine из списка, лаунчер не станет навязывать его снова при каждом запуске.
+
+Имя и адрес встроенного сервера задаются при сборке через `MYMINE_SERVER_NAME` и `MYMINE_SERVER_ADDRESS`.
 
 Сборка выполняется скриптом `launcher/build.sh`. Патч находится в `launcher/patch-hmcl.py`.
 
@@ -94,7 +99,7 @@ deploy/portainer-stack.yml
 Основные переменные:
 
 ```dotenv
-IMAGE_TAG=0.2.1
+IMAGE_TAG=0.2.2
 AUTH_DOMAIN=auth.mymine.example.org
 AUTH_BASE_URL=https://auth.mymine.example.org
 MC_ADDRESS=mymine.example.org:25565
@@ -107,7 +112,7 @@ MEMORY=4G
 CONTAINER_MEMORY_LIMIT=6g
 ```
 
-`AUTH_BASE_URL` используется и стеком, и release-сборкой лаунчера. Если меняется домен авторизации, лаунчер следует пересобрать с тем же URL.
+`AUTH_BASE_URL` используется стеком и release-сборкой лаунчера. Адрес, который лаунчер добавляет в «Сетевую игру», задаётся отдельно через build-time `MYMINE_SERVER_ADDRESS`.
 
 `auth-config` является init-контейнером. Состояние `Exited (0)` после генерации конфигурации Drasl является нормальным.
 
@@ -145,10 +150,12 @@ docker compose -f compose.yml -f compose.dev.yml config
 ```bash
 HMCL_VERSION=3.16.3 \
 MYMINE_AUTH_URL=https://auth.example.org/ \
+MYMINE_SERVER_NAME=MyMine \
+MYMINE_SERVER_ADDRESS=mc.example.org:25565 \
 ./launcher/build.sh
 ```
 
-GitHub Actions проверяет compose, собирает Minecraft image, landing image и MyMine Launcher. Release workflow по semver tag публикует Docker images и прикладывает сборки лаунчера к GitHub Release.
+GitHub Actions проверяет compose, собирает Minecraft image, landing image и MyMine Launcher. В тесты лаунчера входит проверка миграции `servers.dat`: MyMine добавляется первым, не дублируется и не возвращается после осознанного удаления игроком. Release workflow по semver tag публикует Docker images и прикладывает сборки лаунчера к GitHub Release.
 
 ## Лицензии
 
