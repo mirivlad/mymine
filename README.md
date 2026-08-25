@@ -94,7 +94,7 @@ deploy/portainer-stack.yml
 Основные переменные:
 
 ```dotenv
-IMAGE_TAG=0.2.0
+IMAGE_TAG=0.2.1
 AUTH_DOMAIN=auth.mymine.example.org
 AUTH_BASE_URL=https://auth.mymine.example.org
 MC_ADDRESS=mymine.example.org:25565
