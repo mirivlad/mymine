@@ -240,7 +240,7 @@ final class MyMineServerList {
                 FileUtils.saveSafely(serversFile, output -> NBTCodec.of().writeTag(output, root));
             }
 
-            Files.writeString(marker, SERVER_ADDRESS + "\n", StandardCharsets.UTF_8,
+            Files.writeString(marker, SERVER_ADDRESS, StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING,
                     StandardOpenOption.WRITE);
