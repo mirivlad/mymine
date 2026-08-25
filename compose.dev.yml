@@ -1,0 +1,13 @@
+services:
+  minecraft:
+    build:
+      context: .
+    image: mymine:test
+    container_name: ${CONTAINER_NAME:-mymine-test}
+
+
+  landing:
+    build:
+      context: ./landing
+    image: mymine-landing:test
+    container_name: ${LANDING_CONTAINER_NAME:-mymine-landing-test}
