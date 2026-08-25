@@ -8,18 +8,76 @@ auth_url = os.environ.get("MYMINE_AUTH_URL", "https://auth.mymine.mirv.top/")
 if not auth_url.endswith("/"):
     auth_url += "/"
 
-def replace_once(path: Path, old: str, new: str) -> None:
+
+def replace_exact(path: Path, old: str, new: str, expected: int = 1) -> None:
     text = path.read_text(encoding="utf-8")
-    if text.count(old) != 1:
-        raise SystemExit(f"patch target mismatch in {path}: {text.count(old)} matches")
+    count = text.count(old)
+    if count != expected:
+        raise SystemExit(f"patch target mismatch in {path}: {count} matches, expected {expected}")
     path.write_text(text.replace(old, new), encoding="utf-8")
 
+
 account_list = root / "HMCL/src/main/java/org/jackhuang/hmcl/ui/account/AccountListPage.java"
-replace_once(
+replace_exact(
     account_list,
     'System.getProperty("hmcl.offline.auth.restricted", "auto")',
     'System.getProperty("hmcl.offline.auth.restricted", "false")',
 )
+
+replace_exact(
+    account_list,
+    '''        public AccountListPageSkin(AccountListPage skinnable) {
+            super(skinnable);
+
+            {''',
+    '''        public AccountListPageSkin(AccountListPage skinnable) {
+            super(skinnable);
+
+            skinnable.authServersProperty().removeIf(
+                    server -> "https://littleskin.cn/api/yggdrasil/".equals(server.getUrl()));
+
+            {''',
+)
+
+replace_exact(
+    account_list,
+    'boxMethods.getChildren().setAll(title, microsoftItem, wrapper);',
+    'boxMethods.getChildren().setAll(title, wrapper);',
+)
+replace_exact(
+    account_list,
+    'boxMethods.getChildren().setAll(title, microsoftItem, offlineItem, boxAuthServers);',
+    'boxMethods.getChildren().setAll(title, boxAuthServers, offlineItem);',
+    expected=2,
+)
+
+replace_exact(
+    account_list,
+    '''                        ObservableValue<String> title = BindingMapping.of(server, AuthlibInjectorServer::getName);
+                        item.titleProperty().bind(title);''',
+    f'''                        ObservableValue<String> title;
+                        if ("{auth_url}".equals(server.getUrl())) {{
+                            item.setTitle("MyMine");
+                            title = item.titleProperty();
+                        }} else {{
+                            title = BindingMapping.of(server, AuthlibInjectorServer::getName);
+                            item.titleProperty().bind(title);
+                        }}''',
+)
+
+default_servers = root / "HMCL/src/main/java/org/jackhuang/hmcl/setting/AuthlibInjectorServerList.java"
+replace_exact(
+    default_servers,
+    '''    public static AuthlibInjectorServerList createDefault() {
+        AuthlibInjectorServerList result = new AuthlibInjectorServerList();
+        result.addLittleSkinIfAbsent();
+        return result;
+    }''',
+    '''    public static AuthlibInjectorServerList createDefault() {
+        return new AuthlibInjectorServerList();
+    }''',
+)
+
 auth_servers = root / "HMCL/src/main/java/org/jackhuang/hmcl/setting/AuthlibInjectorServers.java"
 old = '''        if (SettingsManager.isNewlyCreated() && Files.exists(configLocation)) {
             AuthlibInjectorServers configInstance;
@@ -45,5 +103,7 @@ new = f'''        if (SettingsManager.isNewlyCreated()) {{
             }}
 
             if (!configInstance.urls.isEmpty()) {{'''
-replace_once(auth_servers, old, new)
+replace_exact(auth_servers, old, new)
+
 print(f"Patched HMCL for MyMine auth: {auth_url}")
+print("Microsoft hidden, LittleSkin removed, MyMine promoted to the first auth method")
