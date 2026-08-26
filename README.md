@@ -9,6 +9,7 @@ MyMine — воспроизводимый Docker-стек для собстве�
 - **Minecraft Java 26.2 / Fabric** — игровой сервер.
 - **Drasl** — собственный Yggdrasil/authlib-совместимый сервер аккаунтов.
 - **MyMine Landing** — лендинг, регистрация, инструкции и раздача лаунчера.
+- **BlueMap** — браузерная 3D-карта мира, доступная через `/map/`.
 - **MyMine Launcher** — сборка HMCL с преднастроенной авторизацией MyMine и без обязательного Microsoft-аккаунта.
 - **GitHub Actions** — CI, сборка лаунчера, публикация Docker images и release assets.
 
@@ -17,6 +18,7 @@ Internet
    |
    +-- 80/443 --> nginx
    |                +-- mymine.example.org ------> landing:80
+   |                +-- mymine.example.org/map/ -> BlueMap:8100
    |                +-- auth.mymine.example.org -> drasl:25585
    |
    +-- 25565 -------------------------------> minecraft:25565
@@ -73,7 +75,7 @@ SHA256SUMS
 
 Прямые версии модов закреплены в `modrinth-mods.txt`, а зависимости разрешаются при сборке image.
 
-В текущий набор входят Fabric API, Lithium, FerriteCore, ServerCore, Krypton, spark, Chunky, Terralith, Tectonic, Incendium, Nullscape, Dungeons and Taverns, Towns and Towers и их необходимые зависимости.
+В текущий набор входят Fabric API, Lithium, FerriteCore, ServerCore, Krypton, Alternate Current, spark, Chunky, BlueMap, Universal Graves, FallingTree, Terralith, Tectonic, Incendium, Nullscape, Dungeons and Taverns, Towns and Towers и их необходимые зависимости (включая Polymer для Universal Graves).
 
 Git/image является источником истины для версий Minecraft, Fabric и модов. Мир и player data хранятся отдельно в persistent `/data`.
 
@@ -99,11 +101,15 @@ deploy/portainer-stack.yml
 Основные переменные:
 
 ```dotenv
-IMAGE_TAG=0.2.2
+IMAGE_TAG=0.3.0
 AUTH_DOMAIN=auth.mymine.example.org
 AUTH_BASE_URL=https://auth.mymine.example.org
 MC_ADDRESS=mymine.example.org:25565
 MC_PORT=25565
+MAP_URL=/map/
+MAP_PORT=44447
+BLUEMAP_ACCEPT_DOWNLOAD=false
+BLUEMAP_RENDER_THREADS=1
 LANDING_PORT=44445
 AUTH_PORT=44446
 DATA_DIR=/home/user/mymine/data
@@ -114,7 +120,9 @@ CONTAINER_MEMORY_LIMIT=6g
 
 `AUTH_BASE_URL` используется стеком и release-сборкой лаунчера. Адрес, который лаунчер добавляет в «Сетевую игру», задаётся отдельно через build-time `MYMINE_SERVER_ADDRESS`.
 
-`auth-config` является init-контейнером. Состояние `Exited (0)` после генерации конфигурации Drasl является нормальным.
+`auth-config` и `bluemap-config` являются init-контейнерами. Состояние `Exited (0)` после генерации конфигурации является нормальным.
+
+BlueMap требует отдельного подтверждения `accept-download`. По умолчанию `BLUEMAP_ACCEPT_DOWNLOAD=false`. Установите `true` только если можете принять условия BlueMap для загрузки клиентских ресурсов Minecraft. Число потоков рендера по умолчанию ограничено одним через `BLUEMAP_RENDER_THREADS=1`.
 
 ## Nginx
 
@@ -123,7 +131,7 @@ CONTAINER_MEMORY_LIMIT=6g
 - `nginx-mymine-http.conf` — bootstrap HTTP для Certbot;
 - `nginx-mymine.conf` — итоговый HTTPS reverse proxy.
 
-Landing и Drasl рекомендуется публиковать Docker'ом только на `127.0.0.1` и открывать наружу через nginx. Minecraft TCP 25565 проксировать HTTP nginx не требуется.
+Landing, Drasl и BlueMap публикуются Docker'ом только на `127.0.0.1`. В готовом nginx-конфиге карта проксируется как `https://mymine.mirv.top/map/` на локальный порт `44447`; отдельный поддомен и новый внешний порт не нужны. Minecraft TCP 25565 проксировать HTTP nginx не требуется.
 
 ## Persistent data
 

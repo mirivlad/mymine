@@ -6,6 +6,10 @@ servercore:edrtnY9v
 krypton:5WeL0Nkz
 spark:iYFOl6lQ
 chunky:4Eotm6ov
+alternate-current:blSBYnpw
+universal-graves:BZfhXd0q
+fallingtree:sOoH5kkd
+bluemap:bR8uae8S
 
 # World generation / exploration. Server-side; vanilla clients can connect.
 terralith:OxfI2n80

@@ -32,6 +32,28 @@ services:
         RequireInvite = $${DRASL_REQUIRE_INVITE}
         EOF
 
+  bluemap-config:
+    image: alpine@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc1f695dce
+    restart: "no"
+    environment:
+      BLUEMAP_ACCEPT_DOWNLOAD: "${BLUEMAP_ACCEPT_DOWNLOAD:-false}"
+      BLUEMAP_RENDER_THREADS: "${BLUEMAP_RENDER_THREADS:-1}"
+      BLUEMAP_METRICS: "${BLUEMAP_METRICS:-false}"
+      BLUEMAP_UID: "${BLUEMAP_UID:-1000}"
+      BLUEMAP_GID: "${BLUEMAP_GID:-1000}"
+    volumes:
+      - "${DATA_DIR:-./data}/config/bluemap:/out"
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        cat > /out/core.conf <<EOF
+        accept-download: $${BLUEMAP_ACCEPT_DOWNLOAD}
+        render-thread-count: $${BLUEMAP_RENDER_THREADS}
+        metrics: $${BLUEMAP_METRICS}
+        EOF
+        chown -R "$${BLUEMAP_UID}:$${BLUEMAP_GID}" /out
+
   drasl:
     image: unmojang/drasl@sha256:4fe6b1c102a8c9def2229284e6bb824bff4b70f5b1c7ef97f5815d6161ede12f
     container_name: ${AUTH_CONTAINER_NAME:-mymine-auth}
@@ -57,6 +79,7 @@ services:
       MC_ADDRESS: "${MC_ADDRESS:?MC_ADDRESS is required}"
       MC_VERSION: "${MC_VERSION:-26.2}"
       HMCL_VERSION: "${HMCL_VERSION:-3.16.3}"
+      MAP_URL: "${MAP_URL:-/map/}"
     mem_limit: "${LANDING_MEMORY_LIMIT:-128m}"
 
   minecraft:
@@ -64,9 +87,13 @@ services:
     container_name: ${CONTAINER_NAME:-mymine}
     restart: unless-stopped
     depends_on:
-      - drasl
+      drasl:
+        condition: service_started
+      bluemap-config:
+        condition: service_completed_successfully
     ports:
       - "${MC_PORT:-25565}:25565/tcp"
+      - "${WEB_BIND_ADDR:-127.0.0.1}:${MAP_PORT:-8100}:8100/tcp"
     environment:
       EULA: "TRUE"
       TZ: "${TZ:-Asia/Irkutsk}"
