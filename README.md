@@ -157,7 +157,7 @@ ghcr.io/mirivlad/mymine-landing:<version>
 Минимально значимые переменные:
 
 ```dotenv
-IMAGE_TAG=0.4.3
+IMAGE_TAG=0.4.4
 AUTH_DOMAIN=auth.mymine.example.org
 AUTH_BASE_URL=https://auth.mymine.example.org
 DRASL_ADMIN=mymine-admin
@@ -189,17 +189,31 @@ CONTAINER_MEMORY_LIMIT=6g
 LANDING_TEMPLATE=adventure
 ```
 
-Доступны три варианта:
+Доступны шесть вариантов:
 
+- `showcase` — кинематографичный шаблон-витрина с крупным hero и тремя фотосекциями; поддерживает установочные изображения через переменные;
 - `adventure` — иллюстрированный атмосферный вариант с крупным hero-изображением; используется по умолчанию;
 - `atlas` — светлый картографический вариант с BlueMap в центре композиции;
 - `modern` — чистый тёмный продуктовый дизайн без внешних иллюстраций;
 - `terminal` — консольный/техно-вариант;
 - `classic` — прежний лендинг для обратной совместимости.
 
-Иллюстрации в `adventure` и `atlas` входят в image локально, без внешних CDN. Используются только материалы с CC0; происхождение и преобразования перечислены в `landing/assets/ATTRIBUTION.txt` и доступны на работающем лендинге по `/assets/ATTRIBUTION.txt`.
+Иллюстрации в `adventure` и `atlas` входят в image локально, без внешних CDN. `showcase` по умолчанию использует те же встроенные изображения, но его четыре кадра можно подменить изображениями конкретного сервера без пересборки image. Используются только материалы с CC0; происхождение и преобразования перечислены в `landing/assets/ATTRIBUTION.txt` и доступны на работающем лендинге по `/assets/ATTRIBUTION.txt`.
 
 После изменения переменной достаточно redeploy/recreate контейнера `landing`. Мир Minecraft, Drasl и launcher artifacts при переключении шаблона не меняются. Неизвестное имя шаблона считается ошибкой конфигурации, и контейнер завершится с подсказкой допустимых значений.
+
+Для собственных кадров `showcase` положите изображения в `LANDING_ASSETS_DIR` и укажите URL внутри `/custom`:
+
+```dotenv
+LANDING_TEMPLATE=showcase
+LANDING_ASSETS_DIR=/srv/mymine/landing-assets
+LANDING_HERO_IMAGE=/custom/hero.webp
+LANDING_GALLERY_IMAGE_1=/custom/night.webp
+LANDING_GALLERY_IMAGE_2=/custom/river.webp
+LANDING_GALLERY_IMAGE_3=/custom/rainbow.webp
+```
+
+Если выбранный шаблон уже присутствует в текущем landing image, после изменения переменных достаточно recreate/redeploy. Если шаблон появился в более новой версии MyMine, сначала обновите `IMAGE_TAG`/landing image и выполните pull, затем redeploy. При использовании `latest` также нужен pull, иначе Docker может оставить уже загруженный локальный image.
 
 `auth-config` и `bluemap-config` — init-контейнеры. Состояние `Exited (0)` после успешной генерации конфигурации является нормальным.
 

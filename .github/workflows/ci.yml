@@ -157,7 +157,7 @@ jobs:
           cp "$dist"/* landing/downloads/
           docker build -t mymine-landing-instance-test landing
 
-          for template in adventure atlas modern terminal classic; do
+          for template in showcase adventure atlas modern terminal classic; do
             docker run --rm --entrypoint /bin/sh \
               -e AUTH_BASE_URL=https://auth.fork.example \
               -e MC_ADDRESS=play.fork.example:25577 \
@@ -175,6 +175,22 @@ jobs:
                 test -s /usr/share/nginx/html/assets/bluemap.webp
               '
           done
+
+          docker run --rm --entrypoint /bin/sh \
+            -e AUTH_BASE_URL=https://auth.fork.example \
+            -e MC_ADDRESS=play.fork.example:25577 \
+            -e LANDING_TEMPLATE=showcase \
+            -e LANDING_HERO_IMAGE=/custom/hero.webp \
+            -e LANDING_GALLERY_IMAGE_1=/custom/night.webp \
+            -e LANDING_GALLERY_IMAGE_2=/custom/river.webp \
+            -e LANDING_GALLERY_IMAGE_3=/custom/rainbow.webp \
+            mymine-landing-instance-test -ec '
+              /docker-entrypoint.d/20-mymine-env.sh
+              grep -Fq "/custom/hero.webp" /usr/share/nginx/html/index.html
+              grep -Fq "/custom/night.webp" /usr/share/nginx/html/index.html
+              grep -Fq "/custom/river.webp" /usr/share/nginx/html/index.html
+              grep -Fq "/custom/rainbow.webp" /usr/share/nginx/html/index.html
+            '
 
           if docker run --rm --entrypoint /bin/sh \
             -e AUTH_BASE_URL=https://auth.fork.example \

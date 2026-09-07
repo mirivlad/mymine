@@ -130,7 +130,13 @@ services:
       HMCL_VERSION: "${HMCL_VERSION:-3.16.3}"
       MAP_URL: "${MAP_URL:-/map/}"
       LANDING_TEMPLATE: "${LANDING_TEMPLATE:-adventure}"
+      LANDING_HERO_IMAGE: "${LANDING_HERO_IMAGE:-/assets/voxel-world.webp}"
+      LANDING_GALLERY_IMAGE_1: "${LANDING_GALLERY_IMAGE_1:-/assets/isometric-world.webp}"
+      LANDING_GALLERY_IMAGE_2: "${LANDING_GALLERY_IMAGE_2:-/assets/bluemap.webp}"
+      LANDING_GALLERY_IMAGE_3: "${LANDING_GALLERY_IMAGE_3:-/assets/voxel-world.webp}"
       VERIFY_MINECRAFT_OWNERSHIP: "${VERIFY_MINECRAFT_OWNERSHIP:-true}"
+    volumes:
+      - "${LANDING_ASSETS_DIR:-./landing-assets}:/usr/share/nginx/html/custom:ro"
     mem_limit: "${LANDING_MEMORY_LIMIT:-128m}"
 
   minecraft:
