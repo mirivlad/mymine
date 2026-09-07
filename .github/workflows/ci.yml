@@ -127,6 +127,89 @@ jobs:
           MYMINE_SERVER_ADDRESS: mc.example.org:25565
           DIST_DIR: ${{ runner.temp }}/mymine-launcher
         run: ./launcher/build.sh
+      - name: Verify launcher branding and embedded instance defaults
+        run: |
+          set -euo pipefail
+          dist="${RUNNER_TEMP}/mymine-launcher"
+          props=$(python3 -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("mymine-instance.properties").decode(), end="")' "$dist/MyMineLauncher-3.16.3.jar")
+          grep -q '^auth.url=https://auth.example.org/$' <<<"$props"
+          grep -q '^server.name=MyMine CI$' <<<"$props"
+          grep -q '^server.address=mc.example.org:25565$' <<<"$props"
+
+          deb="$dist/MyMineLauncher-3.16.3.deb"
+          test "$(dpkg-deb -f "$deb" Package)" = mymine-launcher
+          test "$(dpkg-deb -f "$deb" Description | head -1)" = 'MyMine Launcher'
+          root="${RUNNER_TEMP}/mymine-deb-root"
+          rm -rf "$root"
+          dpkg-deb -x "$deb" "$root"
+          test -x "$root/usr/bin/mymine-launcher"
+          test -f "$root/usr/share/applications/mymine-launcher.desktop"
+          grep -q '^Name=MyMine Launcher$' "$root/usr/share/applications/mymine-launcher.desktop"
+          test -f "$root/usr/share/java/mymine-launcher/MyMineLauncher-3.16.3.sh"
+
+      - name: Verify landing injects its own instance into every launcher artifact
+        run: |
+          set -euo pipefail
+          dist="${RUNNER_TEMP}/mymine-launcher"
+          cp "$dist"/* landing/downloads/
+          docker build -t mymine-landing-instance-test landing
+          cid=$(docker run -d \
+            -e AUTH_BASE_URL=https://auth.fork.example \
+            -e MC_ADDRESS=play.fork.example:25577 \
+            -e SERVER_NAME='Fork Mine' \
+            -e VERIFY_MINECRAFT_OWNERSHIP=false \
+            mymine-landing-instance-test)
+          cleanup() { docker rm -f "$cid" >/dev/null 2>&1 || true; }
+          trap cleanup EXIT
+
+          ready=false
+          for _ in $(seq 1 30); do
+            if docker exec "$cid" test -s /usr/share/nginx/html/server.json 2>/dev/null; then
+              ready=true
+              break
+            fi
+            if ! docker inspect -f '{{.State.Running}}' "$cid" 2>/dev/null | grep -q true; then
+              docker logs "$cid" || true
+              break
+            fi
+            sleep 1
+          done
+          test "$ready" = true
+          docker logs "$cid"
+
+          out="${RUNNER_TEMP}/mymine-instance-downloads"
+          rm -rf "$out" && mkdir -p "$out"
+          docker cp "$cid:/usr/share/nginx/html/downloads/." "$out/"
+
+          for ext in exe jar sh; do
+            artifact="$out/MyMineLauncher-3.16.3.$ext"
+            props=$(python3 -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("mymine-instance.properties").decode(), end="")' "$artifact")
+            grep -q '^auth.url=https://auth.fork.example/$' <<<"$props"
+            grep -q '^server.name=Fork Mine$' <<<"$props"
+            grep -q '^server.address=play.fork.example:25577$' <<<"$props"
+          done
+          python3 - "$out" <<'PY_HEADERS'
+          import sys
+          from pathlib import Path
+          root = Path(sys.argv[1])
+          assert (root / "MyMineLauncher-3.16.3.exe").read_bytes().startswith(b"MZ")
+          assert (root / "MyMineLauncher-3.16.3.sh").read_bytes().startswith(b"#!/")
+          assert (root / "MyMineLauncher-3.16.3.jar").read_bytes().startswith(b"PK\x03\x04")
+          PY_HEADERS
+
+          debroot="${RUNNER_TEMP}/mymine-instance-deb"
+          rm -rf "$debroot"
+          dpkg-deb -x "$out/MyMineLauncher-3.16.3.deb" "$debroot"
+          payload="$debroot/usr/share/java/mymine-launcher/MyMineLauncher-3.16.3.sh"
+          test -x "$payload"
+          props=$(python3 -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("mymine-instance.properties").decode(), end="")' "$payload")
+          grep -q '^auth.url=https://auth.fork.example/$' <<<"$props"
+          grep -q '^server.name=Fork Mine$' <<<"$props"
+          grep -q '^server.address=play.fork.example:25577$' <<<"$props"
+
+          (cd "$out" && sha256sum -c SHA256SUMS)
+          trap - EXIT
+          cleanup
 
   build:
     runs-on: ubuntu-latest
