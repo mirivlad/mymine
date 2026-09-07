@@ -18,7 +18,7 @@ incendium:kjnBRlCW
 nullscape:lpsdO6Sg
 
 # Fork-friendly structure expansion replacing Dungeons & Taverns and Towns & Towers.
-# MVS: 130+ vanilla-style structures and dungeons, MIT.
-moogs-voyager-structures:uEZeTQ4b
-# Repurposed Structures: biome variants of vanilla structures/dungeons, LGPL-3.0-only.
+# MVS 5.0.11: 130+ vanilla-style structures and dungeons, MIT, explicitly marked for MC 26.2.
+moogs-voyager-structures:cvepxaBC
+# Repurposed Structures 7.7.6: biome variants of vanilla structures/dungeons, LGPL-3.0-only.
 repurposed-structures-fabric:CrmgMIJp
