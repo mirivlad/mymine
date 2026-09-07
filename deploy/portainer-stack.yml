@@ -9,6 +9,7 @@ services:
       AUTH_BASE_URL: "${AUTH_BASE_URL:-https://auth.mymine.mirv.top}"
       AUTH_INSTANCE_NAME: "${AUTH_INSTANCE_NAME:-MyMine}"
       DRASL_ADMIN: "${DRASL_ADMIN:-mirivlad}"
+      VERIFY_MINECRAFT_OWNERSHIP: "${VERIFY_MINECRAFT_OWNERSHIP:-true}"
       DRASL_REQUIRE_INVITE: "${DRASL_REQUIRE_INVITE:-false}"
     volumes:
       - "${AUTH_DATA_DIR:-/home/mirivlad/mymine/auth-data}/config:/out"
@@ -16,6 +17,15 @@ services:
       - /bin/sh
       - -ec
       - |
+        case "$${VERIFY_MINECRAFT_OWNERSHIP}" in
+          true|false) ;;
+          *) echo "VERIFY_MINECRAFT_OWNERSHIP must be true or false" >&2; exit 1 ;;
+        esac
+        case "$${DRASL_REQUIRE_INVITE}" in
+          true|false) ;;
+          *) echo "DRASL_REQUIRE_INVITE must be true or false" >&2; exit 1 ;;
+        esac
+
         cat > /out/config.toml <<EOF
         Domain = "$${AUTH_DOMAIN}"
         BaseURL = "$${AUTH_BASE_URL}"
@@ -25,12 +35,46 @@ services:
         SignPublicKeys = false
         AllowPasswordLogin = true
         EnableWebFrontEnd = true
+        EOF
+
+        if [ "$${VERIFY_MINECRAFT_OWNERSHIP}" = "true" ]; then
+          cat >> /out/config.toml <<EOF
+        AllowChangingPlayerName = false
+
+        [CreateNewPlayer]
+        Allow = false
+
+        [RegistrationNewPlayer]
+        Allow = false
+
+        [RegistrationExistingPlayer]
+        Allow = true
+        Nickname = "Mojang"
+        SessionURL = "https://sessionserver.mojang.com"
+        AccountURL = "https://api.mojang.com"
+        SetSkinURL = "https://www.minecraft.net/msaprofile/mygames/editskin"
+        RequireSkinVerification = true
+        RequireInvite = $${DRASL_REQUIRE_INVITE}
+
+        [[FallbackAPIServers]]
+        Nickname = "Mojang"
+        SessionURL = "https://sessionserver.mojang.com"
+        AccountURL = "https://api.mojang.com"
+        ServicesURL = "https://api.minecraftservices.com"
+        SkinDomains = ["textures.minecraft.net"]
+        CacheTTLSeconds = 60
+        DenyUnknownUsers = true
+        EOF
+        else
+          cat >> /out/config.toml <<EOF
         [CreateNewPlayer]
         Allow = true
+
         [RegistrationNewPlayer]
         Allow = true
         RequireInvite = $${DRASL_REQUIRE_INVITE}
         EOF
+        fi
 
   bluemap-config:
     image: alpine@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc1f695dce
@@ -80,6 +124,7 @@ services:
       MC_VERSION: "${MC_VERSION:-26.2}"
       HMCL_VERSION: "${HMCL_VERSION:-3.16.3}"
       MAP_URL: "${MAP_URL:-/map/}"
+      VERIFY_MINECRAFT_OWNERSHIP: "${VERIFY_MINECRAFT_OWNERSHIP:-true}"
     mem_limit: "${LANDING_MEMORY_LIMIT:-128m}"
 
   minecraft:
