@@ -58,14 +58,15 @@ replace_exact(
     account_list,
     '''                        ObservableValue<String> title = BindingMapping.of(server, AuthlibInjectorServer::getName);
                         item.titleProperty().bind(title);''',
-    f'''                        ObservableValue<String> title;
-                        if (server.getUrl().equals("{auth_url}") || server.getUrl().startsWith("{auth_url}")) {{
+    '''                        ObservableValue<String> title;
+                        if (server.getUrl().equals(org.jackhuang.hmcl.mymine.MyMineInstance.AUTH_URL)
+                                || server.getUrl().startsWith(org.jackhuang.hmcl.mymine.MyMineInstance.AUTH_URL)) {
                             item.setTitle("MyMine");
                             title = item.titleProperty();
-                        }} else {{
+                        } else {
                             title = BindingMapping.of(server, AuthlibInjectorServer::getName);
                             item.titleProperty().bind(title);
-                        }}''',
+                        }''',
 )
 
 default_servers = root / "HMCL/src/main/java/org/jackhuang/hmcl/setting/AuthlibInjectorServerList.java"
@@ -112,20 +113,21 @@ old = '''        if (SettingsManager.isNewlyCreated() && Files.exists(configLoca
             }
 
             if (!configInstance.urls.isEmpty()) {'''
-new = f'''        if (SettingsManager.isNewlyCreated()) {{
+new = '''        if (SettingsManager.isNewlyCreated()) {
             AuthlibInjectorServers configInstance;
-            if (Files.exists(configLocation)) {{
-                try {{
+            if (Files.exists(configLocation)) {
+                try {
                     configInstance = JsonUtils.fromJsonFile(configLocation, AuthlibInjectorServers.class);
-                }} catch (IOException | JsonParseException e) {{
+                } catch (IOException | JsonParseException e) {
                     LOG.warning("Malformed authlib-injectors.json", e);
                     return;
-                }}
-            }} else {{
-                configInstance = new AuthlibInjectorServers(List.of("{auth_url}"));
-            }}
+                }
+            } else {
+                configInstance = new AuthlibInjectorServers(List.of(
+                        org.jackhuang.hmcl.mymine.MyMineInstance.AUTH_URL));
+            }
 
-            if (!configInstance.urls.isEmpty()) {{'''
+            if (!configInstance.urls.isEmpty()) {'''
 replace_exact(auth_servers, old, new)
 
 # Add the MyMine server to Minecraft's multiplayer list once per game run directory.
@@ -157,6 +159,66 @@ replace_exact(
     }''',
 )
 
+instance_source = r'''/*
+ * MyMine launcher instance configuration.
+ * Distributed under the same GPLv3 terms as HMCL.
+ */
+package org.jackhuang.hmcl.mymine;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
+
+/** Configuration injected into the launcher artifact by the MyMine landing image. */
+public final class MyMineInstance {
+    public static final String AUTH_URL;
+    public static final String SERVER_NAME;
+    public static final String SERVER_ADDRESS;
+
+    static {
+        Properties properties = new Properties();
+        try (InputStream input = MyMineInstance.class.getResourceAsStream("/mymine-instance.properties")) {
+            if (input == null) {
+                throw new IllegalStateException("Missing /mymine-instance.properties");
+            }
+            properties.load(new InputStreamReader(input, StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+
+        String authUrl = require(properties, "auth.url");
+        AUTH_URL = authUrl.endsWith("/") ? authUrl : authUrl + "/";
+        SERVER_NAME = require(properties, "server.name");
+        SERVER_ADDRESS = require(properties, "server.address");
+    }
+
+    private MyMineInstance() {
+    }
+
+    private static String require(Properties properties, String key) {
+        String value = properties.getProperty(key);
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException("Missing MyMine instance property: " + key);
+        }
+        return value.trim();
+    }
+}
+'''
+instance = root / "HMCL/src/main/java/org/jackhuang/hmcl/mymine/MyMineInstance.java"
+instance.parent.mkdir(parents=True, exist_ok=True)
+instance.write_text(instance_source, encoding="utf-8")
+
+instance_resource = root / "HMCL/src/main/resources/mymine-instance.properties"
+instance_resource.parent.mkdir(parents=True, exist_ok=True)
+instance_resource.write_text(
+    "auth.url=" + auth_url + "\n"
+    "server.name=" + server_name + "\n"
+    "server.address=" + server_address + "\n",
+    encoding="utf-8",
+)
+
 helper_source = '''/*
  * MyMine launcher patch.
  * Distributed under the same GPLv3 terms as HMCL.
@@ -180,8 +242,8 @@ import static org.jackhuang.hmcl.util.logging.Logger.LOG;
 
 /** Adds the official MyMine server to Minecraft's multiplayer list once. */
 final class MyMineServerList {
-    static final String SERVER_NAME = __SERVER_NAME__;
-    static final String SERVER_ADDRESS = __SERVER_ADDRESS__;
+    static final String SERVER_NAME = org.jackhuang.hmcl.mymine.MyMineInstance.SERVER_NAME;
+    static final String SERVER_ADDRESS = org.jackhuang.hmcl.mymine.MyMineInstance.SERVER_ADDRESS;
     static final String MARKER_FILE = ".mymine-server-list-v1";
 
     private MyMineServerList() {
@@ -269,8 +331,6 @@ final class MyMineServerList {
     }
 }
 '''
-helper_source = helper_source.replace("__SERVER_NAME__", json.dumps(server_name))
-helper_source = helper_source.replace("__SERVER_ADDRESS__", json.dumps(server_address))
 helper = root / "HMCL/src/main/java/org/jackhuang/hmcl/game/MyMineServerList.java"
 helper.write_text(helper_source, encoding="utf-8")
 
