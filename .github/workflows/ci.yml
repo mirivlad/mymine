@@ -20,6 +20,64 @@ jobs:
           MC_ADDRESS: mc.example.org:25565
         run: docker compose -f compose.yml config >/dev/null
 
+  auth:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        verify: ['true', 'false']
+    env:
+      AUTH_DOMAIN: localhost
+      AUTH_BASE_URL: http://localhost:25585
+      MC_ADDRESS: mc.example.org:25565
+      AUTH_PORT: '25585'
+      WEB_BIND_ADDR: 127.0.0.1
+      AUTH_CONTAINER_NAME: mymine-auth-ci
+      VERIFY_MINECRAFT_OWNERSHIP: ${{ matrix.verify }}
+      DRASL_REQUIRE_INVITE: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start Drasl (${{ matrix.verify == 'true' && 'verified ownership' || 'independent registration' }})
+        env:
+          AUTH_DATA_DIR: ${{ runner.temp }}/mymine-auth-${{ matrix.verify }}
+        run: |
+          set -euo pipefail
+          cleanup() {
+            docker compose logs auth-config drasl || true
+            docker compose down --remove-orphans || true
+          }
+          trap cleanup EXIT
+
+          docker compose up -d drasl
+
+          ready=false
+          for _ in $(seq 1 60); do
+            if curl -fsS --max-time 2 http://127.0.0.1:25585/ >/dev/null; then
+              ready=true
+              break
+            fi
+            if ! docker inspect -f '{{.State.Running}}' mymine-auth-ci 2>/dev/null | grep -q true; then
+              break
+            fi
+            sleep 1
+          done
+          test "$ready" = true
+
+          config="$AUTH_DATA_DIR/config/config.toml"
+          test -s "$config"
+          if [[ "$VERIFY_MINECRAFT_OWNERSHIP" == true ]]; then
+            grep -q '^\[RegistrationExistingPlayer\]' "$config"
+            grep -q '^RequireSkinVerification = true$' "$config"
+            awk '/^\[RegistrationNewPlayer\]/{seen=1; next} seen && /^Allow = false$/{found=1; exit} END{exit !found}' "$config"
+          else
+            ! grep -q '^RequireSkinVerification = true$' "$config"
+            awk '/^\[RegistrationNewPlayer\]/{seen=1; next} seen && /^Allow = true$/{found=1; exit} END{exit !found}' "$config"
+          fi
+
+          curl -fsS --max-time 5 http://127.0.0.1:25585/ >/dev/null
+          trap - EXIT
+          cleanup
+
   launcher:
     runs-on: ubuntu-latest
     steps:
