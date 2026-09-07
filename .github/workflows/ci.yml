@@ -94,11 +94,12 @@ jobs:
       CONTAINER_NAME: mymine-test
       WEB_BIND_ADDR: 127.0.0.1
       BLUEMAP_ACCEPT_DOWNLOAD: 'false'
-      AUTH_DATA_DIR: ${{ runner.temp }}/mymine-auth-smoke
-      DATA_DIR: ${{ runner.temp }}/mymine-data-smoke
     steps:
       - uses: actions/checkout@v4
       - name: Boot Minecraft with public mod set
+        env:
+          AUTH_DATA_DIR: ${{ runner.temp }}/mymine-auth-smoke
+          DATA_DIR: ${{ runner.temp }}/mymine-data-smoke
         run: |
           set -euo pipefail
           cleanup() {
