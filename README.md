@@ -87,13 +87,17 @@ Drasl разрешает создание самостоятельного MyMin
 - существующие серверы сохраняются, адрес не дублируется;
 - миграция выполняется один раз: если игрок позже удалит MyMine из списка, лаунчер не добавит его снова принудительно.
 
-Имя и адрес встроенного сервера задаются при сборке:
+Имя и адрес экземпляра задаются при сборке базового launcher artifact:
 
 ```text
 MYMINE_SERVER_NAME
 MYMINE_SERVER_ADDRESS
 MYMINE_AUTH_URL
 ```
+
+При этом Docker image лендинга **не раздаёт эти базовые значения вслепую**. При старте конкретной установки он берёт её `AUTH_BASE_URL`, `MC_ADDRESS` и `SERVER_NAME`, внедряет их в ресурс `mymine-instance.properties` внутри `.exe`, `.jar`, `.sh` и `.deb`, а затем пересчитывает `SHA256SUMS`. Поэтому launcher, скачанный с конкретного MyMine landing, подключается к auth и Minecraft именно этой установки. Для этого форку не нужен собственный Java toolchain или отдельная сборка HMCL.
+
+GitHub Release assets используют значения текущего репозитория (для официального MyMine — `auth.mymine.mirv.top` и `mymine.mirv.top:25565`). Форк при желании может задать repository variables `MYMINE_AUTH_URL`, `MYMINE_SERVER_NAME`, `MYMINE_SERVER_ADDRESS` и получить свои значения также в GitHub Release assets.
 
 Release публикует:
 
@@ -107,6 +111,8 @@ SHA256SUMS
 ```
 
 Модифицированное дерево исходников HMCL публикуется вместе с бинарниками в соответствии с GPLv3.
+
+Debian artifact устанавливается как пакет `mymine-launcher`, создаёт `/usr/bin/mymine-launcher` и desktop entry **MyMine Launcher**. Пакет объявляет замену старого upstream-named пакета `hmcl`, использовавшегося в MyMine до полного Debian-ребрендинга; wrapper сохраняет доступ к его существующему пользовательскому каталогу настроек при обновлении.
 
 ## Серверные моды
 
@@ -125,7 +131,7 @@ SHA256SUMS
 
 MVS добавляет 130+ vanilla-style структур и подземелий. Repurposed Structures расширяет семейства существующих ванильных структур по биомам. Оба работают server-side и заменяют ранее использовавшиеся **Dungeons & Taverns** и **Towns & Towers**.
 
-Dungeons & Taverns намеренно не входит в публичный image из-за ограничений на перераспространение. Towns & Towers также убран из базового дистрибутива, чтобы не навязывать форкам условия CC-BY-NC-SA. Базовая сборка ориентируется на зависимости, которые можно законно перераспространять и форкать на понятных условиях.
+Dungeons & Taverns намеренно не входит в публичный image из-за ограничений на перераспространение. Towns & Towers также убран из базового дистрибутива, чтобы не навязывать форкам условия CC-BY-NC-SA. Базовая сборка ориентируется на зависимости, которые можно законно перераспределять и форкать на понятных условиях.
 
 Terralith, Incendium и Nullscape распространяются **без изменений** как часть modpack в соответствии с Stardust Labs License; требуемая атрибуция и ссылки находятся в [`THIRD_PARTY.md`](THIRD_PARTY.md). Tectonic распространяется по MIT.
 
@@ -155,6 +161,7 @@ AUTH_BASE_URL=https://auth.mymine.example.org
 VERIFY_MINECRAFT_OWNERSHIP=true
 DRASL_REQUIRE_INVITE=false
 MC_ADDRESS=mymine.example.org:25565
+SERVER_NAME=MyMine
 MC_PORT=25565
 MAP_URL=/map/
 MAP_PORT=44447
