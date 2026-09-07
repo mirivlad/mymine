@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b1015">
+  <title>${SERVER_NAME} — Minecraft ${MC_VERSION}</title>
+  <style>
+    :root{color-scheme:dark;--bg:#090d12;--panel:#111820;--panel2:#151f29;--text:#f5f7f9;--muted:#95a2ae;--line:#22303c;--accent:#9be15d;--accent2:#5dd6b3;--warm:#ffd166;--danger:#ff8c69}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#0a0f14,#080c11 55%,#0a0e12);color:var(--text);font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 74% 12%,rgba(93,214,179,.10),transparent 28%),radial-gradient(circle at 18% 4%,rgba(155,225,93,.08),transparent 26%)}
+    a{color:inherit}.shell{width:min(1180px,calc(100% - 36px));margin:auto;position:relative}.nav{height:74px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05)}
+    .brand{display:flex;align-items:center;gap:11px;text-decoration:none;font-size:19px;font-weight:850;letter-spacing:-.02em}.cube{width:31px;height:31px;position:relative;background:linear-gradient(145deg,#b9ef83,#71c942);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}.cube:after{content:"";position:absolute;inset:6px;background:#102116;clip-path:inherit}
+    .navlinks{display:flex;align-items:center;gap:6px}.navlinks a{padding:8px 11px;border-radius:9px;text-decoration:none;color:#aeb8c2;font-size:14px}.navlinks a:hover{background:#121a22;color:#fff}.navlinks .join{border:1px solid #334253;color:#fff}
+    .hero{padding:82px 0 62px;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(380px,.92fr);gap:58px;align-items:center}.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #25333f;border-radius:999px;background:#0e151c;color:#b5c0ca;font-size:13px}.badge i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px rgba(155,225,93,.08)}
+    h1{margin:20px 0 20px;font-size:clamp(52px,7vw,86px);line-height:.96;letter-spacing:-.055em;max-width:780px}.hero p{margin:0;color:#a8b3bd;font-size:clamp(17px,2vw,20px);max-width:720px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:28px 0 18px}.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:11px;padding:12px 16px;font-weight:800;border:1px solid #2c3946;background:#111922;transition:.18s}.btn:hover{transform:translateY(-1px);border-color:#425364}.btn.primary{background:var(--accent);border-color:var(--accent);color:#0b1408}.btn.primary:hover{filter:brightness(1.04)}.subline{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:#75838f;font-size:13px}.addr{display:inline-flex;align-items:center;gap:9px;padding:7px 9px;border:1px solid #283642;border-radius:9px;background:#0a1016;color:#dce4eb;font:700 13px ui-monospace,SFMono-Regular,Consolas,monospace}.copy{border:0;background:transparent;color:var(--accent2);font:inherit;font-weight:800;padding:0;cursor:pointer}
+    .overview{border:1px solid #23313d;border-radius:24px;background:linear-gradient(180deg,rgba(18,27,35,.95),rgba(11,17,23,.95));box-shadow:0 30px 90px rgba(0,0,0,.32);overflow:hidden}.overview-head{padding:17px 18px;border-bottom:1px solid #22303b;display:flex;align-items:center;justify-content:space-between}.lights{display:flex;gap:6px}.lights i{width:8px;height:8px;border-radius:50%;background:#344351}.lights i:nth-child(1){background:#ff7a66}.lights i:nth-child(2){background:#ffd166}.lights i:nth-child(3){background:#76db6a}.online{font-size:12px;color:#92a1ad}.world{height:218px;position:relative;overflow:hidden;background:linear-gradient(145deg,#17222b,#0d151c)}.world:before{content:"";position:absolute;inset:-60px;background-image:linear-gradient(30deg,rgba(155,225,93,.15) 12%,transparent 12.5%,transparent 87%,rgba(155,225,93,.15) 87.5%),linear-gradient(150deg,rgba(93,214,179,.10) 12%,transparent 12.5%,transparent 87%,rgba(93,214,179,.10) 87.5%),linear-gradient(30deg,rgba(255,255,255,.035) 12%,transparent 12.5%,transparent 87%,rgba(255,255,255,.035) 87.5%);background-size:72px 126px;background-position:0 0,0 0,36px 63px;transform:rotate(-6deg) scale(1.08)}.world:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(155,225,93,.07),transparent)}.pin{position:absolute;left:55%;top:45%;width:16px;height:16px;border:3px solid #091015;border-radius:50%;background:var(--warm);box-shadow:0 0 0 7px rgba(255,209,102,.12),0 12px 30px rgba(0,0,0,.4)}
+    .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:#22303b}.metric{padding:16px 17px;background:#0f161d}.metric span{display:block;color:#71818e;font-size:11px;text-transform:uppercase;letter-spacing:.11em}.metric b{display:block;margin-top:3px;font-size:17px}
+    .rail{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 88px}.rail div{border:1px solid #202d38;background:#0d141a;border-radius:14px;padding:16px 17px}.rail b{display:block;font-size:16px}.rail span{display:block;color:#7f8d98;font-size:13px;margin-top:2px}
+    section{scroll-margin-top:24px}.section-title{display:grid;grid-template-columns:.85fr 1.15fr;gap:34px;align-items:end;margin:0 0 26px}.section-title h2{font-size:clamp(34px,4.5vw,52px);line-height:1.02;letter-spacing:-.04em;margin:0}.section-title p{margin:0;color:#8998a5;max-width:650px}
+    .features{display:grid;grid-template-columns:1.1fr .9fr .9fr;gap:12px;margin-bottom:86px}.card{border:1px solid #202e39;border-radius:18px;background:#0e151b;padding:23px;min-height:190px}.card.featured{background:linear-gradient(145deg,#142119,#0e1718);border-color:#2f4a35}.kicker{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--accent);font-weight:900}.card h3{margin:9px 0 8px;font-size:22px;letter-spacing:-.02em}.card p{margin:0;color:#82919d;font-size:14px}
+    .notice{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:19px 20px;margin-bottom:13px;border:1px solid #314132;background:#101a14;border-radius:16px}.notice strong{display:block;margin-bottom:3px}.notice p{margin:0;color:#9cae9f;font-size:14px}.notice-icon{width:38px;height:38px;border-radius:10px;background:#1a2c1e;color:var(--accent);display:grid;place-items:center;font-weight:900}
+    .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:88px}.step{border:1px solid #202d38;border-radius:16px;background:#0d141a;padding:19px;min-height:205px}.step .n{font:800 12px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--accent2)}.step h3{font-size:17px;margin:16px 0 8px}.step p{font-size:13px;color:#7e8e9b;margin:0}.step a{color:var(--accent);font-weight:800}
+    .downloads{display:grid;grid-template-columns:1.15fr .85fr .85fr;gap:12px;margin-bottom:88px}.download{border:1px solid #202d38;border-radius:18px;background:#0d141a;padding:24px;min-height:230px;display:flex;flex-direction:column;justify-content:space-between}.download.main{background:linear-gradient(145deg,#142119,#0d1713);border-color:#31523a}.download small{color:var(--accent2);font-weight:900;text-transform:uppercase;letter-spacing:.12em}.download h3{margin:8px 0 7px;font-size:24px}.download p{margin:0 0 22px;color:#81909c;font-size:14px}.download .btn{align-self:flex-start}
+    .faq{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:72px}.faq article{border:1px solid #202d38;border-radius:15px;background:#0d141a;padding:20px}.faq h3{font-size:16px;margin:0 0 6px}.faq p{font-size:14px;color:#81909c;margin:0}.faq a{color:var(--accent2)}
+    footer{border-top:1px solid #1d2a34;padding:28px 0 42px;display:flex;justify-content:space-between;gap:20px;color:#667681;font-size:13px}footer a{text-decoration:none;color:#9ba8b2}
+    @media(max-width:980px){.hero{grid-template-columns:1fr}.overview{max-width:690px}.section-title{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.features{grid-template-columns:1fr 1fr}.features .featured{grid-column:1/-1}.downloads{grid-template-columns:1fr 1fr}.download.main{grid-column:1/-1}.navlinks a:not(.join){display:none}}
+    @media(max-width:620px){.shell{width:min(calc(100% - 24px),1180px)}.nav{height:64px}.hero{padding:52px 0 44px}h1{font-size:52px}.rail{grid-template-columns:1fr 1fr;margin-bottom:64px}.features,.steps,.downloads,.faq{grid-template-columns:1fr}.features .featured,.download.main{grid-column:auto}.section-title h2{font-size:36px}.notice{grid-template-columns:1fr}.world{height:180px}footer{display:block}footer div+div{margin-top:8px}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav class="nav">
+      <a class="brand" href="#top"><span class="cube" aria-hidden="true"></span><span>${SERVER_NAME}</span></a>
+      <div class="navlinks"><a href="#features">Мир</a><a href="#start">Старт</a><a href="#download">Лаунчер</a><a href="${MAP_URL}">Карта</a><a class="join" href="${AUTH_BASE_URL}/web/registration">Регистрация</a></div>
+    </nav>
+
+    <main id="top">
+      <section class="hero">
+        <div>
+          <div class="badge"><i></i>Minecraft Java ${MC_VERSION} · ${OWNERSHIP_MODE_LABEL}</div>
+          <h1>Мир, в который хочется вернуться.</h1>
+          <p>${OWNERSHIP_LEAD}</p>
+          <div class="actions">
+            <a class="btn primary" href="${AUTH_BASE_URL}/web/registration">Создать аккаунт</a>
+            <a class="btn" href="#download">Скачать лаунчер</a>
+            <a class="btn" href="${MAP_URL}">Посмотреть карту</a>
+          </div>
+          <div class="subline">Адрес сервера <span class="addr">${MC_ADDRESS}<button class="copy" type="button" data-copy="${MC_ADDRESS}">копировать</button></span></div>
+        </div>
+
+        <aside class="overview" aria-label="Информация о сервере">
+          <div class="overview-head"><div class="lights"><i></i><i></i><i></i></div><div class="online">server overview</div></div>
+          <div class="world"><div class="pin"></div></div>
+          <div class="metrics">
+            <div class="metric"><span>Сервер</span><b>${SERVER_NAME}</b></div>
+            <div class="metric"><span>Версия</span><b>${MC_VERSION}</b></div>
+            <div class="metric"><span>Клиент</span><b>Vanilla-compatible</b></div>
+            <div class="metric"><span>Карта</span><b><a href="${MAP_URL}">BlueMap ↗</a></b></div>
+          </div>
+        </aside>
+      </section>
+
+      <div class="rail">
+        <div><b>130+ структур</b><span>Новые места для исследования</span></div>
+        <div><b>3 измерения</b><span>Переработанная генерация мира</span></div>
+        <div><b>Без modpack</b><span>Обычный клиент Minecraft</span></div>
+        <div><b>Своя авторизация</b><span>Drasl + MyMine Launcher</span></div>
+      </div>
+
+      <section id="features">
+        <div class="section-title"><h2>Больше приключений. Меньше настройки.</h2><p>MyMine расширяет исследование и survival на стороне сервера. Игроку не нужно собирать модпак или следить за совместимостью десятков модов.</p></div>
+        <div class="features">
+          <article class="card featured"><div class="kicker">Мир</div><h3>Исследовать есть что</h3><p>Moog's Voyager Structures и Repurposed Structures добавляют башни, руины, дома, подземелья и новые варианты знакомых ванильных структур.</p></article>
+          <article class="card"><div class="kicker">Генерация</div><h3>Overworld, Nether и End</h3><p>Terralith + Tectonic, Incendium и Nullscape делают три измерения заметно разнообразнее, оставаясь server-side.</p></article>
+          <article class="card"><div class="kicker">Survival</div><h3>QoL без клиентских модов</h3><p>Graves, FallingTree, оптимизации и другие серверные улучшения делают игру удобнее, не превращая клиент в отдельный проект.</p></article>
+        </div>
+      </section>
+
+      <section id="start">
+        <div class="section-title"><h2>Пять шагов — и ты в игре.</h2><p>Нужны Minecraft Java ${MC_VERSION} и MyMine Launcher. Fabric, Forge, NeoForge и отдельный набор клиентских модов не требуются.</p></div>
+        <div class="notice"><div class="notice-icon">i</div><div><strong>${OWNERSHIP_NOTICE_TITLE}</strong><p>${OWNERSHIP_NOTICE_TEXT}</p></div></div>
+        <div class="steps">
+          <article class="step"><div class="n">01 / ACCOUNT</div><h3>Регистрация</h3><p>${OWNERSHIP_STEP_TEXT} <a href="${AUTH_BASE_URL}/web/registration">Открыть регистрацию →</a></p></article>
+          <article class="step"><div class="n">02 / LAUNCHER</div><h3>Лаунчер</h3><p>Скачай MyMine Launcher под свою систему. Адрес авторизации уже встроен.</p></article>
+          <article class="step"><div class="n">03 / LOGIN</div><h3>Аккаунт MyMine</h3><p>Добавь аккаунт MyMine и войди с данными, указанными при регистрации.</p></article>
+          <article class="step"><div class="n">04 / GAME</div><h3>Minecraft ${MC_VERSION}</h3><p>Установи обычную версию игры без Fabric / Forge / NeoForge.</p></article>
+          <article class="step"><div class="n">05 / JOIN</div><h3>Подключение</h3><p>Сервер уже появится в списке. Адрес вручную: <button class="copy" type="button" data-copy="${MC_ADDRESS}">${MC_ADDRESS}</button></p></article>
+        </div>
+      </section>
+
+      <section id="download">
+        <div class="section-title"><h2>Лаунчер уже настроен.</h2><p>MyMine Launcher основан на open-source HMCL ${HMCL_VERSION}. Конкретная установка лендинга встраивает собственные адреса сервера и авторизации в скачиваемые файлы.</p></div>
+        <div class="downloads">
+          <article class="download main"><div><small>Windows</small><h3>MyMine Launcher.exe</h3><p>Скачал, запустил, добавил аккаунт MyMine — самый короткий путь к игре.</p></div><a class="btn primary" href="/downloads/MyMineLauncher-${HMCL_VERSION}.exe" download>Скачать EXE</a></article>
+          <article class="download"><div><small>Linux</small><h3>DEB-пакет</h3><p>Для Debian, Ubuntu, Mint и совместимых систем.</p></div><a class="btn" href="/downloads/MyMineLauncher-${HMCL_VERSION}.deb" download>Скачать DEB</a></article>
+          <article class="download"><div><small>Universal</small><h3>JAR</h3><p>Для любой системы с подходящей Java.</p></div><a class="btn" href="/downloads/MyMineLauncher-${HMCL_VERSION}.jar" download>Скачать JAR</a></article>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title"><h2>Короткие ответы.</h2><p>Самое важное перед первым подключением.</p></div>
+        <div class="faq">
+          <article><h3>Нужен Microsoft-аккаунт?</h3><p>${OWNERSHIP_FAQ}</p></article>
+          <article><h3>Нужно ставить моды?</h3><p>Нет. Базовая сборка рассчитана на обычный Minecraft Java ${MC_VERSION}; серверные моды работают на сервере.</p></article>
+          <article><h3>Где карта мира?</h3><p><a href="${MAP_URL}">BlueMap открывается здесь →</a> Она постепенно заполняется по мере рендера исследованных территорий.</p></article>
+          <article><h3>Где менять скин?</h3><p>В личном кабинете MyMine. В режиме проверки владения при регистрации Drasl может попросить временно поставить проверочный скин.</p></article>
+          <article><h3>Можно проверить лаунчер?</h3><p><a href="/downloads/SHA256SUMS">SHA256SUMS</a> лежит рядом со сборками; <a href="/downloads/MyMineLauncher-${HMCL_VERSION}-source.tar.gz">исходники</a> публикуются по GPLv3.</p></article>
+          <article><h3>Какой адрес сервера?</h3><p><button class="copy" type="button" data-copy="${MC_ADDRESS}">${MC_ADDRESS}</button></p></article>
+        </div>
+      </section>
+    </main>
+
+    <footer><div>${SERVER_NAME} · Minecraft Java ${MC_VERSION}</div><div><a href="${MAP_URL}">Карта</a> · <a href="${AUTH_BASE_URL}/">Личный кабинет</a> · <a href="/downloads/MyMineLauncher-${HMCL_VERSION}-source.tar.gz">Исходники лаунчера</a></div></footer>
+  </div>
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(function(button){button.addEventListener('click',function(){var text=button.getAttribute('data-copy');if(navigator.clipboard){navigator.clipboard.writeText(text)}var old=button.textContent;button.textContent='скопировано';setTimeout(function(){button.textContent=old},1300)})});
+  </script>
+</body>
+</html>

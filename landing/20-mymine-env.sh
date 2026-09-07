@@ -4,9 +4,21 @@ set -eu
 : "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
 : "${MC_ADDRESS:?MC_ADDRESS is required}"
 : "${MC_VERSION:=26.2}"
+: "${SERVER_NAME:=MyMine}"
 : "${HMCL_VERSION:=3.16.3}"
 : "${MAP_URL:=/map/}"
 : "${VERIFY_MINECRAFT_OWNERSHIP:=true}"
+: "${LANDING_TEMPLATE:=modern}"
+
+case "$LANDING_TEMPLATE" in
+  modern|terminal|classic)
+    TEMPLATE="/opt/mymine/templates/${LANDING_TEMPLATE}.html.template"
+    ;;
+  *)
+    echo "LANDING_TEMPLATE must be one of: modern, terminal, classic" >&2
+    exit 1
+    ;;
+esac
 
 case "$VERIFY_MINECRAFT_OWNERSHIP" in
   true)
@@ -33,18 +45,18 @@ case "$VERIFY_MINECRAFT_OWNERSHIP" in
     ;;
 esac
 
-export AUTH_BASE_URL MC_ADDRESS MC_VERSION HMCL_VERSION MAP_URL VERIFY_MINECRAFT_OWNERSHIP
+export AUTH_BASE_URL MC_ADDRESS MC_VERSION SERVER_NAME HMCL_VERSION MAP_URL VERIFY_MINECRAFT_OWNERSHIP LANDING_TEMPLATE
 export OWNERSHIP_MODE_LABEL OWNERSHIP_LEAD OWNERSHIP_NOTICE_TITLE OWNERSHIP_NOTICE_TEXT
 export OWNERSHIP_STEP_TEXT OWNERSHIP_STEP_BADGE OWNERSHIP_FAQ
 
-envsubst '${AUTH_BASE_URL} ${MC_ADDRESS} ${MC_VERSION} ${HMCL_VERSION} ${MAP_URL} ${VERIFY_MINECRAFT_OWNERSHIP} ${OWNERSHIP_MODE_LABEL} ${OWNERSHIP_LEAD} ${OWNERSHIP_NOTICE_TITLE} ${OWNERSHIP_NOTICE_TEXT} ${OWNERSHIP_STEP_TEXT} ${OWNERSHIP_STEP_BADGE} ${OWNERSHIP_FAQ}' \
-  < /opt/mymine/index.html.template \
+envsubst '${AUTH_BASE_URL} ${MC_ADDRESS} ${MC_VERSION} ${SERVER_NAME} ${HMCL_VERSION} ${MAP_URL} ${VERIFY_MINECRAFT_OWNERSHIP} ${LANDING_TEMPLATE} ${OWNERSHIP_MODE_LABEL} ${OWNERSHIP_LEAD} ${OWNERSHIP_NOTICE_TITLE} ${OWNERSHIP_NOTICE_TEXT} ${OWNERSHIP_STEP_TEXT} ${OWNERSHIP_STEP_BADGE} ${OWNERSHIP_FAQ}' \
+  < "$TEMPLATE" \
   > /usr/share/nginx/html/index.html
 
 AUTH_URL="${AUTH_BASE_URL%/}/"
 printf '{\n  "urls": ["%s"]\n}\n' "$AUTH_URL" \
   > /usr/share/nginx/html/authlib-injectors.json
 
-printf '{"minecraft":"%s","auth":"%s","version":"%s","map":"%s","ownershipVerification":%s}\n' \
-  "$MC_ADDRESS" "$AUTH_URL" "$MC_VERSION" "$MAP_URL" "$VERIFY_MINECRAFT_OWNERSHIP" \
+printf '{"minecraft":"%s","auth":"%s","version":"%s","map":"%s","ownershipVerification":%s,"template":"%s"}\n' \
+  "$MC_ADDRESS" "$AUTH_URL" "$MC_VERSION" "$MAP_URL" "$VERIFY_MINECRAFT_OWNERSHIP" "$LANDING_TEMPLATE" \
   > /usr/share/nginx/html/server.json

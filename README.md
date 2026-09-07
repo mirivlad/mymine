@@ -165,6 +165,7 @@ VERIFY_MINECRAFT_OWNERSHIP=true
 DRASL_REQUIRE_INVITE=true
 MC_ADDRESS=mymine.example.org:25565
 SERVER_NAME=MyMine
+LANDING_TEMPLATE=modern
 MC_PORT=25565
 MAP_URL=/map/
 MAP_PORT=44447
@@ -179,6 +180,22 @@ CONTAINER_MEMORY_LIMIT=6g
 ```
 
 `.env.example` содержит полный список доступных параметров.
+
+### Шаблоны лендинга
+
+Внешний вид landing выбирается без пересборки image:
+
+```dotenv
+LANDING_TEMPLATE=modern
+```
+
+Доступны три варианта:
+
+- `modern` — новый чистый тёмный дизайн, используется по умолчанию;
+- `terminal` — консольный/техно-вариант;
+- `classic` — прежний лендинг для обратной совместимости.
+
+После изменения переменной достаточно redeploy/recreate контейнера `landing`. Мир Minecraft, Drasl и launcher artifacts при переключении шаблона не меняются. Неизвестное имя шаблона считается ошибкой конфигурации, и контейнер завершится с подсказкой допустимых значений.
 
 `auth-config` и `bluemap-config` — init-контейнеры. Состояние `Exited (0)` после успешной генерации конфигурации является нормальным.
 

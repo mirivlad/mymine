@@ -156,6 +156,31 @@ jobs:
           dist="${RUNNER_TEMP}/mymine-launcher"
           cp "$dist"/* landing/downloads/
           docker build -t mymine-landing-instance-test landing
+
+          for template in modern terminal classic; do
+            docker run --rm --entrypoint /bin/sh \
+              -e AUTH_BASE_URL=https://auth.fork.example \
+              -e MC_ADDRESS=play.fork.example:25577 \
+              -e SERVER_NAME='Fork Mine' \
+              -e VERIFY_MINECRAFT_OWNERSHIP=false \
+              -e LANDING_TEMPLATE="$template" \
+              mymine-landing-instance-test -ec '
+                /docker-entrypoint.d/20-mymine-env.sh
+                test -s /usr/share/nginx/html/index.html
+                grep -Fq "play.fork.example:25577" /usr/share/nginx/html/index.html
+                grep -Fq "\"template\":\"$LANDING_TEMPLATE\"" /usr/share/nginx/html/server.json
+              '
+          done
+
+          if docker run --rm --entrypoint /bin/sh \
+            -e AUTH_BASE_URL=https://auth.fork.example \
+            -e MC_ADDRESS=play.fork.example:25577 \
+            -e LANDING_TEMPLATE=not-a-template \
+            mymine-landing-instance-test -ec '/docker-entrypoint.d/20-mymine-env.sh'; then
+            echo 'Unknown landing template unexpectedly succeeded' >&2
+            exit 1
+          fi
+
           cid=$(docker run -d \
             -e AUTH_BASE_URL=https://auth.fork.example \
             -e MC_ADDRESS=play.fork.example:25577 \
