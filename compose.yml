@@ -126,6 +126,7 @@ services:
       AUTH_BASE_URL: "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
       MC_ADDRESS: "${MC_ADDRESS:?MC_ADDRESS is required}"
       MC_VERSION: "${MC_VERSION:-26.2}"
+      SERVER_NAME: "${SERVER_NAME:-MyMine}"
       HMCL_VERSION: "${HMCL_VERSION:-3.16.3}"
       MAP_URL: "${MAP_URL:-/map/}"
       VERIFY_MINECRAFT_OWNERSHIP: "${VERIFY_MINECRAFT_OWNERSHIP:-true}"
