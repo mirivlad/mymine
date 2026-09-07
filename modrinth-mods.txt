@@ -16,5 +16,9 @@ terralith:OxfI2n80
 tectonic:rc4JXlpP
 incendium:kjnBRlCW
 nullscape:lpsdO6Sg
-dungeons-and-taverns:kejPgknA
-towns-and-towers:eN3WLQ3P
+
+# Fork-friendly structure expansion replacing Dungeons & Taverns and Towns & Towers.
+# MVS: 130+ vanilla-style structures and dungeons, MIT.
+moogs-voyager-structures:uEZeTQ4b
+# Repurposed Structures: biome variants of vanilla structures/dungeons, LGPL-3.0-only.
+repurposed-structures-fabric:CrmgMIJp
