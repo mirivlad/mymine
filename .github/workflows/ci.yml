@@ -66,10 +66,12 @@ jobs:
           config="$AUTH_DATA_DIR/config/config.toml"
           test -s "$config"
           if [[ "$VERIFY_MINECRAFT_OWNERSHIP" == true ]]; then
-            grep -q '^\[RegistrationExistingPlayer\]' "$config"
+            grep -q '^\[ImportExistingPlayer\]' "$config"
             grep -q '^RequireSkinVerification = true$' "$config"
+            grep -q '^\[RegistrationExistingPlayer\]' "$config"
             awk '/^\[RegistrationNewPlayer\]/{seen=1; next} seen && /^Allow = false$/{found=1; exit} END{exit !found}' "$config"
           else
+            ! grep -q '^\[ImportExistingPlayer\]' "$config"
             ! grep -q '^RequireSkinVerification = true$' "$config"
             awk '/^\[RegistrationNewPlayer\]/{seen=1; next} seen && /^Allow = true$/{found=1; exit} END{exit !found}' "$config"
           fi
