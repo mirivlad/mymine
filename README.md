@@ -127,7 +127,7 @@ MVS добавляет 130+ vanilla-style структур и подземели
 
 Dungeons & Taverns намеренно не входит в публичный image из-за ограничений на перераспространение. Towns & Towers также убран из базового дистрибутива, чтобы не навязывать форкам условия CC-BY-NC-SA. Базовая сборка ориентируется на зависимости, которые можно законно перераспространять и форкать на понятных условиях.
 
-Terralith, Tectonic, Incendium и Nullscape распространяются **без изменений** как часть modpack в соответствии с Stardust Labs License; требуемая атрибуция и ссылки находятся в [`THIRD_PARTY.md`](THIRD_PARTY.md).
+Terralith, Incendium и Nullscape распространяются **без изменений** как часть modpack в соответствии с Stardust Labs License; требуемая атрибуция и ссылки находятся в [`THIRD_PARTY.md`](THIRD_PARTY.md). Tectonic распространяется по MIT.
 
 Мир, player data и настройки хранятся отдельно в persistent `/data` и не входят в Docker image.
 
