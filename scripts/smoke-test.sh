@@ -20,9 +20,29 @@ for ((i=0; i<TIMEOUT; i+=5)); do
     [[ -n "$loaded" && "$loaded" -gt 4 ]] || { echo "Fabric reports only ${loaded:-0} loaded mods" >&2; exit 1; }
 
     mod_files=$(docker exec "$CONTAINER" sh -lc "find /data/mods -maxdepth 1 -type f -name '*.jar' -printf '%f\n' | tr '[:upper:]' '[:lower:]'")
-    for required in alternate-current graves fallingtree bluemap; do
-      grep -q "$required" <<<"$mod_files" || { echo "Required mod missing: $required" >&2; exit 1; }
-    done
+
+    require_mod() {
+      local label="$1"
+      local pattern="$2"
+      grep -Eq "$pattern" <<<"$mod_files" || {
+        echo "Required mod missing: $label (pattern: $pattern)" >&2
+        printf '%s\n' "$mod_files" >&2
+        exit 1
+      }
+    }
+
+    require_mod "Alternate Current" 'alternate[-_]?current'
+    require_mod "Universal Graves" 'graves'
+    require_mod "FallingTree" 'fallingtree|falling[-_]?tree'
+    require_mod "BlueMap" 'bluemap'
+    require_mod "Moog\x27s Voyager Structures" 'moog.*voyager|(^|[-_.])mvs([-_.]|$)'
+    require_mod "Repurposed Structures" 'repurposed[-_]?structures'
+
+    if grep -Eqi 'dungeons[-_ ]*(and|&)[-_ ]*taverns|towns[-_ ]*(and|&)[-_ ]*towers' <<<"$mod_files"; then
+      echo "A structure mod intentionally excluded from the public distribution is present." >&2
+      printf '%s\n' "$mod_files" >&2
+      exit 1
+    fi
 
     docker exec "$CONTAINER" sh -lc "grep -q 'render-thread-count: 1' /data/config/bluemap/core.conf" || { echo 'BlueMap managed config missing' >&2; exit 1; }
     if docker logs "$CONTAINER" 2>&1 | grep -q 'Failed to load bluemap'; then
