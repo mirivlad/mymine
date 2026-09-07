@@ -165,7 +165,7 @@ VERIFY_MINECRAFT_OWNERSHIP=true
 DRASL_REQUIRE_INVITE=true
 MC_ADDRESS=mymine.example.org:25565
 SERVER_NAME=MyMine
-LANDING_TEMPLATE=modern
+LANDING_TEMPLATE=adventure
 MC_PORT=25565
 MAP_URL=/map/
 MAP_PORT=44447
@@ -186,14 +186,18 @@ CONTAINER_MEMORY_LIMIT=6g
 Внешний вид landing выбирается без пересборки image:
 
 ```dotenv
-LANDING_TEMPLATE=modern
+LANDING_TEMPLATE=adventure
 ```
 
 Доступны три варианта:
 
-- `modern` — новый чистый тёмный дизайн, используется по умолчанию;
+- `adventure` — иллюстрированный атмосферный вариант с крупным hero-изображением; используется по умолчанию;
+- `atlas` — светлый картографический вариант с BlueMap в центре композиции;
+- `modern` — чистый тёмный продуктовый дизайн без внешних иллюстраций;
 - `terminal` — консольный/техно-вариант;
 - `classic` — прежний лендинг для обратной совместимости.
+
+Иллюстрации в `adventure` и `atlas` входят в image локально, без внешних CDN. Используются только материалы с CC0; происхождение и преобразования перечислены в `landing/assets/ATTRIBUTION.txt` и доступны на работающем лендинге по `/assets/ATTRIBUTION.txt`.
 
 После изменения переменной достаточно redeploy/recreate контейнера `landing`. Мир Minecraft, Drasl и launcher artifacts при переключении шаблона не меняются. Неизвестное имя шаблона считается ошибкой конфигурации, и контейнер завершится с подсказкой допустимых значений.
 

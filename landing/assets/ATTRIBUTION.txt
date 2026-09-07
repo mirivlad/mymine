@@ -1,0 +1,21 @@
+MyMine landing illustration sources
+
+1. voxel-world.webp and isometric-world.webp
+   Derived from Kenney's "Voxel pack" and "Isometric Blocks" sample artwork.
+   Author: Kenney (Kenney.nl)
+   License: CC0 1.0 Universal
+   Sources:
+   https://opengameart.org/content/voxel-pack
+   https://opengameart.org/content/isometric-blocks
+   Modifications: cropped, resized and converted to WebP for the MyMine landing image.
+   Attribution is not required by the license; it is included here for provenance.
+
+2. bluemap.webp
+   Derived from "Bluemap-screenshot (1).png".
+   Author: ForestBrotherLT
+   Source: Wikimedia Commons
+   https://commons.wikimedia.org/wiki/File:Bluemap-screenshot_(1).png
+   License: CC0 1.0 Universal
+   Modifications: resized and converted to WebP for the MyMine landing image.
+
+Minecraft is a trademark of Microsoft/Mojang. These third-party illustrations do not imply endorsement by Microsoft or Mojang.

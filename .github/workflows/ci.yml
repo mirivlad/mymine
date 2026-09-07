@@ -157,7 +157,7 @@ jobs:
           cp "$dist"/* landing/downloads/
           docker build -t mymine-landing-instance-test landing
 
-          for template in modern terminal classic; do
+          for template in adventure atlas modern terminal classic; do
             docker run --rm --entrypoint /bin/sh \
               -e AUTH_BASE_URL=https://auth.fork.example \
               -e MC_ADDRESS=play.fork.example:25577 \
@@ -169,6 +169,10 @@ jobs:
                 test -s /usr/share/nginx/html/index.html
                 grep -Fq "play.fork.example:25577" /usr/share/nginx/html/index.html
                 grep -Fq "\"template\":\"$LANDING_TEMPLATE\"" /usr/share/nginx/html/server.json
+                test -s /usr/share/nginx/html/assets/ATTRIBUTION.txt
+                test -s /usr/share/nginx/html/assets/voxel-world.webp
+                test -s /usr/share/nginx/html/assets/isometric-world.webp
+                test -s /usr/share/nginx/html/assets/bluemap.webp
               '
           done
 

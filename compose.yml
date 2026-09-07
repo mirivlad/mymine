@@ -129,7 +129,7 @@ services:
       SERVER_NAME: "${SERVER_NAME:-MyMine}"
       HMCL_VERSION: "${HMCL_VERSION:-3.16.3}"
       MAP_URL: "${MAP_URL:-/map/}"
-      LANDING_TEMPLATE: "${LANDING_TEMPLATE:-modern}"
+      LANDING_TEMPLATE: "${LANDING_TEMPLATE:-adventure}"
       VERIFY_MINECRAFT_OWNERSHIP: "${VERIFY_MINECRAFT_OWNERSHIP:-true}"
     mem_limit: "${LANDING_MEMORY_LIMIT:-128m}"
 

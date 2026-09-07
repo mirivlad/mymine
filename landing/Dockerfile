@@ -3,6 +3,7 @@ FROM nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e591939
 RUN apk add --no-cache dpkg python3 zstd
 
 COPY templates/ /opt/mymine/templates/
+COPY assets/ /usr/share/nginx/html/assets/
 COPY patch-launcher.py /opt/mymine/patch-launcher.py
 COPY 15-mymine-downloads.sh /docker-entrypoint.d/15-mymine-downloads.sh
 COPY 20-mymine-env.sh /docker-entrypoint.d/20-mymine-env.sh

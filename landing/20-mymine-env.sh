@@ -8,14 +8,14 @@ set -eu
 : "${HMCL_VERSION:=3.16.3}"
 : "${MAP_URL:=/map/}"
 : "${VERIFY_MINECRAFT_OWNERSHIP:=true}"
-: "${LANDING_TEMPLATE:=modern}"
+: "${LANDING_TEMPLATE:=adventure}"
 
 case "$LANDING_TEMPLATE" in
-  modern|terminal|classic)
+  adventure|atlas|modern|terminal|classic)
     TEMPLATE="/opt/mymine/templates/${LANDING_TEMPLATE}.html.template"
     ;;
   *)
-    echo "LANDING_TEMPLATE must be one of: modern, terminal, classic" >&2
+    echo "LANDING_TEMPLATE must be one of: adventure, atlas, modern, terminal, classic" >&2
     exit 1
     ;;
 esac
