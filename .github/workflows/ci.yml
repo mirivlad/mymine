@@ -80,6 +80,36 @@ jobs:
           trap - EXIT
           cleanup
 
+  server-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      AUTH_DOMAIN: localhost
+      AUTH_BASE_URL: http://localhost:25585
+      AUTH_PORT: '25585'
+      AUTH_CONTAINER_NAME: mymine-auth-smoke
+      VERIFY_MINECRAFT_OWNERSHIP: 'false'
+      DRASL_REQUIRE_INVITE: 'false'
+      MC_ADDRESS: localhost:25565
+      CONTAINER_NAME: mymine-test
+      WEB_BIND_ADDR: 127.0.0.1
+      BLUEMAP_ACCEPT_DOWNLOAD: 'false'
+      AUTH_DATA_DIR: ${{ runner.temp }}/mymine-auth-smoke
+      DATA_DIR: ${{ runner.temp }}/mymine-data-smoke
+    steps:
+      - uses: actions/checkout@v4
+      - name: Boot Minecraft with public mod set
+        run: |
+          set -euo pipefail
+          cleanup() {
+            docker compose -f compose.yml -f compose.dev.yml logs minecraft drasl || true
+            docker compose -f compose.yml -f compose.dev.yml down --remove-orphans || true
+          }
+          trap cleanup EXIT
+          ./scripts/smoke-test.sh
+          trap - EXIT
+          cleanup
+
   launcher:
     runs-on: ubuntu-latest
     steps:
