@@ -8,9 +8,9 @@ services:
       AUTH_DOMAIN: "${AUTH_DOMAIN:?AUTH_DOMAIN is required}"
       AUTH_BASE_URL: "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
       AUTH_INSTANCE_NAME: "${AUTH_INSTANCE_NAME:-MyMine}"
-      DRASL_ADMIN: "${DRASL_ADMIN:-admin}"
+      DRASL_ADMIN: "${DRASL_ADMIN:?DRASL_ADMIN is required; choose the initial Drasl admin username}"
       VERIFY_MINECRAFT_OWNERSHIP: "${VERIFY_MINECRAFT_OWNERSHIP:-true}"
-      DRASL_REQUIRE_INVITE: "${DRASL_REQUIRE_INVITE:-false}"
+      DRASL_REQUIRE_INVITE: "${DRASL_REQUIRE_INVITE:-true}"
     volumes:
       - "${AUTH_DATA_DIR:-./auth-data}/config:/out"
     command:
@@ -146,7 +146,7 @@ services:
       - "${WEB_BIND_ADDR:-127.0.0.1}:${MAP_PORT:-8100}:8100/tcp"
     environment:
       EULA: "TRUE"
-      TZ: "${TZ:-Asia/Irkutsk}"
+      TZ: "${TZ:-UTC}"
       MEMORY: "${MEMORY:-4G}"
       SERVER_NAME: "${SERVER_NAME:-MyMine}"
       MOTD: "${MOTD:-MyMine — Fabric 26.2}"

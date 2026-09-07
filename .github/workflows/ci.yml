@@ -17,6 +17,7 @@ jobs:
         env:
           AUTH_DOMAIN: auth.example.org
           AUTH_BASE_URL: https://auth.example.org
+          DRASL_ADMIN: ci-admin
           MC_ADDRESS: mc.example.org:25565
         run: docker compose -f compose.yml config >/dev/null
 
@@ -29,6 +30,7 @@ jobs:
     env:
       AUTH_DOMAIN: localhost
       AUTH_BASE_URL: http://localhost:25585
+      DRASL_ADMIN: ci-admin
       MC_ADDRESS: mc.example.org:25565
       AUTH_PORT: '25585'
       WEB_BIND_ADDR: 127.0.0.1
@@ -86,6 +88,7 @@ jobs:
     env:
       AUTH_DOMAIN: localhost
       AUTH_BASE_URL: http://localhost:25585
+      DRASL_ADMIN: ci-admin
       AUTH_PORT: '25585'
       AUTH_CONTAINER_NAME: mymine-auth-smoke
       VERIFY_MINECRAFT_OWNERSHIP: 'false'

@@ -8,9 +8,9 @@ services:
       AUTH_DOMAIN: "${AUTH_DOMAIN:-auth.mymine.mirv.top}"
       AUTH_BASE_URL: "${AUTH_BASE_URL:-https://auth.mymine.mirv.top}"
       AUTH_INSTANCE_NAME: "${AUTH_INSTANCE_NAME:-MyMine}"
-      DRASL_ADMIN: "${DRASL_ADMIN:-mirivlad}"
+      DRASL_ADMIN: "${DRASL_ADMIN:?DRASL_ADMIN is required; choose the initial Drasl admin username}"
       VERIFY_MINECRAFT_OWNERSHIP: "${VERIFY_MINECRAFT_OWNERSHIP:-true}"
-      DRASL_REQUIRE_INVITE: "${DRASL_REQUIRE_INVITE:-false}"
+      DRASL_REQUIRE_INVITE: "${DRASL_REQUIRE_INVITE:-true}"
     volumes:
       - "${AUTH_DATA_DIR:-/home/mirivlad/mymine/auth-data}/config:/out"
     command:
