@@ -225,15 +225,16 @@ GitHub Actions:
 - валидирует compose;
 - поднимает pinned Drasl отдельно с `VERIFY_MINECRAFT_OWNERSHIP=true` и `false`;
 - собирает Minecraft image и landing image;
+- запускает Minecraft smoke test с публичным набором модов;
 - собирает MyMine Launcher и прогоняет тесты патча HMCL;
 - release workflow по semver tag публикует Docker images и launcher assets.
 
 ## Лицензии и сторонние компоненты
 
-MyMine Launcher основан на **Hello Minecraft! Launcher (HMCL)** и распространяется на условиях **GNU GPLv3**; соответствующие модифицированные исходники публикуются вместе с release binaries.
+Собственный код MyMine — deployment/configuration, landing, scripts и прочие компоненты, созданные в рамках проекта — распространяется под **GNU General Public License v3 only (`GPL-3.0-only`)**. Лицензионное объявление находится в [`LICENSE`](LICENSE).
 
-Сторонние серверные компоненты и моды сохраняют собственные лицензии. Список прямых компонентов, лицензий, атрибуций и upstream links: [`THIRD_PARTY.md`](THIRD_PARTY.md).
+MyMine Launcher основан на **Hello Minecraft! Launcher (HMCL)** и сохраняет применимые условия **GNU GPLv3** и дополнительные требования upstream; соответствующие модифицированные исходники публикуются вместе с release binaries.
 
-Отдельная лицензия для собственного deployment/landing кода MyMine пока не выбрана. До объявления стабильного публичного API/release её необходимо явно определить; наличие исходников в GitHub само по себе не предоставляет права на форк/перераспространение этого собственного кода.
+Сторонние серверные компоненты и моды **не перелицензируются** под GPL MyMine и сохраняют собственные лицензии. Список прямых компонентов, лицензий, атрибуций и upstream links: [`THIRD_PARTY.md`](THIRD_PARTY.md).
 
 Minecraft является товарным знаком Mojang/Microsoft. MyMine не является официальным продуктом Mojang или Microsoft и не одобрен ими.
