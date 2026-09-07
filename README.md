@@ -155,7 +155,7 @@ ghcr.io/mirivlad/mymine-landing:<version>
 Минимально значимые переменные:
 
 ```dotenv
-IMAGE_TAG=0.4.0
+IMAGE_TAG=0.4.1
 AUTH_DOMAIN=auth.mymine.example.org
 AUTH_BASE_URL=https://auth.mymine.example.org
 VERIFY_MINECRAFT_OWNERSHIP=true
