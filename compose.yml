@@ -39,6 +39,7 @@ services:
 
         if [ "$${VERIFY_MINECRAFT_OWNERSHIP}" = "true" ]; then
           cat >> /out/config.toml <<EOF
+        ForwardSkins = true
         AllowChangingPlayerName = false
 
         [CreateNewPlayer]
@@ -47,13 +48,16 @@ services:
         [RegistrationNewPlayer]
         Allow = false
 
-        [RegistrationExistingPlayer]
+        [ImportExistingPlayer]
         Allow = true
         Nickname = "Mojang"
         SessionURL = "https://sessionserver.mojang.com"
         AccountURL = "https://api.mojang.com"
         SetSkinURL = "https://www.minecraft.net/msaprofile/mygames/editskin"
         RequireSkinVerification = true
+
+        [RegistrationExistingPlayer]
+        Allow = true
         RequireInvite = $${DRASL_REQUIRE_INVITE}
 
         [[FallbackAPIServers]]
