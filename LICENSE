@@ -1,0 +1,22 @@
+MyMine
+Copyright (C) 2026 Vladimir Tomashevskiy
+
+SPDX-License-Identifier: GPL-3.0-only
+
+This project is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License.
+
+This project is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+The canonical text of the GNU General Public License, version 3,
+is available from the Free Software Foundation at:
+
+https://www.gnu.org/licenses/gpl-3.0.txt
+
+Third-party components bundled, downloaded, referenced, or used by
+MyMine remain under their respective upstream licenses. See
+THIRD_PARTY.md for the third-party inventory and attribution details.
