@@ -1,6 +1,6 @@
 # Third-party components
 
-MyMine combines its own deployment/configuration code with third-party software. Every third-party component keeps its upstream copyright and license; inclusion here does **not** relicense it under the future MyMine project license.
+MyMine's own deployment/configuration, landing and supporting code is licensed under **GNU GPL v3 only (`GPL-3.0-only`)**. Every third-party component keeps its upstream copyright and license; inclusion here does **not** relicense third-party code or assets under MyMine's GPL license.
 
 The Minecraft server image is built reproducibly from the exact direct Modrinth version IDs in `modrinth-mods.txt`. Required transitive dependencies are resolved by `mc-image-helper`; those dependencies retain their own upstream licenses and notices.
 
