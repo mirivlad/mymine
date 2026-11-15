@@ -178,6 +178,29 @@ client_packs.write_text(
     encoding="utf-8",
 )
 
+# Official HMCL updates are signed for the upstream distribution, and applying
+# them to our branded launcher would remove MyMine authentication and game packs.
+# Keep upstream signature checks intact, but do not request invalid upstream
+# updates. MyMine releases are obtained through the MyMine landing page.
+update_checker = root / "HMCL/src/main/java/org/jackhuang/hmcl/upgrade/UpdateChecker.java"
+replace_exact(
+    update_checker,
+    '''    public static void init() {
+        requestCheckUpdate(UpdateChannel.getChannel(), settings().acceptPreviewUpdateProperty().get());
+    }''',
+    '''    public static void init() {
+        // MyMine updates are published by its instance, not by upstream HMCL.
+        // Never disable signature checks to accept a foreign update.
+    }''',
+)
+
+settings_page = root / "HMCL/src/main/java/org/jackhuang/hmcl/ui/main/SettingsPage.java"
+replace_exact(
+    settings_page,
+    '                rootPane.getChildren().addAll(ComponentList.createComponentListTitle(i18n("update")), updatePaneList);',
+    '                // MyMine releases are managed by the instance landing page; hide HMCL upstream update controls.',
+)
+
 instance_source = r'''/*
  * MyMine launcher instance configuration.
  * Distributed under the same GPLv3 terms as HMCL.
