@@ -9,8 +9,10 @@ COPY landing/patch-launcher.py /opt/mymine/patch-launcher.py
 COPY landing/launcher-version.sh /opt/mymine/launcher-version.sh
 COPY landing/15-mymine-downloads.sh /docker-entrypoint.d/15-mymine-downloads.sh
 COPY landing/20-mymine-env.sh /docker-entrypoint.d/20-mymine-env.sh
+COPY landing/minecraft-status.py /opt/mymine/minecraft-status.py
+COPY landing/30-mymine-status.sh /docker-entrypoint.d/30-mymine-status.sh
 COPY landing/downloads/ /usr/share/nginx/html/downloads/
-RUN chmod +x /opt/mymine/patch-launcher.py /docker-entrypoint.d/15-mymine-downloads.sh /docker-entrypoint.d/20-mymine-env.sh
+RUN chmod +x /opt/mymine/patch-launcher.py /docker-entrypoint.d/15-mymine-downloads.sh /docker-entrypoint.d/20-mymine-env.sh /docker-entrypoint.d/30-mymine-status.sh
 
 LABEL org.opencontainers.image.title="MyMine Landing" \
       org.opencontainers.image.description="MyMine server landing and launcher downloads" \

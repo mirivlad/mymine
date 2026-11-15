@@ -35,7 +35,7 @@
     <main id="top">
       <section class="hero">
         <div>
-          <div class="eyebrow">$ ./join-server --version <b>${MC_VERSION}</b></div>
+          <div class="eyebrow">$ ./join-server --version <b><span data-mymine-version>${MC_VERSION}</span></b></div>
           <h1>${SERVER_NAME}<br>survival online<span class="cursor"></span></h1>
           <p>${OWNERSHIP_LEAD}</p>
           <div class="actions"><a class="btn primary" href="${AUTH_BASE_URL}/web/registration">[ REGISTER ]</a><a class="btn" href="#download">[ GET LAUNCHER ]</a><a class="btn" href="${MAP_URL}">[ OPEN MAP ]</a></div>
@@ -47,7 +47,7 @@
           <div class="term-body">
             <p class="line"><span class="cmd">$ mymine info</span></p>
             <p class="line"><span class="key">name</span>.......... <span class="val">${SERVER_NAME}</span></p>
-            <p class="line"><span class="key">minecraft</span>..... <span class="val">${MC_VERSION} Java</span></p>
+            <p class="line"><span class="key">minecraft</span>..... <span class="val"><span data-mymine-version>${MC_VERSION}</span> Java</span></p>
             <p class="line"><span class="key">client</span>........ <span class="ok">vanilla-compatible</span></p>
             <p class="line"><span class="key">structures</span>.... <span class="val">130+</span></p>
             <p class="line"><span class="key">worldgen</span>...... <span class="val">overworld / nether / end</span></p>
@@ -82,7 +82,7 @@
           <article class="step"><div><h3>create_account()</h3><p>${OWNERSHIP_STEP_TEXT} <a href="${AUTH_BASE_URL}/web/registration">${OWNERSHIP_STEP_BADGE} →</a></p></div></article>
           <article class="step"><div><h3>install_launcher()</h3><p>Скачай MyMine Launcher. Адрес авторизации конкретной установки уже встроен в сборку.</p></div></article>
           <article class="step"><div><h3>login("MyMine")</h3><p>Добавь аккаунт MyMine и войди с данными регистрации.</p></div></article>
-          <article class="step"><div><h3>install_minecraft("${MC_VERSION}")</h3><p>Установи обычный Minecraft Java без Fabric / Forge / NeoForge.</p></div></article>
+          <article class="step"><div><h3>install_minecraft("<span data-mymine-version>${MC_VERSION}</span>")</h3><p>Установи обычный Minecraft Java без Fabric / Forge / NeoForge.</p></div></article>
           <article class="step"><div><h3>connect("${MC_ADDRESS}")</h3><p>Сервер добавляется лаунчером автоматически; адрес можно <button class="copy" data-copy="${MC_ADDRESS}" type="button">скопировать</button>.</p></div></article>
         </div>
       </section>
@@ -100,7 +100,7 @@
         <div class="head"><h2>faq.query</h2></div>
         <div class="faq">
           <article><h3>microsoft_account</h3><p>${OWNERSHIP_FAQ}</p></article>
-          <article><h3>client_mods</h3><p>Нет. Базовая сборка рассчитана на обычный Minecraft Java ${MC_VERSION}.</p></article>
+          <article><h3>client_mods</h3><p>Нет. Базовая сборка рассчитана на обычный Minecraft Java <span data-mymine-version>${MC_VERSION}</span>.</p></article>
           <article><h3>world_map</h3><p><a href="${MAP_URL}">${MAP_URL}</a> — браузерная BlueMap.</p></article>
           <article><h3>skin_change</h3><p>Скин меняется в личном кабинете MyMine; при проверке владения Drasl может использовать временный skin challenge.</p></article>
           <article><h3>integrity</h3><p><a href="/downloads/SHA256SUMS">SHA256SUMS</a> + <a href="/downloads/MyMineLauncher-${HMCL_VERSION}-source.tar.gz">source.tar.gz</a>.</p></article>
@@ -109,10 +109,10 @@
       </section>
     </main>
 
-    <footer><div>// ${SERVER_NAME} :: minecraft ${MC_VERSION}</div><div><a href="${MAP_URL}">map</a> · <a href="${AUTH_BASE_URL}/">account</a> · <a href="/downloads/MyMineLauncher-${HMCL_VERSION}-source.tar.gz">source</a></div></footer>
+    <footer><div>// ${SERVER_NAME} :: minecraft <span data-mymine-version>${MC_VERSION}</span></div><div><a href="${MAP_URL}">map</a> · <a href="${AUTH_BASE_URL}/">account</a> · <a href="/downloads/MyMineLauncher-${HMCL_VERSION}-source.tar.gz">source</a></div></footer>
   </div>
   <script>
     document.querySelectorAll('[data-copy]').forEach(function(button){button.addEventListener('click',function(){var text=button.getAttribute('data-copy');if(navigator.clipboard){navigator.clipboard.writeText(text)}var old=button.textContent;button.textContent='copied';setTimeout(function(){button.textContent=old},1300)})});
   </script>
-</body>
+<script defer src="/assets/mymine-live-version.js"></script></body>
 </html>

@@ -69,7 +69,21 @@ for ((i=0; i<TIMEOUT; i+=5)); do
       bluemap_state='waiting for explicit resource-download opt-in'
     fi
     docker exec "$CONTAINER" mc-health >/dev/null
-    echo "Minecraft healthy; jars=$jar_count, Fabric loaded=$loaded mods; BlueMap $bluemap_state."
+    baked_version=$(docker exec "$CONTAINER" cat /opt/mymine/minecraft-version.txt | tr -d '\r\n')
+    docker exec "$CONTAINER" grep -Fq "Minecraft $baked_version" /data/server.properties || {
+      echo "Minecraft MOTD does not contain the image's actual game version $baked_version" >&2
+      exit 1
+    }
+    # A stale MOTD in a persistent Portainer stack must be repaired at startup.
+    docker exec -e 'MOTD=MyMine — Minecraft 26.2' "$CONTAINER" sh -c '
+      . /opt/mymine/server-env.sh
+      mymine_configure_server
+      test "$MOTD" = "MyMine — Minecraft $VERSION"
+    ' || {
+      echo "Legacy MOTD version migration failed" >&2
+      exit 1
+    }
+    echo "Minecraft healthy; jars=$jar_count, Fabric loaded=$loaded mods; MOTD version=$baked_version; BlueMap $bluemap_state."
     docker ps --filter "name=^/${CONTAINER}$" --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
     exit 0
   fi

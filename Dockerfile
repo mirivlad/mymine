@@ -5,13 +5,11 @@ USER root
 ARG MOD_LOADER=fabric
 
 COPY minecraft-version.txt /opt/mymine/minecraft-version.txt
-COPY docker/server-entrypoint.sh /opt/mymine/server-entrypoint.sh
 COPY modrinth-mods.txt /tmp/mymine-modrinth-mods.txt
 RUN set -eux; \
     mkdir -p /opt/mymine/mods /opt/mymine/config; \
     MC_VERSION="$(cat /opt/mymine/minecraft-version.txt)"; \
     test -n "$MC_VERSION"; \
-    chmod +x /opt/mymine/server-entrypoint.sh; \
     mc-image-helper modrinth \
       --game-version="${MC_VERSION}" \
       --loader="${MOD_LOADER}" \
@@ -21,6 +19,11 @@ RUN set -eux; \
     find /opt/mymine/mods -maxdepth 1 -type f -name "*.jar" -print0 \
       | sort -z | xargs -0 sha512sum > /opt/mymine/mods.sha512; \
     rm -f /tmp/mymine-modrinth-mods.txt
+
+# Keep entrypoint script changes from invalidating cached mod downloads.
+COPY docker/server-entrypoint.sh /opt/mymine/server-entrypoint.sh
+COPY docker/server-env.sh /opt/mymine/server-env.sh
+RUN chmod +x /opt/mymine/server-entrypoint.sh
 
 ENV TYPE=FABRIC \
     FABRIC_LOADER_VERSION=0.20.1 \

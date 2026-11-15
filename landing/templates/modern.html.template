@@ -38,7 +38,7 @@
     <main id="top">
       <section class="hero">
         <div>
-          <div class="badge"><i></i>Minecraft Java ${MC_VERSION} · ${OWNERSHIP_MODE_LABEL}</div>
+          <div class="badge"><i></i>Minecraft Java <span data-mymine-version>${MC_VERSION}</span> · ${OWNERSHIP_MODE_LABEL}</div>
           <h1>Мир, в который хочется вернуться.</h1>
           <p>${OWNERSHIP_LEAD}</p>
           <div class="actions">
@@ -54,7 +54,7 @@
           <div class="world"><div class="pin"></div></div>
           <div class="metrics">
             <div class="metric"><span>Сервер</span><b>${SERVER_NAME}</b></div>
-            <div class="metric"><span>Версия</span><b>${MC_VERSION}</b></div>
+            <div class="metric"><span>Версия</span><b><span data-mymine-version>${MC_VERSION}</span></b></div>
             <div class="metric"><span>Клиент</span><b>Vanilla-compatible</b></div>
             <div class="metric"><span>Карта</span><b><a href="${MAP_URL}">BlueMap ↗</a></b></div>
           </div>
@@ -78,13 +78,13 @@
       </section>
 
       <section id="start">
-        <div class="section-title"><h2>Пять шагов — и ты в игре.</h2><p>Нужны Minecraft Java ${MC_VERSION} и MyMine Launcher. Fabric, Forge, NeoForge и отдельный набор клиентских модов не требуются.</p></div>
+        <div class="section-title"><h2>Пять шагов — и ты в игре.</h2><p>Нужны Minecraft Java <span data-mymine-version>${MC_VERSION}</span> и MyMine Launcher. Fabric, Forge, NeoForge и отдельный набор клиентских модов не требуются.</p></div>
         <div class="notice"><div class="notice-icon">i</div><div><strong>${OWNERSHIP_NOTICE_TITLE}</strong><p>${OWNERSHIP_NOTICE_TEXT}</p></div></div>
         <div class="steps">
           <article class="step"><div class="n">01 / ACCOUNT</div><h3>Регистрация</h3><p>${OWNERSHIP_STEP_TEXT} <a href="${AUTH_BASE_URL}/web/registration">Открыть регистрацию →</a></p></article>
           <article class="step"><div class="n">02 / LAUNCHER</div><h3>Лаунчер</h3><p>Скачай MyMine Launcher под свою систему. Адрес авторизации уже встроен.</p></article>
           <article class="step"><div class="n">03 / LOGIN</div><h3>Аккаунт MyMine</h3><p>Добавь аккаунт MyMine и войди с данными, указанными при регистрации.</p></article>
-          <article class="step"><div class="n">04 / GAME</div><h3>Minecraft ${MC_VERSION}</h3><p>Установи обычную версию игры без Fabric / Forge / NeoForge.</p></article>
+          <article class="step"><div class="n">04 / GAME</div><h3>Minecraft <span data-mymine-version>${MC_VERSION}</span></h3><p>Установи обычную версию игры без Fabric / Forge / NeoForge.</p></article>
           <article class="step"><div class="n">05 / JOIN</div><h3>Подключение</h3><p>Сервер уже появится в списке. Адрес вручную: <button class="copy" type="button" data-copy="${MC_ADDRESS}">${MC_ADDRESS}</button></p></article>
         </div>
       </section>
@@ -102,7 +102,7 @@
         <div class="section-title"><h2>Короткие ответы.</h2><p>Самое важное перед первым подключением.</p></div>
         <div class="faq">
           <article><h3>Нужен Microsoft-аккаунт?</h3><p>${OWNERSHIP_FAQ}</p></article>
-          <article><h3>Нужно ставить моды?</h3><p>Нет. Базовая сборка рассчитана на обычный Minecraft Java ${MC_VERSION}; серверные моды работают на сервере.</p></article>
+          <article><h3>Нужно ставить моды?</h3><p>Нет. Базовая сборка рассчитана на обычный Minecraft Java <span data-mymine-version>${MC_VERSION}</span>; серверные моды работают на сервере.</p></article>
           <article><h3>Где карта мира?</h3><p><a href="${MAP_URL}">BlueMap открывается здесь →</a> Она постепенно заполняется по мере рендера исследованных территорий.</p></article>
           <article><h3>Где менять скин?</h3><p>В личном кабинете MyMine. В режиме проверки владения при регистрации Drasl может попросить временно поставить проверочный скин.</p></article>
           <article><h3>Можно проверить лаунчер?</h3><p><a href="/downloads/SHA256SUMS">SHA256SUMS</a> лежит рядом со сборками; <a href="/downloads/MyMineLauncher-${HMCL_VERSION}-source.tar.gz">исходники</a> публикуются по GPLv3.</p></article>
@@ -111,10 +111,10 @@
       </section>
     </main>
 
-    <footer><div>${SERVER_NAME} · Minecraft Java ${MC_VERSION}</div><div><a href="${MAP_URL}">Карта</a> · <a href="${AUTH_BASE_URL}/">Личный кабинет</a> · <a href="/downloads/MyMineLauncher-${HMCL_VERSION}-source.tar.gz">Исходники лаунчера</a></div></footer>
+    <footer><div>${SERVER_NAME} · Minecraft Java <span data-mymine-version>${MC_VERSION}</span></div><div><a href="${MAP_URL}">Карта</a> · <a href="${AUTH_BASE_URL}/">Личный кабинет</a> · <a href="/downloads/MyMineLauncher-${HMCL_VERSION}-source.tar.gz">Исходники лаунчера</a></div></footer>
   </div>
   <script>
     document.querySelectorAll('[data-copy]').forEach(function(button){button.addEventListener('click',function(){var text=button.getAttribute('data-copy');if(navigator.clipboard){navigator.clipboard.writeText(text)}var old=button.textContent;button.textContent='скопировано';setTimeout(function(){button.textContent=old},1300)})});
   </script>
-</body>
+<script defer src="/assets/mymine-live-version.js"></script></body>
 </html>

@@ -143,7 +143,7 @@ services:
       TZ: "${TZ:-UTC}"
       MEMORY: "${MEMORY:-4G}"
       SERVER_NAME: "${SERVER_NAME:-MyMine}"
-      MOTD: "${MOTD:-MyMine — мир приключений}"
+      MOTD: "${MOTD:-MyMine — Minecraft {version}}"
       MODE: "${MODE:-survival}"
       DIFFICULTY: "${DIFFICULTY:-normal}"
       MAX_PLAYERS: "${MAX_PLAYERS:-20}"
