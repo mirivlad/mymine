@@ -6,7 +6,7 @@ MyMine — воспроизводимый Docker-стек для собстве�
 
 ## Что входит в стек
 
-- **Minecraft Java 26.2 / Fabric** — игровой сервер;
+- **Minecraft Java 26.3 / Fabric** — игровой сервер;
 - **Drasl** — self-hosted Yggdrasil/authlib-совместимая система аккаунтов;
 - **MyMine Landing** — лендинг, регистрация, инструкции и раздача лаунчера;
 - **BlueMap** — браузерная 3D-карта мира;
@@ -61,21 +61,25 @@ Drasl разрешает создание самостоятельного MyMin
 
 ## Клиент игрока
 
-Для текущей сборки нужен **Minecraft Java 26.2**.
+Для текущей сборки нужен **Minecraft Java 26.3**.
 
-**Fabric, Forge, NeoForge и клиентские моды устанавливать не нужно.** Сервер работает на Fabric, но базовый набор MyMine подобран как server-side и допускает подключение vanilla-клиента той же версии.
+**Клиентские моды необязательны.** Сервер работает на Fabric, но поддерживает обычный Minecraft Java 26.3 без модов. Forge/NeoForge в клиентской сборке MyMine не используются.
+
+Для красивой графики: в MyMine Launcher установите **Minecraft Java 26.3 + Fabric Loader 0.20.1**. При первом запуске этого профиля лаунчер автоматически скачивает через Modrinth (с проверкой SHA-512) Sodium, Iris, ImmediatelyFast, Entity Culling, Mod Menu, Sodium Extra, Reese's Sodium Options и обязательные зависимости. Также он добавляет **Complementary Reimagined, Complementary Unbound, BSL, MakeUp Ultra Fast** в `shaderpacks`, а **Faithful 32x, Classic Faithful 32x, Faithful 64x** в `resourcepacks`.
+
+Шейдеры и текстуры не активируются принудительно: после запуска выберите один набор в настройках графики Minecraft. По умолчанию картинка остаётся обычной — для совместимости со слабыми видеокартами. Подготовленный пакет можно также импортировать в поддерживающий Modrinth-формат лаунчер из файла `MyMine-26.3.mrpack` с лендинга. Для первой загрузки требуется интернет, скачанные ресурсы принадлежат их авторам и не зеркалируются MyMine.
 
 Порядок входа:
 
 1. Зарегистрироваться на Drasl/MyMine в соответствии с выбранной администратором политикой.
 2. Скачать MyMine Launcher с лендинга.
 3. Добавить аккаунт **MyMine**.
-4. Установить обычный Minecraft Java 26.2 без mod loader.
+4. Установить Minecraft Java 26.3 без модлоадера, либо профиль Fabric 26.3 для шейдеров.
 5. Запустить игру и открыть «Сетевая игра» — адрес MyMine добавляется лаунчером в список один раз.
 
 ## MyMine Launcher
 
-Лаунчер собирается из HMCL 3.16.3 во время CI. Патч воспроизводим и хранится в `launcher/patch-hmcl.py`.
+Лаунчер собирается из HMCL 3.16.4 во время CI. Патч воспроизводим и хранится в `launcher/patch-hmcl.py`.
 
 Изменения MyMine:
 
@@ -86,6 +90,7 @@ Drasl разрешает создание самостоятельного MyMin
 - ограничение HMCL, требующее Microsoft-аккаунт перед external/offline login, отключено;
 - обычный offline-аккаунт HMCL остаётся доступен как локальный режим;
 - при первом запуске конкретной установки Minecraft сервер MyMine добавляется первым в `servers.dat`;
+- в профиле Fabric 26.3 автоматически устанавливается клиентский пакет оптимизаций и появляются шейдеры/текстурпаки на выбор;
 - существующие серверы сохраняются, адрес не дублируется;
 - миграция выполняется один раз: если игрок позже удалит MyMine из списка, лаунчер не добавит его снова принудительно.
 
@@ -104,17 +109,22 @@ GitHub Release assets используют значения текущего р�
 Release публикует:
 
 ```text
-MyMineLauncher-3.16.3.exe
-MyMineLauncher-3.16.3.deb
-MyMineLauncher-3.16.3.jar
-MyMineLauncher-3.16.3.sh
-MyMineLauncher-3.16.3-source.tar.gz
+MyMineLauncher-3.16.4.exe
+MyMineLauncher-3.16.4.deb
+MyMineLauncher-3.16.4.jar
+MyMineLauncher-3.16.4.sh
+MyMineLauncher-3.16.4-source.tar.gz
+MyMine-26.3.mrpack
 SHA256SUMS
 ```
 
 Модифицированное дерево исходников HMCL публикуется вместе с бинарниками в соответствии с GPLv3.
 
 Debian artifact устанавливается как пакет `mymine-launcher`, создаёт `/usr/bin/mymine-launcher` и desktop entry **MyMine Launcher**. Пакет объявляет замену старого upstream-named пакета `hmcl`, использовавшегося в MyMine до полного Debian-ребрендинга; wrapper сохраняет доступ к его существующему пользовательскому каталогу настроек при обновлении.
+
+## Обновление сервера с Minecraft 26.2 на 26.3
+
+**Перед обновлением создайте полную резервную копию `DATA_DIR` и `AUTH_DATA_DIR`, когда Minecraft выключен.** Minecraft может обновить структуру мира при первом запуске, и обратный запуск старой версии не поддерживается. Особое внимание: Incendium 5.5.4 для 26.3 у автора помечен как **alpha**; перед применением обновления проверьте запуск на копии сохранённого мира. В MyMine используются Fabric JAR-варианты Terralith, Nullscape и Incendium, не их datapack ZIP.
 
 ## Серверные моды
 
@@ -258,7 +268,7 @@ docker compose -f compose.yml -f compose.dev.yml config
 Сборка лаунчера:
 
 ```bash
-HMCL_VERSION=3.16.3 \
+HMCL_VERSION=3.16.4 \
 MYMINE_AUTH_URL=https://auth.example.org/ \
 MYMINE_SERVER_NAME=MyMine \
 MYMINE_SERVER_ADDRESS=mc.example.org:25565 \

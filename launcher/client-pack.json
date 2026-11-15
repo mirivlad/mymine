@@ -1,0 +1,82 @@
+{
+  "name": "MyMine 26.3 client visual pack",
+  "game": "26.3",
+  "fabricLoader": "0.20.1",
+  "entries": [
+    {
+      "type": "mods",
+      "project": "fabric-api",
+      "version": "Zns5SSRA"
+    },
+    {
+      "type": "mods",
+      "project": "sodium",
+      "version": "bAZQdGpg"
+    },
+    {
+      "type": "mods",
+      "project": "iris",
+      "version": "vTN4NRGW"
+    },
+    {
+      "type": "mods",
+      "project": "immediatelyfast",
+      "version": "3MP9UR23"
+    },
+    {
+      "type": "mods",
+      "project": "entityculling",
+      "version": "UWpkLRV5"
+    },
+    {
+      "type": "mods",
+      "project": "modmenu",
+      "version": "xckkBHD5"
+    },
+    {
+      "type": "mods",
+      "project": "sodium-extra",
+      "version": "fs5l9Q1U"
+    },
+    {
+      "type": "mods",
+      "project": "reeses-sodium-options",
+      "version": "EfchygKx"
+    },
+    {
+      "type": "shaderpacks",
+      "project": "complementary-reimagined",
+      "version": "Bqen1mJX"
+    },
+    {
+      "type": "shaderpacks",
+      "project": "complementary-unbound",
+      "version": "B1kyfoUZ"
+    },
+    {
+      "type": "shaderpacks",
+      "project": "bsl-shaders",
+      "version": "Y68yiql9"
+    },
+    {
+      "type": "shaderpacks",
+      "project": "makeup-ultra-fast-shaders",
+      "version": "t4YRxQug"
+    },
+    {
+      "type": "resourcepacks",
+      "project": "faithful-32x",
+      "version": "lDYpMiqk"
+    },
+    {
+      "type": "resourcepacks",
+      "project": "classic-faithful-32x",
+      "version": "S5AOXuR7"
+    },
+    {
+      "type": "resourcepacks",
+      "project": "faithful-64x",
+      "version": "6QfM0mZq"
+    }
+  ]
+}

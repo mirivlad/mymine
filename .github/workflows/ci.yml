@@ -124,7 +124,7 @@ jobs:
           java-version: '25'
       - name: Build MyMine Launcher
         env:
-          HMCL_VERSION: '3.16.3'
+          HMCL_VERSION: '3.16.4'
           MYMINE_AUTH_URL: https://auth.example.org/
           MYMINE_SERVER_NAME: MyMine CI
           MYMINE_SERVER_ADDRESS: mc.example.org:25565
@@ -134,12 +134,34 @@ jobs:
         run: |
           set -euo pipefail
           dist="${RUNNER_TEMP}/mymine-launcher"
-          props=$(python3 -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("mymine-instance.properties").decode(), end="")' "$dist/MyMineLauncher-3.16.3.jar")
+          props=$(python3 -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("mymine-instance.properties").decode(), end="")' "$dist/MyMineLauncher-3.16.4.jar")
           grep -q '^auth.url=https://auth.example.org/$' <<<"$props"
           grep -q '^server.name=MyMine CI$' <<<"$props"
           grep -q '^server.address=mc.example.org:25565$' <<<"$props"
 
-          deb="$dist/MyMineLauncher-3.16.3.deb"
+          # The launcher ships a reproducible Modrinth manifest, not proprietary packs.
+          python3 - "$dist" <<'PY_PACK'
+          import json
+          import sys
+          import zipfile
+          from pathlib import Path
+          dist = Path(sys.argv[1])
+          with zipfile.ZipFile(dist / "MyMineLauncher-3.16.4.jar") as artifact:
+              entries = artifact.read("mymine-client-files.tsv").decode().splitlines()
+              assert len([line for line in entries if line and not line.startswith("#")]) >= 16
+              assert "org/jackhuang/hmcl/game/MyMineClientPacks.class" in artifact.namelist()
+          with zipfile.ZipFile(dist / "MyMine-26.3.mrpack") as pack:
+              index = json.loads(pack.read("modrinth.index.json"))
+              assert index["dependencies"]["minecraft"] == "26.3"
+              assert index["dependencies"]["fabric-loader"] == "0.20.1"
+              paths = [file["path"] for file in index["files"]]
+              assert any(name.startswith("mods/iris-") for name in paths)
+              assert any(name.startswith("shaderpacks/") for name in paths)
+              assert any(name.startswith("resourcepacks/") for name in paths)
+              assert all(file["downloads"][0].startswith("https://cdn.modrinth.com/") for file in index["files"])
+          PY_PACK
+
+          deb="$dist/MyMineLauncher-3.16.4.deb"
           test "$(dpkg-deb -f "$deb" Package)" = mymine-launcher
           test "$(dpkg-deb -f "$deb" Description | head -1)" = 'MyMine Launcher'
           root="${RUNNER_TEMP}/mymine-deb-root"
@@ -148,7 +170,7 @@ jobs:
           test -x "$root/usr/bin/mymine-launcher"
           test -f "$root/usr/share/applications/mymine-launcher.desktop"
           grep -q '^Name=MyMine Launcher$' "$root/usr/share/applications/mymine-launcher.desktop"
-          test -f "$root/usr/share/java/mymine-launcher/MyMineLauncher-3.16.3.sh"
+          test -f "$root/usr/share/java/mymine-launcher/MyMineLauncher-3.16.4.sh"
 
       - name: Verify landing injects its own instance into every launcher artifact
         run: |
@@ -230,7 +252,7 @@ jobs:
           docker cp "$cid:/usr/share/nginx/html/downloads/." "$out/"
 
           for ext in exe jar sh; do
-            artifact="$out/MyMineLauncher-3.16.3.$ext"
+            artifact="$out/MyMineLauncher-3.16.4.$ext"
             props=$(python3 -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("mymine-instance.properties").decode(), end="")' "$artifact")
             grep -q '^auth.url=https://auth.fork.example/$' <<<"$props"
             grep -q '^server.name=Fork Mine$' <<<"$props"
@@ -240,15 +262,15 @@ jobs:
           import sys
           from pathlib import Path
           root = Path(sys.argv[1])
-          assert (root / "MyMineLauncher-3.16.3.exe").read_bytes().startswith(b"MZ")
-          assert (root / "MyMineLauncher-3.16.3.sh").read_bytes().startswith(b"#!/")
-          assert (root / "MyMineLauncher-3.16.3.jar").read_bytes().startswith(b"PK\x03\x04")
+          assert (root / "MyMineLauncher-3.16.4.exe").read_bytes().startswith(b"MZ")
+          assert (root / "MyMineLauncher-3.16.4.sh").read_bytes().startswith(b"#!/")
+          assert (root / "MyMineLauncher-3.16.4.jar").read_bytes().startswith(b"PK\x03\x04")
           PY_HEADERS
 
           debroot="${RUNNER_TEMP}/mymine-instance-deb"
           rm -rf "$debroot"
-          dpkg-deb -x "$out/MyMineLauncher-3.16.3.deb" "$debroot"
-          payload="$debroot/usr/share/java/mymine-launcher/MyMineLauncher-3.16.3.sh"
+          dpkg-deb -x "$out/MyMineLauncher-3.16.4.deb" "$debroot"
+          payload="$debroot/usr/share/java/mymine-launcher/MyMineLauncher-3.16.4.sh"
           test -x "$payload"
           props=$(python3 -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("mymine-instance.properties").decode(), end="")' "$payload")
           grep -q '^auth.url=https://auth.fork.example/$' <<<"$props"
