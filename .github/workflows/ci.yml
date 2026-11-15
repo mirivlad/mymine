@@ -186,10 +186,13 @@ jobs:
               -e SERVER_NAME='Fork Mine' \
               -e VERIFY_MINECRAFT_OWNERSHIP=false \
               -e LANDING_TEMPLATE="$template" \
+              -e HMCL_VERSION=3.16.3 \
               mymine-landing-instance-test -ec '
                 /docker-entrypoint.d/20-mymine-env.sh
                 test -s /usr/share/nginx/html/index.html
                 grep -Fq "play.fork.example:25577" /usr/share/nginx/html/index.html
+                grep -Fq "/downloads/MyMineLauncher-3.16.4.jar" /usr/share/nginx/html/index.html
+                ! grep -Fq "MyMineLauncher-3.16.3" /usr/share/nginx/html/index.html
                 grep -Fq "\"template\":\"$LANDING_TEMPLATE\"" /usr/share/nginx/html/server.json
                 test -s /usr/share/nginx/html/assets/ATTRIBUTION.txt
                 test -s /usr/share/nginx/html/assets/voxel-world.webp
@@ -228,6 +231,7 @@ jobs:
             -e MC_ADDRESS=play.fork.example:25577 \
             -e SERVER_NAME='Fork Mine' \
             -e VERIFY_MINECRAFT_OWNERSHIP=false \
+            -e HMCL_VERSION=3.16.3 \
             mymine-landing-instance-test)
           cleanup() { docker rm -f "$cid" >/dev/null 2>&1 || true; }
           trap cleanup EXIT
@@ -245,6 +249,7 @@ jobs:
             sleep 1
           done
           test "$ready" = true
+          docker exec "$cid" grep -Fq '/downloads/MyMineLauncher-3.16.4.jar' /usr/share/nginx/html/index.html
           docker logs "$cid"
 
           out="${RUNNER_TEMP}/mymine-instance-downloads"

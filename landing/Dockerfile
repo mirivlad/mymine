@@ -5,6 +5,7 @@ RUN apk add --no-cache dpkg python3 zstd
 COPY templates/ /opt/mymine/templates/
 COPY assets/ /usr/share/nginx/html/assets/
 COPY patch-launcher.py /opt/mymine/patch-launcher.py
+COPY launcher-version.sh /opt/mymine/launcher-version.sh
 COPY 15-mymine-downloads.sh /docker-entrypoint.d/15-mymine-downloads.sh
 COPY 20-mymine-env.sh /docker-entrypoint.d/20-mymine-env.sh
 COPY downloads/ /usr/share/nginx/html/downloads/

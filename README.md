@@ -77,6 +77,8 @@ Drasl разрешает создание самостоятельного MyMin
 4. Установить Minecraft Java 26.3 без модлоадера, либо профиль Fabric 26.3 для шейдеров.
 5. Запустить игру и открыть «Сетевая игра» — адрес MyMine добавляется лаунчером в список один раз.
 
+Версия лаунчера **не задаётся в Compose/Portainer**: при запуске лендинг сам находит единственный `MyMineLauncher-*.jar` внутри своего образа, извлекает версию для ссылок и убеждается, что файлы EXE/DEB/SH и исходники существуют. Даже старое значение переменной `HMCL_VERSION` игнорируется. Версия `HMCL_VERSION` нужна только **при сборке** форка HMCL, но не при его развёртывании.
+
 ## MyMine Launcher
 
 Лаунчер собирается из HMCL 3.16.4 во время CI. Патч воспроизводим и хранится в `launcher/patch-hmcl.py`.
@@ -168,7 +170,7 @@ ghcr.io/mirivlad/mymine-landing:<version>
 Минимально значимые переменные:
 
 ```dotenv
-IMAGE_TAG=0.4.7
+IMAGE_TAG=0.4.8
 AUTH_DOMAIN=auth.mymine.example.org
 AUTH_BASE_URL=https://auth.mymine.example.org
 DRASL_ADMIN=mymine-admin

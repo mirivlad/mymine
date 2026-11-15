@@ -3,10 +3,11 @@ set -eu
 
 : "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
 : "${MC_ADDRESS:?MC_ADDRESS is required}"
-: "${HMCL_VERSION:=3.16.4}"
 : "${SERVER_NAME:=MyMine}"
 
 DOWNLOAD_DIR=/usr/share/nginx/html/downloads
+. /opt/mymine/launcher-version.sh
+resolve_mymine_launcher_version
 AUTH_URL="${AUTH_BASE_URL%/}/"
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT INT TERM

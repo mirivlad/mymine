@@ -5,7 +5,8 @@ set -eu
 : "${MC_ADDRESS:?MC_ADDRESS is required}"
 : "${MC_VERSION:=26.3}"
 : "${SERVER_NAME:=MyMine}"
-: "${HMCL_VERSION:=3.16.4}"
+. /opt/mymine/launcher-version.sh
+resolve_mymine_launcher_version
 : "${MAP_URL:=/map/}"
 : "${VERIFY_MINECRAFT_OWNERSHIP:=true}"
 : "${LANDING_TEMPLATE:=adventure}"

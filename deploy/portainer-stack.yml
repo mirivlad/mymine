@@ -117,7 +117,7 @@ services:
     mem_limit: "${AUTH_MEMORY_LIMIT:-384m}"
 
   landing:
-    image: ghcr.io/mirivlad/mymine-landing:${IMAGE_TAG:-0.4.1}
+    image: ghcr.io/mirivlad/mymine-landing:${IMAGE_TAG:-0.4.8}
     container_name: mymine-landing
     restart: unless-stopped
     ports:
@@ -127,7 +127,6 @@ services:
       MC_ADDRESS: "${MC_ADDRESS:-mymine.mirv.top:25565}"
       MC_VERSION: "${MC_VERSION:-26.3}"
       SERVER_NAME: "${SERVER_NAME:-MyMine}"
-      HMCL_VERSION: "${HMCL_VERSION:-3.16.4}"
       MAP_URL: "${MAP_URL:-/map/}"
       LANDING_TEMPLATE: "${LANDING_TEMPLATE:-adventure}"
       LANDING_HERO_IMAGE: "${LANDING_HERO_IMAGE:-/assets/voxel-world.webp}"
@@ -140,7 +139,7 @@ services:
     mem_limit: "${LANDING_MEMORY_LIMIT:-128m}"
 
   minecraft:
-    image: ghcr.io/mirivlad/mymine:${IMAGE_TAG:-0.4.1}
+    image: ghcr.io/mirivlad/mymine:${IMAGE_TAG:-0.4.8}
     container_name: mymine
     restart: unless-stopped
     depends_on:
