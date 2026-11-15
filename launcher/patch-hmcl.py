@@ -159,6 +159,25 @@ replace_exact(
     }''',
 )
 
+# First launch of a Fabric 26.3 profile installs pinned client assets.
+# Optional shader and resource packs remain disabled until the player chooses one.
+replace_exact(
+    game_launcher,
+    '        MyMineServerList.ensure(repository.getRunDirectory(version.getId()));',
+    '''        MyMineServerList.ensure(repository.getRunDirectory(version.getId()));
+        String profileId = version.getId().toLowerCase(java.util.Locale.ROOT);
+        if (profileId.contains("26.3") && profileId.contains("fabric")) {
+            MyMineClientPacks.ensure(repository.getRunDirectory(version.getId()));
+        }''',
+    expected=2,
+)
+
+client_packs = root / "HMCL/src/main/java/org/jackhuang/hmcl/game/MyMineClientPacks.java"
+client_packs.write_text(
+    (Path(__file__).resolve().parent / "patches/MyMineClientPacks.java").read_text(encoding="utf-8"),
+    encoding="utf-8",
+)
+
 instance_source = r'''/*
  * MyMine launcher instance configuration.
  * Distributed under the same GPLv3 terms as HMCL.

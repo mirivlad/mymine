@@ -78,7 +78,7 @@
         <div class="downloads">
           <article class="download featured"><div><div class="os">Windows</div><h3>MyMine Launcher.exe</h3><p>Самый простой вариант: скачал, запустил, добавил аккаунт MyMine.</p></div><a class="btn primary" href="/downloads/MyMineLauncher-${HMCL_VERSION}.exe" download>Скачать EXE</a></article>
           <article class="download"><div><div class="os">Linux</div><h3>DEB-пакет</h3><p>Для Debian, Ubuntu, Mint и совместимых систем.</p></div><a class="btn ghost" href="/downloads/MyMineLauncher-${HMCL_VERSION}.deb" download>Скачать DEB</a></article>
-          <article class="download"><div><div class="os">Любая ОС</div><h3>Universal JAR</h3><p>Переносимый вариант для системы с установленной Java.</p></div><a class="btn ghost" href="/downloads/MyMineLauncher-${HMCL_VERSION}.jar" download>Скачать JAR</a></article>
+          <article class="download"><div><div class="os">Любая ОС</div><h3>Universal JAR</h3><p>Переносимый вариант для системы с установленной Java.</p></div><a class="btn ghost" href="/downloads/MyMineLauncher-${HMCL_VERSION}.jar" download>Скачать JAR</a></article><article class="download"><div><small>Графика / Fabric 26.3</small><h3>Моды, шейдеры и текстуры</h3><p>Готовый набор для импорта в Modrinth-совместимый лаунчер; также доступен внутри MyMine Launcher.</p></div><a class="btn" href="/downloads/MyMine-26.3.mrpack" download>Скачать набор</a></article>
         </div>
       </section>
 

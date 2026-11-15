@@ -12,7 +12,7 @@ permissions:
   packages: write
 
 env:
-  HMCL_VERSION: '3.16.3'
+  HMCL_VERSION: '3.16.4'
   MYMINE_AUTH_URL: ${{ vars.MYMINE_AUTH_URL || 'https://auth.mymine.mirv.top/' }}
   MYMINE_SERVER_NAME: ${{ vars.MYMINE_SERVER_NAME || 'MyMine' }}
   MYMINE_SERVER_ADDRESS: ${{ vars.MYMINE_SERVER_ADDRESS || 'mymine.mirv.top:25565' }}

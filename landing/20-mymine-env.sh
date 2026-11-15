@@ -3,9 +3,9 @@ set -eu
 
 : "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
 : "${MC_ADDRESS:?MC_ADDRESS is required}"
-: "${MC_VERSION:=26.2}"
+: "${MC_VERSION:=26.3}"
 : "${SERVER_NAME:=MyMine}"
-: "${HMCL_VERSION:=3.16.3}"
+: "${HMCL_VERSION:=3.16.4}"
 : "${MAP_URL:=/map/}"
 : "${VERIFY_MINECRAFT_OWNERSHIP:=true}"
 : "${LANDING_TEMPLATE:=adventure}"

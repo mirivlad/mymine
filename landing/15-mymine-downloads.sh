@@ -3,7 +3,7 @@ set -eu
 
 : "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
 : "${MC_ADDRESS:?MC_ADDRESS is required}"
-: "${HMCL_VERSION:=3.16.3}"
+: "${HMCL_VERSION:=3.16.4}"
 : "${SERVER_NAME:=MyMine}"
 
 DOWNLOAD_DIR=/usr/share/nginx/html/downloads
@@ -47,6 +47,7 @@ mv "$TMP/launcher.deb" "$DEB"
         "MyMineLauncher-${HMCL_VERSION}.deb" \
         "MyMineLauncher-${HMCL_VERSION}.sh" \
         "MyMineLauncher-${HMCL_VERSION}-source.tar.gz" \
+        "MyMine-26.3.mrpack" \
         > SHA256SUMS
 )
 

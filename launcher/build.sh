@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
-HMCL_VERSION=${HMCL_VERSION:-3.16.3}
+HMCL_VERSION=${HMCL_VERSION:-3.16.4}
 MYMINE_AUTH_URL=${MYMINE_AUTH_URL:-https://auth.mymine.mirv.top/}
 MYMINE_SERVER_NAME=${MYMINE_SERVER_NAME:-MyMine}
 MYMINE_SERVER_ADDRESS=${MYMINE_SERVER_ADDRESS:-mymine.mirv.top:25565}
@@ -18,6 +18,10 @@ find "$DIST_DIR" -mindepth 1 ! -name .gitkeep -delete
 git clone --depth 1 --branch "v${HMCL_VERSION}" \
   https://github.com/HMCL-dev/HMCL.git "$WORKDIR"
 
+python3 "$ROOT/launcher/build-client-pack.py" \
+  --manifest "$WORKDIR/HMCL/src/main/resources/mymine-client-files.tsv" \
+  --mrpack "$DIST_DIR/MyMine-26.3.mrpack"
+
 MYMINE_AUTH_URL="$MYMINE_AUTH_URL" \
 MYMINE_SERVER_NAME="$MYMINE_SERVER_NAME" \
 MYMINE_SERVER_ADDRESS="$MYMINE_SERVER_ADDRESS" \
@@ -26,10 +30,25 @@ MYMINE_SERVER_ADDRESS="$MYMINE_SERVER_ADDRESS" \
 (
   cd "$WORKDIR"
   git diff --check
-  VERSION_TYPE=stable \
-  VERSION_ROOT="$VERSION_ROOT" \
-  BUILD_NUMBER="$BUILD_NUMBER" \
-    ./gradlew clean build --no-daemon
+  if command -v javac >/dev/null 2>&1; then
+    VERSION_TYPE=stable \
+    VERSION_ROOT="$VERSION_ROOT" \
+    BUILD_NUMBER="$BUILD_NUMBER" \
+      ./gradlew clean build --no-daemon
+  else
+    # Some hosts have only a JRE. Reuse the same JDK as our GitHub Actions.
+    command -v docker >/dev/null 2>&1 || {
+      echo "MyMine launcher build requires JDK 25 (javac) or Docker" >&2
+      exit 1
+    }
+    docker run --rm \
+      --user "$(id -u):$(id -g)" \
+      -v "$WORKDIR:/workspace" -w /workspace \
+      -e "HOME=/workspace" -e "GRADLE_USER_HOME=/workspace/.gradle" \
+      -e "VERSION_TYPE=stable" -e "VERSION_ROOT=$VERSION_ROOT" \
+      -e "BUILD_NUMBER=$BUILD_NUMBER" \
+      eclipse-temurin:25-jdk ./gradlew clean build --no-daemon
+  fi
 )
 
 for ext in exe jar deb sh; do
@@ -149,6 +168,7 @@ tar \
     MyMineLauncher-${HMCL_VERSION}.deb \
     MyMineLauncher-${HMCL_VERSION}.sh \
     MyMineLauncher-${HMCL_VERSION}-source.tar.gz \
+    MyMine-26.3.mrpack \
     > SHA256SUMS
 )
 

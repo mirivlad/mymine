@@ -1,24 +1,23 @@
-# MyMine 26.2 / Fabric. Direct mods pinned to exact Modrinth version IDs.
-fabric-api:NqwNSxwA
-lithium:f7vZ0VWU
+# MyMine 26.3 / Fabric. Direct mods pinned to exact Modrinth version IDs.
+# Stable versions chosen for Minecraft 26.3 unless noted below.
+fabric-api:Zns5SSRA
+lithium:fWv5bnZk
 ferrite-core:d5ddUdiB
-servercore:edrtnY9v
-krypton:5WeL0Nkz
-spark:iYFOl6lQ
-chunky:4Eotm6ov
-alternate-current:blSBYnpw
-universal-graves:BZfhXd0q
-fallingtree:sOoH5kkd
-bluemap:bR8uae8S
+servercore:LCG1Bm84
+krypton:UugdIYJw
+spark:e3hsPc1o
+chunky:86FKD9qx
+alternate-current:nSBWPz6x
+universal-graves:r9hY06vQ
+fallingtree:D0B62UJ5
+bluemap:SX74rxzP
 
-# World generation / exploration. Server-side; vanilla clients can connect.
-terralith:OxfI2n80
-tectonic:rc4JXlpP
-incendium:kjnBRlCW
-nullscape:lpsdO6Sg
-
-# Fork-friendly structure expansion replacing Dungeons & Taverns and Towns & Towers.
-# MVS 5.0.11: 130+ vanilla-style structures and dungeons, MIT, explicitly marked for MC 26.2.
-moogs-voyager-structures:cvepxaBC
-# Repurposed Structures 7.7.6: biome variants of vanilla structures/dungeons, LGPL-3.0-only.
-repurposed-structures-fabric:CrmgMIJp
+# World generation / exploration; Fabric JAR variants, preserve existing world.
+terralith:aGE3hYAA
+tectonic:tRBGDcCT
+# Incendium 5.5.4 for 26.3 is still marked ALPHA by the author.
+# Keep an unchanged pre-upgrade world backup; test upgrade on a copy.
+incendium:D4vWUd23
+nullscape:79OyFQtd
+moogs-voyager-structures:PiFoSPXI
+repurposed-structures-fabric:9jHXeIeI
