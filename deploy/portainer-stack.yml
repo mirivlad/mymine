@@ -33,48 +33,37 @@ services:
         DefaultAdmins = ["$${DRASL_ADMIN}"]
         PlayerUUIDGeneration = "offline"
         SignPublicKeys = false
-        AllowPasswordLogin = true
         EnableWebFrontEnd = true
+        PreMigrationBackups = true
         EOF
 
         if [ "$${VERIFY_MINECRAFT_OWNERSHIP}" = "true" ]; then
           cat >> /out/config.toml <<EOF
-        ForwardSkins = true
-        AllowChangingPlayerName = false
-
         [CreateNewPlayer]
         Allow = false
 
-        [RegistrationNewPlayer]
-        Allow = false
-
-        [ImportExistingPlayer]
-        Allow = true
-        Nickname = "Mojang"
-        SessionURL = "https://sessionserver.mojang.com"
-        AccountURL = "https://api.mojang.com"
-        SetSkinURL = "https://www.minecraft.net/msaprofile/mygames/editskin"
-        RequireSkinVerification = true
-
-        [RegistrationExistingPlayer]
-        Allow = true
-        RequireInvite = $${DRASL_REQUIRE_INVITE}
-
         [[FallbackAPIServers]]
         Nickname = "Mojang"
-        SessionURL = "https://sessionserver.mojang.com"
-        AccountURL = "https://api.mojang.com"
-        ServicesURL = "https://api.minecraftservices.com"
-        SkinDomains = ["textures.minecraft.net"]
+        DiscoveryMinecraftClientURL = "https://discovery.minecraftservices.com/minecraft/client"
+        ForwardSkins = true
+        SetSkinURL = "https://www.minecraft.net/msaprofile/mygames/editskin"
         CacheTTLSeconds = 60
         DenyUnknownUsers = true
+
+        [RegistrationUsernamePassword.CreateNewPlayer]
+        Allow = false
+
+        [[RegistrationUsernamePassword.ImportExistingPlayer]]
+        FallbackAPIServerNickname = "Mojang"
+        RequireSkinVerification = true
+        RequireInvite = $${DRASL_REQUIRE_INVITE}
         EOF
         else
           cat >> /out/config.toml <<EOF
         [CreateNewPlayer]
         Allow = true
 
-        [RegistrationNewPlayer]
+        [RegistrationUsernamePassword.CreateNewPlayer]
         Allow = true
         RequireInvite = $${DRASL_REQUIRE_INVITE}
         EOF
@@ -103,7 +92,7 @@ services:
         chown -R "$${BLUEMAP_UID}:$${BLUEMAP_GID}" /out
 
   drasl:
-    image: unmojang/drasl@sha256:4fe6b1c102a8c9def2229284e6bb824bff4b70f5b1c7ef97f5815d6161ede12f
+    image: unmojang/drasl@sha256:0501cd6e3ecf591be6b4d32120832a98b79b5162d61205310e49f30b2a414c02
     container_name: mymine-auth
     restart: unless-stopped
     depends_on:
@@ -117,7 +106,7 @@ services:
     mem_limit: "${AUTH_MEMORY_LIMIT:-384m}"
 
   landing:
-    image: ghcr.io/mirivlad/mymine-landing:${IMAGE_TAG:-0.4.8}
+    image: ghcr.io/mirivlad/mymine-landing:${IMAGE_TAG:-0.4.9}
     container_name: mymine-landing
     restart: unless-stopped
     ports:
@@ -125,7 +114,6 @@ services:
     environment:
       AUTH_BASE_URL: "${AUTH_BASE_URL:-https://auth.mymine.mirv.top}"
       MC_ADDRESS: "${MC_ADDRESS:-mymine.mirv.top:25565}"
-      MC_VERSION: "${MC_VERSION:-26.3}"
       SERVER_NAME: "${SERVER_NAME:-MyMine}"
       MAP_URL: "${MAP_URL:-/map/}"
       LANDING_TEMPLATE: "${LANDING_TEMPLATE:-adventure}"
@@ -139,7 +127,7 @@ services:
     mem_limit: "${LANDING_MEMORY_LIMIT:-128m}"
 
   minecraft:
-    image: ghcr.io/mirivlad/mymine:${IMAGE_TAG:-0.4.8}
+    image: ghcr.io/mirivlad/mymine:${IMAGE_TAG:-0.4.9}
     container_name: mymine
     restart: unless-stopped
     depends_on:
@@ -155,7 +143,7 @@ services:
       TZ: "${TZ:-Asia/Irkutsk}"
       MEMORY: "${MEMORY:-4G}"
       SERVER_NAME: "${SERVER_NAME:-MyMine}"
-      MOTD: "${MOTD:-MyMine — Fabric 26.3}"
+      MOTD: "${MOTD:-MyMine — мир приключений}"
       MODE: "${MODE:-survival}"
       DIFFICULTY: "${DIFFICULTY:-normal}"
       MAX_PLAYERS: "${MAX_PLAYERS:-20}"
@@ -177,6 +165,7 @@ services:
         -Dminecraft.api.profiles.host=http://drasl:25585/account
         -Dminecraft.api.session.host=http://drasl:25585/session
         -Dminecraft.api.services.host=http://drasl:25585/services
+        -Dminecraft.api.discovery.host=http://drasl:25585/discovery/minecraft/client
     volumes:
       - "${DATA_DIR:-/home/mirivlad/mymine/data}:/data"
     mem_limit: "${CONTAINER_MEMORY_LIMIT:-6g}"
