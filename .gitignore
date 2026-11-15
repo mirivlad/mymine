@@ -6,3 +6,6 @@ data/
 .build/
 landing/downloads/*
 !landing/downloads/.gitkeep
+
+__pycache__/
+*.pyc
