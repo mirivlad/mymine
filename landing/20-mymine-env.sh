@@ -3,7 +3,11 @@ set -eu
 
 : "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
 : "${MC_ADDRESS:?MC_ADDRESS is required}"
-: "${MC_VERSION:=26.3}"
+# Ignore MC_VERSION from old stacks and read the baked version.
+MC_VERSION=$(tr -d '\r\n' </opt/mymine/minecraft-version.txt)
+case "$MC_VERSION" in
+  ''|*[!0-9a-zA-Z._+-]*) echo "MyMine landing: invalid baked Minecraft version" >&2; exit 1 ;;
+esac
 : "${SERVER_NAME:=MyMine}"
 . /opt/mymine/launcher-version.sh
 resolve_mymine_launcher_version

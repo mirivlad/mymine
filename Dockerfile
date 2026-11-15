@@ -2,12 +2,16 @@ ARG BASE_IMAGE=itzg/minecraft-server:java25@sha256:9d2707c109da523f5f71c2ad7e38e
 FROM ${BASE_IMAGE}
 
 USER root
-ARG MC_VERSION=26.3
 ARG MOD_LOADER=fabric
 
+COPY minecraft-version.txt /opt/mymine/minecraft-version.txt
+COPY docker/server-entrypoint.sh /opt/mymine/server-entrypoint.sh
 COPY modrinth-mods.txt /tmp/mymine-modrinth-mods.txt
 RUN set -eux; \
     mkdir -p /opt/mymine/mods /opt/mymine/config; \
+    MC_VERSION="$(cat /opt/mymine/minecraft-version.txt)"; \
+    test -n "$MC_VERSION"; \
+    chmod +x /opt/mymine/server-entrypoint.sh; \
     mc-image-helper modrinth \
       --game-version="${MC_VERSION}" \
       --loader="${MOD_LOADER}" \
@@ -19,7 +23,6 @@ RUN set -eux; \
     rm -f /tmp/mymine-modrinth-mods.txt
 
 ENV TYPE=FABRIC \
-    VERSION=26.3 \
     FABRIC_LOADER_VERSION=0.20.1 \
     FABRIC_LAUNCHER_VERSION=1.1.2 \
     COPY_MODS_SRC=/opt/mymine/mods \
@@ -32,3 +35,5 @@ ENV TYPE=FABRIC \
 LABEL org.opencontainers.image.title="MyMine" \
       org.opencontainers.image.description="Reproducible Fabric Minecraft server distribution" \
       org.opencontainers.image.source="https://github.com/mirivlad/mymine"
+
+ENTRYPOINT ["/opt/mymine/server-entrypoint.sh"]

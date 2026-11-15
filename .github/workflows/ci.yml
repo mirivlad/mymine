@@ -19,7 +19,15 @@ jobs:
           AUTH_BASE_URL: https://auth.example.org
           DRASL_ADMIN: ci-admin
           MC_ADDRESS: mc.example.org:25565
-        run: docker compose -f compose.yml config >/dev/null
+        run: |
+          set -euo pipefail
+          docker compose -f compose.yml config >/dev/null
+          docker compose -f compose.yml config --format json | jq -e '
+            (.services.landing.environment | has("MC_VERSION") | not) and
+            (.services.minecraft.environment | has("MC_VERSION") | not) and
+            (.services.minecraft.environment.JVM_OPTS | contains("minecraft.api.discovery.host=http://drasl:25585/discovery/minecraft/client")) and
+            (.services.drasl.image | contains("sha256:0501cd6e3ecf591be6b4d32120832a98b79b5162d61205310e49f30b2a414c02"))
+          ' >/dev/null
 
   auth:
     runs-on: ubuntu-latest
@@ -68,17 +76,18 @@ jobs:
           config="$AUTH_DATA_DIR/config/config.toml"
           test -s "$config"
           if [[ "$VERIFY_MINECRAFT_OWNERSHIP" == true ]]; then
-            grep -q '^\[ImportExistingPlayer\]' "$config"
             grep -q '^RequireSkinVerification = true$' "$config"
-            grep -q '^\[RegistrationExistingPlayer\]' "$config"
-            awk '/^\[RegistrationNewPlayer\]/{seen=1; next} seen && /^Allow = false$/{found=1; exit} END{exit !found}' "$config"
+            grep -Fq '[[RegistrationUsernamePassword.ImportExistingPlayer]]' "$config"
+            awk '/^\[RegistrationUsernamePassword.CreateNewPlayer\]/{seen=1; next} seen && /^Allow = false$/{found=1; exit} END{exit !found}' "$config"
           else
-            ! grep -q '^\[ImportExistingPlayer\]' "$config"
+            ! grep -Fq '[[RegistrationUsernamePassword.ImportExistingPlayer]]' "$config"
             ! grep -q '^RequireSkinVerification = true$' "$config"
-            awk '/^\[RegistrationNewPlayer\]/{seen=1; next} seen && /^Allow = true$/{found=1; exit} END{exit !found}' "$config"
+            awk '/^\[RegistrationUsernamePassword.CreateNewPlayer\]/{seen=1; next} seen && /^Allow = true$/{found=1; exit} END{exit !found}' "$config"
           fi
 
           curl -fsS --max-time 5 http://127.0.0.1:25585/ >/dev/null
+          curl -fsS --max-time 5 http://127.0.0.1:25585/discovery/minecraft/client |
+            jq -er '.discovery.session.endpoints.verify.uri | contains("/session/minecraft/hasJoined")' | grep -qx true
           trap - EXIT
           cleanup
 
@@ -177,7 +186,7 @@ jobs:
           set -euo pipefail
           dist="${RUNNER_TEMP}/mymine-launcher"
           cp "$dist"/* landing/downloads/
-          docker build -t mymine-landing-instance-test landing
+          docker build -f landing/Dockerfile -t mymine-landing-instance-test .
 
           for template in showcase adventure atlas modern terminal classic; do
             docker run --rm --entrypoint /bin/sh \
@@ -186,10 +195,12 @@ jobs:
               -e SERVER_NAME='Fork Mine' \
               -e VERIFY_MINECRAFT_OWNERSHIP=false \
               -e LANDING_TEMPLATE="$template" \
+              -e MC_VERSION=26.2 \
               -e HMCL_VERSION=3.16.3 \
               mymine-landing-instance-test -ec '
                 /docker-entrypoint.d/20-mymine-env.sh
                 test -s /usr/share/nginx/html/index.html
+                grep -Fq '"version":"26.3"' /usr/share/nginx/html/server.json
                 grep -Fq "play.fork.example:25577" /usr/share/nginx/html/index.html
                 grep -Fq "/downloads/MyMineLauncher-3.16.4.jar" /usr/share/nginx/html/index.html
                 ! grep -Fq "MyMineLauncher-3.16.3" /usr/share/nginx/html/index.html
@@ -293,9 +304,11 @@ jobs:
         include:
           - name: server
             context: .
+            dockerfile: ./Dockerfile
             tag: mymine:ci
           - name: landing
-            context: ./landing
+            context: .
+            dockerfile: ./landing/Dockerfile
             tag: mymine-landing:ci
     steps:
       - uses: actions/checkout@v4
@@ -304,5 +317,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
           push: false
           tags: ${{ matrix.tag }}
