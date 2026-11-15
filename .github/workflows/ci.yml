@@ -198,7 +198,9 @@ jobs:
               -e MC_VERSION=26.2 \
               -e HMCL_VERSION=3.16.3 \
               mymine-landing-instance-test -ec '
+                set -x
                 /docker-entrypoint.d/20-mymine-env.sh
+                cat /usr/share/nginx/html/server.json
                 test -s /usr/share/nginx/html/index.html
                 grep -Fq '"version":"26.3"' /usr/share/nginx/html/server.json
                 grep -Fq "play.fork.example:25577" /usr/share/nginx/html/index.html
