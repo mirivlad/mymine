@@ -202,7 +202,7 @@ jobs:
                 /docker-entrypoint.d/20-mymine-env.sh
                 cat /usr/share/nginx/html/server.json
                 test -s /usr/share/nginx/html/index.html
-                grep -Fq '"version":"26.3"' /usr/share/nginx/html/server.json
+                grep -Fq "\"version\":\"26.3\"" /usr/share/nginx/html/server.json
                 grep -Fq "play.fork.example:25577" /usr/share/nginx/html/index.html
                 grep -Fq "/downloads/MyMineLauncher-3.16.4.jar" /usr/share/nginx/html/index.html
                 ! grep -Fq "MyMineLauncher-3.16.3" /usr/share/nginx/html/index.html
