@@ -43,7 +43,7 @@ footer{border-top:1px solid #fff2;padding:27px 0;margin-top:42px;color:#96adb0;f
 <div>
 <div class="eyebrow">Другая физика. Живой город. Настоящие машины.</div>
 <h1>Построй город.<br>Подними его <span style="color:#a9d8bd">в небо.</span></h1>
-<p>MyMine Engineering — отдельный мир на <strong>Minecraft <span data-mymine-version>${MC_VERSION}</span></strong> с Create Aeronautics, Create и MineColonies. Создавай дирижабли, механизмы и поселения с жителями.</p>
+<p>MyMine Engineering — отдельный мир на <strong>Minecraft <span data-mymine-version>${MC_VERSION}</span></strong> с Create Aeronautics, Create и MineColonies, картой и быстрой рубкой деревьев. Создавай дирижабли, механизмы и поселения с жителями.</p>
 <div><span class="pill">NeoForge 21.1.265</span><span class="pill">Create Aeronautics 1.3.2</span><span class="pill">MineColonies 1.1.1403</span></div>
 <div class="actions"><a class="btn" href="#downloads">Скачать настроенный лаунчер</a><a class="btn alt" href="#start">Как подключиться</a></div>
 </div>
@@ -57,16 +57,16 @@ footer{border-top:1px solid #fff2;padding:27px 0;margin-top:42px;color:#96adb0;f
 <section id="start"><h2>Три шага до игры</h2><div class="cards">
 <div class="card"><div class="n">01 / РЕГИСТРАЦИЯ</div><h3>Аккаунт MyMine</h3>Создай аккаунт в <a href="${AUTH_BASE_URL}">нашей системе авторизации</a> или используй существующий. ${OWNERSHIP_STEP_TEXT}</div>
 <div class="card"><div class="n">02 / ЛАУНЧЕР</div><h3>Скачай и запусти</h3>MyMine Launcher уже знает сервер и авторизацию. При первом запуске он автоматически предложит установить профиль <strong>MyMine Engineering</strong> со всеми модами.</div>
-<div class="card"><div class="n">03 / ИГРА</div><h3>Выбери профиль</h3>После загрузки установи/выбери <strong>MyMine Engineering</strong>, добавь аккаунт Drasl и запускай Minecraft <span data-mymine-version>${MC_VERSION}</span>. Моды установятся автоматически.</div>
+<div class="card"><div class="n">03 / ИГРА</div><h3>Выбери профиль</h3>После загрузки установи/выбери <strong>MyMine Engineering 0.2.0</strong>, добавь аккаунт Drasl и запускай Minecraft <span data-mymine-version>${MC_VERSION}</span>. Моды установятся автоматически.</div>
 </div></section>
 <section id="downloads"><h2>MyMine Launcher ${HMCL_VERSION}</h2><p style="color:#b6c6c9">Готовые установщики, один профиль для Windows и Linux. Java 21 для самой игры можно настроить в лаунчере.</p>
 <div class="downloads">
 <div class="download"><h3>Windows</h3><p>Самостоятельный установщик/исполняемый файл.</p><a class="btn" href="/downloads/MyMineLauncher-${HMCL_VERSION}.exe" download>Скачать EXE</a></div>
 <div class="download"><h3>Linux</h3><p>Пакет для Debian, Ubuntu и совместимых систем.</p><a class="btn" href="/downloads/MyMineLauncher-${HMCL_VERSION}.deb" download>Скачать DEB</a></div>
 <div class="download"><h3>Java</h3><p>Универсальный исполняемый JAR лаунчера.</p><a class="btn" href="/downloads/MyMineLauncher-${HMCL_VERSION}.jar" download>Скачать JAR</a></div>
-<div class="download"><h3>Профиль .mrpack</h3><p>Можно импортировать в другой совместимый лаунчер.</p><a class="btn alt" href="/downloads/MyMine-Engineering-0.1.0.mrpack" download>Скачать модпак</a></div>
+<div class="download"><h3>Профиль .mrpack</h3><p>Можно импортировать в другой совместимый лаунчер.</p><a class="btn alt" href="/downloads/MyMine-Engineering-0.2.0.mrpack" download>Скачать модпак</a></div>
 </div></section>
-<div class="notice"><strong>Внимание:</strong> Engineering — отдельный мир. Мир Classic 26.3 сохранён, но не переносится в Minecraft 1.21.1. Для полётов и посещения колонии необходим модифицированный клиент с NeoForge, а не обычный Minecraft.</div>
+<div class="notice"><strong>Новые удобства:</strong> карта мира — M, метки — B, настройки миникарты — Y. Топор валит дерево целиком. Световой день — 20 минут, ночь — 10 минут. <strong>Внимание:</strong> Engineering — отдельный мир. Мир Classic 26.3 сохранён, но не переносится в Minecraft 1.21.1. Для полётов и посещения колонии необходим модифицированный клиент с NeoForge, а не обычный Minecraft.</div>
 </main>
 <footer>MyMine Engineering · Minecraft <span data-mymine-version>${MC_VERSION}</span> · Open source · Сервер: <strong>${MC_ADDRESS}</strong></footer>
 </div>

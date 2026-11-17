@@ -1,10 +1,12 @@
 #!/bin/sh
 set -eu
 cd "$(dirname "$0")"
-if [ "$(find mods -maxdepth 1 -type f -name '*.jar' 2>/dev/null | wc -l)" -ne 9 ]; then
-  echo "Missing original mods: first run python3 build_pack.py" >&2
+# The standalone test uses the signed/locked GHCR Engineering image.
+# Local JARs are needed only when preparing a new release, not to start.
+test -f releases/MyMine-Engineering-0.2.0.mrpack || {
+  echo "Missing pinned Engineering client profile" >&2
   exit 1
-fi
+}
 if [ "${MYMINE_ALLOW_PARALLEL:-0}" != "1" ] &&
    [ "$(docker inspect --format '{{.State.Running}}' mymine 2>/dev/null || true)" = "true" ]; then
   echo "Refusing to start second Minecraft while normal MyMine is running." >&2

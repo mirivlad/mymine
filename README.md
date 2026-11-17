@@ -272,6 +272,12 @@ LANDING_GALLERY_IMAGE_3=/custom/rainbow.webp
 
 Landing, Drasl и BlueMap в рекомендуемой схеме публикуются только на `127.0.0.1`; наружу их отдаёт nginx. Minecraft TCP/25565 проксировать HTTP nginx не требуется.
 
+### Engineering 0.4.12: карта, деревья, время, UDP
+
+Редакция Engineering публикует TCP и UDP на игровом порту (по умолчанию 25565). На сервере добавлены FallingTree и Time Control. День длится 20 минут, ночь — 10 минут; в Portainer это изменяется переменными MYMINE_DAY_MINUTES и MYMINE_NIGHT_MINUTES (1–1440 минут).
+
+Игрокам нужно скачать обновлённый MyMine Launcher с лендинга Engineering. При первом запуске создаётся отдельный профиль MyMine Engineering 0.2.0 с Xaero Minimap/World Map и Time Control, а старый профиль остаётся доступен. Для миникарты/настроек Y, большой карты M, метки B. Старый профиль 0.1.0 не обновляется автоматически; для соединения выберите новый после установки.
+
 ## Persistent data
 
 Не удаляйте:
@@ -331,7 +337,7 @@ Minecraft является товарным знаком Mojang/Microsoft. MyMin
 
 Optional, separate NeoForge 1.21.1 world with Create Aeronautics, MineColonies and Create,
 without changing the existing Minecraft 26.3 world. The official client
-profile is a small [MyMine Engineering .mrpack](engineering/releases/MyMine-Engineering-0.1.0.mrpack)
+profile is a small [MyMine Engineering .mrpack](engineering/releases/MyMine-Engineering-0.2.0.mrpack)
 that references original upstream files, with pinned cryptographic checksums.
 See [Engineering setup and memory safeguards](engineering/README.md) for details.
 Never run both heavyweight servers on low-memory hosts (tomas has ~8 GiB RAM).

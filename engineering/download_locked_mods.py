@@ -12,11 +12,13 @@ import zipfile
 def main(lock_file, out_dir):
     lock = json.loads(pathlib.Path(lock_file).read_text())
     mods = lock["mods"]
-    if lock["pack"]["minecraft"] != "1.21.1" or len(mods) != 9:
+    if lock["pack"]["minecraft"] != "1.21.1" or len(mods) != 13:
         raise ValueError("Invalid Engineering mod lockfile")
     dest = pathlib.Path(out_dir)
     dest.mkdir(parents=True, exist_ok=True)
     for entry in mods:
+        if entry.get("side","both") == "client":
+            continue
         fname = entry["filename"]
         url = entry["url"]
         split = urllib.parse.urlsplit(url)

@@ -24,8 +24,8 @@ python3 "$ROOT/launcher/build-client-pack.py" \
   --mrpack "$DIST_DIR/MyMine-26.3.mrpack"
 
 # One embedded, checksum-verified Engineering profile; never distribute mod JARs.
-cp "$ROOT/engineering/releases/MyMine-Engineering-0.1.0.mrpack" "$WORKDIR/HMCL/src/main/resources/mymine-engineering.mrpack"
-cp "$ROOT/engineering/releases/MyMine-Engineering-0.1.0.mrpack" "$DIST_DIR/MyMine-Engineering-0.1.0.mrpack"
+cp "$ROOT/engineering/releases/MyMine-Engineering-0.2.0.mrpack" "$WORKDIR/HMCL/src/main/resources/mymine-engineering.mrpack"
+cp "$ROOT/engineering/releases/MyMine-Engineering-0.2.0.mrpack" "$DIST_DIR/MyMine-Engineering-0.2.0.mrpack"
 
 MYMINE_AUTH_URL="$MYMINE_AUTH_URL" \
 MYMINE_SERVER_NAME="$MYMINE_SERVER_NAME" \
@@ -175,7 +175,7 @@ tar \
     MyMineLauncher-${HMCL_VERSION}.sh \
     MyMineLauncher-${HMCL_VERSION}-source.tar.gz \
     MyMine-26.3.mrpack \
-    MyMine-Engineering-0.1.0.mrpack \
+    MyMine-Engineering-0.2.0.mrpack \
     > SHA256SUMS
 )
 

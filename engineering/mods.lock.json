@@ -1,13 +1,14 @@
 {
   "pack": {
-    "name": "MyMine Engineering",
-    "version": "0.1.0",
+    "name": "MyMine Engineering 0.2.0",
+    "version": "0.2.0",
     "minecraft": "1.21.1",
     "neoforge": "21.1.265"
   },
   "mods": [
     {
       "name": "Create",
+      "side": "both",
       "source": "curseforge",
       "filename": "create-1.21.1-6.0.10.jar",
       "url": "https://mediafilez.forgecdn.net/files/7963/363/create-1.21.1-6.0.10.jar",
@@ -20,6 +21,7 @@
     },
     {
       "name": "Sable",
+      "side": "both",
       "source": "curseforge",
       "filename": "sable-neoforge-1.21.1-2.0.6.jar",
       "url": "https://mediafilez.forgecdn.net/files/9043/865/sable-neoforge-1.21.1-2.0.6.jar",
@@ -32,6 +34,7 @@
     },
     {
       "name": "Create Aeronautics",
+      "side": "both",
       "source": "curseforge",
       "filename": "create-aeronautics-bundled-1.21.1-1.3.2.jar",
       "url": "https://mediafilez.forgecdn.net/files/8763/471/create-aeronautics-bundled-1.21.1-1.3.2.jar",
@@ -44,6 +47,7 @@
     },
     {
       "name": "MineColonies",
+      "side": "both",
       "source": "curseforge",
       "filename": "minecolonies-1.1.1403-1.21.1.jar",
       "url": "https://mediafilez.forgecdn.net/files/9058/295/minecolonies-1.1.1403-1.21.1.jar",
@@ -56,6 +60,7 @@
     },
     {
       "name": "Structurize",
+      "side": "both",
       "source": "curseforge",
       "filename": "structurize-1.0.839-1.21.1.jar",
       "url": "https://mediafilez.forgecdn.net/files/9556/249/structurize-1.0.839-1.21.1.jar",
@@ -68,6 +73,7 @@
     },
     {
       "name": "BlockUI",
+      "side": "both",
       "source": "curseforge",
       "filename": "blockui-1.0.212-1.21.1-snapshot.jar",
       "url": "https://mediafilez.forgecdn.net/files/8883/780/blockui-1.0.212-1.21.1-snapshot.jar",
@@ -80,6 +86,7 @@
     },
     {
       "name": "Domum Ornamentum",
+      "side": "both",
       "source": "curseforge",
       "filename": "domum-ornamentum-1.0.237-snapshot-main.jar",
       "url": "https://mediafilez.forgecdn.net/files/9394/376/domum-ornamentum-1.0.237-snapshot-main.jar",
@@ -92,6 +99,7 @@
     },
     {
       "name": "MultiPiston",
+      "side": "both",
       "source": "curseforge",
       "filename": "multipiston-1.2.58-1.21.1.jar",
       "url": "https://mediafilez.forgecdn.net/files/7097/877/multipiston-1.2.58-1.21.1.jar",
@@ -104,6 +112,7 @@
     },
     {
       "name": "FerriteCore",
+      "side": "both",
       "source": "curseforge",
       "filename": "ferritecore-7.0.3-neoforge.jar",
       "url": "https://mediafilez.forgecdn.net/files/7524/151/ferritecore-7.0.3-neoforge.jar",
@@ -113,6 +122,58 @@
         "sha512": "19af89a2075bb10a63884fa853ebf84b02c79dc3242430ecdad056fd764fdcde367a7303276b329df01b0736e2ef264c5d80c7dc92c6aebd244f556a230bb417"
       },
       "fileSize": 121559
+    },
+    {
+      "name": "FallingTree",
+      "side": "server",
+      "source": "curseforge",
+      "filename": "FallingTree-1.21.1-1.21.1.11.jar",
+      "url": "https://mediafilez.forgecdn.net/files/6835/168/FallingTree-1.21.1-1.21.1.11.jar",
+      "hashes": {
+        "sha1": "626e7ec3a979dcc15d8e65c53207572c41c1b255",
+        "sha256": "70ee147602d2239e7a093e166fdf0c0abcef959d5d457c0f8f3669ef9b483dc4",
+        "sha512": "b59056e34a827b4feb14c7c6706a1b612d21126fb8331943f7217e6c82e7f731e9f6e1909c1840e40923c69746affac4f481bd6e3f84a4e118847e29c312ab00"
+      },
+      "fileSize": 496356
+    },
+    {
+      "name": "Time Control",
+      "side": "both",
+      "source": "curseforge",
+      "filename": "timecontrol-1.21.1-1.6.0.jar",
+      "url": "https://mediafilez.forgecdn.net/files/8417/667/timecontrol-1.21.1-1.6.0.jar",
+      "hashes": {
+        "sha1": "e728cfd56916051884fd1b27403980eee8b8dc26",
+        "sha256": "79ae50381c289d72498127be9d0c2fd8ae12d59737f77e73725d17bc23a66fce",
+        "sha512": "4674349586103a187ca0918a205ec20f94c1e92dfeed29befeac45307d566d415d04675422f196fd99a7882294ae49f02a47c05c435d32018bf0d69a8664b02b"
+      },
+      "fileSize": 133785
+    },
+    {
+      "name": "Xaero's Minimap",
+      "side": "client",
+      "source": "curseforge",
+      "filename": "xaerominimap-neoforge-1.21.1-26.6.0.jar",
+      "url": "https://mediafilez.forgecdn.net/files/9067/173/xaerominimap-neoforge-1.21.1-26.6.0.jar",
+      "hashes": {
+        "sha1": "551e8e2aa3498b506cc949a74606cdc0380e5e00",
+        "sha256": "d3398221b2262abfe2d394b588122e5b3fd2e4d8c4bf66a5fd357352fcf51b2e",
+        "sha512": "d56b93ddb921285624b491d6a85aba23748bec9974867399c881c257eb25a746df92a735473adf3a6875e0928a56ff78245d5238eb9207b0e45c3fec20c896dc"
+      },
+      "fileSize": 2186351
+    },
+    {
+      "name": "Xaero's World Map",
+      "side": "client",
+      "source": "curseforge",
+      "filename": "xaeroworldmap-neoforge-1.21.1-1.47.0.jar",
+      "url": "https://mediafilez.forgecdn.net/files/9067/277/xaeroworldmap-neoforge-1.21.1-1.47.0.jar",
+      "hashes": {
+        "sha1": "2936c9cb9dfbdab145fe6f1e8ae2c68915246a5f",
+        "sha256": "6a42b6f01bd96b496e5fcc07d4541bad1a699d9ec8ad58ad40d5dcfe23a7d4c7",
+        "sha512": "4d2d78bc85afa002f682ef344b7284cf1baa4903cc5a11cd1d7bd260ac63952580ae717bab47079540ead633cdd5d8e4fdf230dc99a68bcb7a269500e7dada13"
+      },
+      "fileSize": 1427078
     }
   ]
 }
