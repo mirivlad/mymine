@@ -62,6 +62,18 @@ To return to the current MyMine world:
 
 Check the server logs and client compatibility before opening any public game port. The old world cannot be safely loaded into Minecraft 1.21.1. Do not change the original Portainer stack's Minecraft version or mount its data directory for Engineering.
 
+## Controlled world pre-generation (0.4.13)
+
+Chunky 1.4.23 is installed server-side only; players retain their Engineering 0.2.0 client pack. On a quiet server, back up the world, then send commands from the Docker host:
+
+    docker exec mymine rcon-cli chunky world minecraft:overworld
+    docker exec mymine rcon-cli chunky shape circle
+    docker exec mymine rcon-cli chunky spawn
+    docker exec mymine rcon-cli chunky radius 512
+    docker exec mymine rcon-cli chunky start
+
+Observe using chunky progress; stop with chunky pause (resumable). Never issue chunky trim, which deletes world chunks. RCON is enabled with a generated password within the container only and is not published on any host port.
+
 ## Gameplay improvements in 0.4.12
 
 - FallingTree: chop one natural tree log with an axe to fell the whole tree. The mod runs on the server; clients need no installation. Sneaking suppresses tree-felling by default.

@@ -13,6 +13,7 @@ services:
       MYMINE_DAY_MINUTES: "20"
       MYMINE_NIGHT_MINUTES: "10"
       EULA: "TRUE"
+      ENABLE_RCON: "true"
       TYPE: NEOFORGE
       VERSION: "1.21.1"
       NEOFORGE_VERSION: "21.1.265"

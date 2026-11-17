@@ -278,6 +278,22 @@ Landing, Drasl и BlueMap в рекомендуемой схеме публик�
 
 Игрокам нужно скачать обновлённый MyMine Launcher с лендинга Engineering. При первом запуске создаётся отдельный профиль MyMine Engineering 0.2.0 с Xaero Minimap/World Map и Time Control, а старый профиль остаётся доступен. Для миникарты/настроек Y, большой карты M, метки B. Старый профиль 0.1.0 не обновляется автоматически; для соединения выберите новый после установки.
 
+### Engineering 0.4.13: Chunky — предварительная генерация
+
+В Engineering встроен Chunky 1.4.23 для NeoForge 1.21.1. Это серверный мод, клиентский профиль MyMine Engineering 0.2.0 не меняется. Он заранее создаёт чанки, чтобы игрок не бежал в пустоту.
+
+Команды с хоста (RCON доступен только из контейнера; наружу не опубликован):
+
+    docker exec mymine rcon-cli chunky world minecraft:overworld
+    docker exec mymine rcon-cli chunky shape circle
+    docker exec mymine rcon-cli chunky spawn
+    docker exec mymine rcon-cli chunky radius 512
+    docker exec mymine rcon-cli chunky start
+    docker exec mymine rcon-cli chunky progress
+    docker exec mymine rcon-cli chunky pause
+
+Начинать следует после резервного копирования мира и выхода игроков. На tomas 4 ядра и 7,7 ГиБ ОЗУ, поэтому первоначальная область — круг радиусом 512 блоков. Нельзя пользоваться командой chunky trim: она удаляет чанки и может уничтожить постройки. Порт 25575 не публикуется, паролем RCON управляет Minecraft image itzg; не открывать RCON на роутере.
+
 ## Persistent data
 
 Не удаляйте:

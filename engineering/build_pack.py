@@ -211,8 +211,8 @@ def main():
         raise ValueError("Unexpected Minecraft version")
     if len({m["name"] for m in config["mods"]}) != len(config["mods"]):
         raise ValueError("Duplicate mod")
-    if len(config["mods"]) != 13 or any(m.get("side","both") not in ("client","server","both") for m in config["mods"]):
-        raise ValueError("Expected 13 pinned mods with explicit client/server sides")
+    if len(config["mods"]) != 14 or any(m.get("side","both") not in ("client","server","both") for m in config["mods"]):
+        raise ValueError("Expected 14 pinned mods with explicit client/server sides")
     previous = json.loads(LOCK.read_text()) if LOCK.exists() else {"mods": []}
     old = {m["filename"]: m for m in previous["mods"]}
     if args.verify:
@@ -240,7 +240,7 @@ def main():
     LOCK.write_text(json.dumps({"pack": config["pack"], "mods": records},
                                ensure_ascii=False, indent=2) + "\n")
     build_pack(config, records)
-    print("READY: all 13 official mods verified; server-only FallingTree and client-only maps split correctly")
+    print("READY: 14 mods verified; Chunky and FallingTree server-only; Xaero maps client-only")
 
 
 if __name__ == "__main__":
