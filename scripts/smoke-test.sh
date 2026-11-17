@@ -45,7 +45,7 @@ for ((i=0; i<TIMEOUT; i+=5)); do
     fi
 
     docker exec "$CONTAINER" sh -lc "grep -q 'render-thread-count: 1' /data/config/bluemap/core.conf" || { echo 'BlueMap managed config missing' >&2; exit 1; }
-    if docker logs "$CONTAINER" 2>&1 | grep -q 'Failed to load bluemap'; then
+    if docker logs "$CONTAINER" 2>&1 | grep -F 'Failed to load bluemap' >/dev/null; then
       echo 'BlueMap reported a load failure' >&2
       docker logs --tail=120 "$CONTAINER" >&2 || true
       exit 1
@@ -57,7 +57,7 @@ for ((i=0; i<TIMEOUT; i+=5)); do
           bluemap_ready=true
           break
         fi
-        if docker logs "$CONTAINER" 2>&1 | grep -q 'Failed to load bluemap'; then
+        if docker logs "$CONTAINER" 2>&1 | grep -F 'Failed to load bluemap' >/dev/null; then
           break
         fi
         sleep 2
@@ -65,7 +65,7 @@ for ((i=0; i<TIMEOUT; i+=5)); do
       [[ "$bluemap_ready" == true ]] || { echo "BlueMap web endpoint not ready on port $MAP_PORT" >&2; docker logs --tail=120 "$CONTAINER" >&2 || true; exit 1; }
       bluemap_state='HTTP ready'
     else
-      docker logs "$CONTAINER" 2>&1 | grep -q 'You must accept the required file download' || { echo 'BlueMap did not report expected download opt-in state' >&2; exit 1; }
+      docker logs "$CONTAINER" 2>&1 | grep -F 'You must accept the required file download' >/dev/null || { echo 'BlueMap did not report expected download opt-in state' >&2; exit 1; }
       bluemap_state='waiting for explicit resource-download opt-in'
     fi
     docker exec "$CONTAINER" mc-health >/dev/null
