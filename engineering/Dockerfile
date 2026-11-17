@@ -13,7 +13,7 @@ COPY engineering/minecraft-version.txt /opt/mymine/minecraft-version.txt
 COPY docker/server-entrypoint.sh /opt/mymine/server-entrypoint.sh
 COPY docker/server-env.sh /opt/mymine/server-env.sh
 RUN chmod +x /opt/mymine/server-entrypoint.sh && \
-    test "$(find /opt/mymine/mods -type f -name '*.jar' | wc -l)" -eq 9
+    test "$(find /opt/mymine/mods -type f -name '*.jar' | wc -l)" -eq 11
 ENV MYMINE_BAKED_EDITION=engineering \
     TYPE=NEOFORGE \
     NEOFORGE_VERSION=21.1.265 \

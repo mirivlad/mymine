@@ -1,20 +1,22 @@
 # Separate MyMine Engineering world; never downgrade the original world.
 services:
   engineering:
-    image: "${ENGINEERING_IMAGE:-itzg/minecraft-server:java21}"
+    image: "${ENGINEERING_IMAGE:-ghcr.io/mirivlad/mymine:engineering-latest}"
     container_name: mymine-engineering
     restart: "no"
     stop_grace_period: 2m
     ports:
       - "127.0.0.1:${ENGINEERING_PORT:-25566}:25565/tcp"
+      - "127.0.0.1:${ENGINEERING_PORT:-25566}:25565/udp"
     environment:
       MYMINE_EDITION: engineering
+      MYMINE_DAY_MINUTES: "20"
+      MYMINE_NIGHT_MINUTES: "10"
       EULA: "TRUE"
       TYPE: NEOFORGE
       VERSION: "1.21.1"
       NEOFORGE_VERSION: "21.1.265"
       MEMORY: "${ENGINEERING_MEMORY:-4G}"
-      COPY_MODS_SRC: /mods
       REMOVE_OLD_MODS: "TRUE"
       REMOVE_OLD_MODS_DEPTH: "1"
       TZ: "${TZ:-Asia/Irkutsk}"
@@ -37,7 +39,6 @@ services:
         -Dminecraft.api.discovery.host=http://drasl:25585/discovery/minecraft/client
     volumes:
       - "./data:/data"
-      - "./mods:/mods:ro"
     mem_limit: "5g"
     networks:
       - mymine

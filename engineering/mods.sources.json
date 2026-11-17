@@ -1,7 +1,7 @@
 {
   "pack": {
-    "name": "MyMine Engineering",
-    "version": "0.1.0",
+    "name": "MyMine Engineering 0.2.0",
+    "version": "0.2.0",
     "minecraft": "1.21.1",
     "neoforge": "21.1.265"
   },
@@ -59,6 +59,34 @@
       "source": "curseforge",
       "file_id": 7524151,
       "filename": "ferritecore-7.0.3-neoforge.jar"
+    },
+    {
+      "name": "FallingTree",
+      "source": "curseforge",
+      "file_id": 6835168,
+      "filename": "FallingTree-1.21.1-1.21.1.11.jar",
+      "side": "server"
+    },
+    {
+      "name": "Time Control",
+      "source": "curseforge",
+      "file_id": 8417667,
+      "filename": "timecontrol-1.21.1-1.6.0.jar",
+      "side": "both"
+    },
+    {
+      "name": "Xaero's Minimap",
+      "source": "curseforge",
+      "file_id": 9067173,
+      "filename": "xaerominimap-neoforge-1.21.1-26.6.0.jar",
+      "side": "client"
+    },
+    {
+      "name": "Xaero's World Map",
+      "source": "curseforge",
+      "file_id": 9067277,
+      "filename": "xaeroworldmap-neoforge-1.21.1-1.47.0.jar",
+      "side": "client"
     }
   ]
 }

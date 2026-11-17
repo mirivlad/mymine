@@ -493,14 +493,14 @@ replace_exact(
                     Path zipModpack = Metadata.CURRENT_DIRECTORY.resolve("modpack.zip");''',
     '''                Path bundledEngineering = null;
                 if ("engineering".equals(org.jackhuang.hmcl.mymine.MyMineInstance.EDITION)
-                        && !repository.versionIdConflicts("MyMine Engineering")) {
+                        && !repository.versionIdConflicts("MyMine Engineering 0.2.0")) {
                     try (java.io.InputStream resource = RootPage.class.getResourceAsStream(
                             "/mymine-engineering.mrpack")) {
                         if (resource == null) {
                             throw new java.io.IOException("Missing bundled MyMine Engineering profile");
                         }
                         bundledEngineering = org.jackhuang.hmcl.setting.SettingsManager
-                                .localConfigDirectory().resolve("MyMine-Engineering-0.1.0.mrpack");
+                                .localConfigDirectory().resolve("MyMine-Engineering-0.2.0.mrpack");
                         Files.copy(resource, bundledEngineering,
                                 java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                     } catch (java.io.IOException e) {

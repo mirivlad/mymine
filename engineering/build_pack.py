@@ -50,7 +50,7 @@ def resolve_mod(spec, version):
             raise ValueError(spec["name"] + " has no unique pinned NeoForge release")
         item = entries[0]
         file = next((f for f in item["files"] if f.get("primary")), item["files"][0])
-        return {"name": spec["name"], "source": "modrinth",
+        return {"name": spec["name"], "side": spec.get("side","both"), "source": "modrinth",
                 "version": spec["version"], "filename": file["filename"],
                 "url": safe_url(file["url"]), "published_hashes": file["hashes"]}
     if spec["source"] == "curseforge":
@@ -61,7 +61,7 @@ def resolve_mod(spec, version):
         url = ("https://mediafilez.forgecdn.net/files/" +
                str(file_id // 1000) + "/" + str(file_id % 1000).zfill(3) +
                "/" + filename)
-        return {"name": spec["name"], "source": "curseforge",
+        return {"name": spec["name"], "side": spec.get("side","both"), "source": "curseforge",
                 "file_id": file_id, "filename": filename,
                 "url": safe_url(url), "published_hashes": {}}
     raise ValueError("Unknown source: " + str(spec["source"]))
@@ -90,6 +90,20 @@ def verify_create_bundled_dependencies(path):
             if jar_path not in archive.namelist():
                 raise ValueError(f"Missing Create nested JAR: {jar_path}")
     print("Create embedded Flywheel, Ponder and Registrate: verified", flush=True)
+
+
+def verify_xaero_bundled_library(path):
+    """NeoForge Xaero map JARs embed required XaeroLib 1.7.3."""
+    with zipfile.ZipFile(path) as archive:
+        metadata = json.loads(archive.read("META-INF/jarjar/metadata.json"))
+        matches = [
+            item for item in metadata["jars"]
+            if item["identifier"]["artifact"] == "xaerolib-neoforge-1.21.1"
+            and item["version"]["artifactVersion"] == "1.7.3"
+        ]
+        if len(matches) != 1 or matches[0]["path"] not in archive.namelist():
+            raise ValueError("Missing bundled XaeroLib 1.7.3 in " + path.name)
+    print("XaeroLib 1.7.3 bundled in " + path.name, flush=True)
 
 
 def hash_file(path):
@@ -135,8 +149,10 @@ def get_mod(record, existing):
         raise ValueError("Not a valid mod JAR: " + dest.name)
     if record["name"] == "Create":
         verify_create_bundled_dependencies(dest)
+    if record["name"] in ("Xaero's Minimap", "Xaero's World Map"):
+        verify_xaero_bundled_library(dest)
     print(f"OK: {record['name']}: {dest.name} ({size / 1048576:.1f} MiB)", flush=True)
-    return {"name": record["name"], "source": record["source"],
+    return {"name": record["name"], "side": record.get("side","both"), "source": record["source"],
             "filename": record["filename"], "url": record["url"],
             "hashes": digest, "fileSize": size}
 
@@ -146,29 +162,42 @@ def build_pack(config, records):
     spec = config["pack"]
     idx = {"formatVersion": 1, "game": "minecraft",
            "versionId": spec["version"], "name": spec["name"],
-           "summary": "Create Aeronautics + Create + Sable + MineColonies; lightweight NeoForge profile",
+           "summary": "Create Aeronautics, MineColonies, Time Control and Xaero maps for NeoForge 1.21.1",
            "dependencies": {"minecraft": spec["minecraft"], "neoforge": spec["neoforge"]},
            "files": []}
     for file in records:
+        if file.get("side","both") == "server":
+            continue
         idx["files"].append({
             "path": "mods/" + file["filename"],
             "hashes": {"sha1": file["hashes"]["sha1"],
                        "sha512": file["hashes"]["sha512"]},
-            "env": {"client": "required", "server": "required"},
+            "env": {"client": "required",
+                    "server": "unsupported" if file.get("side","both") == "client" else "required"},
             "downloads": [safe_url(file["url"])],
             "fileSize": file["fileSize"]
         })
     target = DIST / ("MyMine-Engineering-" + spec["version"] + ".mrpack")
     instruction = (
-        "MyMine Engineering — Minecraft 1.21.1 / NeoForge " + spec["neoforge"] + "\n"
+        "MyMine Engineering 0.2.0 — Minecraft 1.21.1 / NeoForge " + spec["neoforge"] + "\n"
         "Imports into MyMine Launcher (HMCL), Prism Launcher, or Modrinth App.\n"
         "Requires Java 21. Use a NEW, ISOLATED game directory / profile.\n"
         "Use the MyMine Drasl account selected for the engineering server.\n"
+        "Xaero Minimap: Y settings; World Map: M; waypoints: B (configurable).\n"
+        "The FallingTree feature is installed server-side; it only activates with an axe.\n"
+        "Server daylight is 20 minutes and night is 10 minutes.\n"
         "This file contains only mod download URLs and checksums, not mod JARs.\n"
     )
+    # Bit-identical archives across hosts/runs: fixed metadata and timestamps.
     with zipfile.ZipFile(target, "w", compression=zipfile.ZIP_DEFLATED) as z:
-        z.writestr("modrinth.index.json", json.dumps(idx, ensure_ascii=False, indent=2) + "\n")
-        z.writestr("overrides/README-MyMine-Engineering.txt", instruction)
+        for name, content in (
+            ("modrinth.index.json", json.dumps(idx, ensure_ascii=False, indent=2) + "\n"),
+            ("overrides/README-MyMine-Engineering.txt", instruction),
+        ):
+            entry = zipfile.ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0))
+            entry.compress_type = zipfile.ZIP_DEFLATED
+            entry.external_attr = 0o644 << 16
+            z.writestr(entry, content)
     print("CLIENT_MODPACK:", target, flush=True)
     return target
 
@@ -182,6 +211,8 @@ def main():
         raise ValueError("Unexpected Minecraft version")
     if len({m["name"] for m in config["mods"]}) != len(config["mods"]):
         raise ValueError("Duplicate mod")
+    if len(config["mods"]) != 13 or any(m.get("side","both") not in ("client","server","both") for m in config["mods"]):
+        raise ValueError("Expected 13 pinned mods with explicit client/server sides")
     previous = json.loads(LOCK.read_text()) if LOCK.exists() else {"mods": []}
     old = {m["filename"]: m for m in previous["mods"]}
     if args.verify:
@@ -193,6 +224,9 @@ def main():
                 raise ValueError("Missing or corrupted JAR: " + mod["filename"])
         create = next(m for m in previous["mods"] if m["name"] == "Create")
         verify_create_bundled_dependencies(MODS / create["filename"])
+        for item in previous["mods"]:
+            if item["name"] in ("Xaero's Minimap", "Xaero's World Map"):
+                verify_xaero_bundled_library(MODS / item["filename"])
         build_pack(config, previous["mods"])
         return
     with ThreadPoolExecutor(max_workers=5) as pool:
@@ -206,7 +240,7 @@ def main():
     LOCK.write_text(json.dumps({"pack": config["pack"], "mods": records},
                                ensure_ascii=False, indent=2) + "\n")
     build_pack(config, records)
-    print("READY: 9 official downloads verified; client and server use identical JARs")
+    print("READY: all 13 official mods verified; server-only FallingTree and client-only maps split correctly")
 
 
 if __name__ == "__main__":

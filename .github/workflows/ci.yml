@@ -38,6 +38,12 @@ jobs:
             test -d "$tmp/data-engineering"
             rm -rf "$tmp"
           done
+          for f in compose.yml deploy/portainer-stack.yml; do
+            MYMINE_EDITION=engineering docker compose -f "$f" config --format json |
+              jq -e '(.services.minecraft.ports | any(.target == 25565 and .protocol == "udp") and any(.target == 25565 and .protocol == "tcp")) and
+                     (.services.minecraft.environment.MYMINE_DAY_MINUTES == "20") and
+                     (.services.minecraft.environment.MYMINE_NIGHT_MINUTES == "10")' >/dev/null
+          done
           docker compose -f compose.yml config --format json | jq -e '
             (.services.landing.environment | has("MC_VERSION") | not) and
             (.services.minecraft.environment | has("MC_VERSION") | not) and
@@ -183,7 +189,10 @@ jobs:
                   idx = json.loads(embedded.read("modrinth.index.json"))
                   assert idx["dependencies"]["minecraft"] == "1.21.1"
                   assert idx["dependencies"]["neoforge"] == "21.1.265"
-                  assert len(idx["files"]) == 9
+                  assert len(idx["files"]) == 12
+                  assert any("xaerominimap" in m["path"] for m in idx["files"])
+                  assert any("xaeroworldmap" in m["path"] for m in idx["files"])
+                  assert any("timecontrol" in m["path"] for m in idx["files"])
 
           with zipfile.ZipFile(dist / "MyMine-26.3.mrpack") as pack:
               index = json.loads(pack.read("modrinth.index.json"))
@@ -220,7 +229,7 @@ jobs:
               grep -Fq "\"version\":\"1.21.1\"" /usr/share/nginx/html/server.json
               grep -Fq "\"edition\":\"engineering\"" /usr/share/nginx/html/server.json
               grep -Fq "MyMine Engineering" /usr/share/nginx/html/index.html
-              grep -Fq "/downloads/MyMine-Engineering-0.1.0.mrpack" /usr/share/nginx/html/index.html
+              grep -Fq "/downloads/MyMine-Engineering-0.2.0.mrpack" /usr/share/nginx/html/index.html
               ! grep -Fq "Vanilla client" /usr/share/nginx/html/index.html
             '
 

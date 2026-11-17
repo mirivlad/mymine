@@ -52,7 +52,7 @@ mv "$TMP/launcher.deb" "$DEB"
         "MyMineLauncher-${HMCL_VERSION}.sh" \
         "MyMineLauncher-${HMCL_VERSION}-source.tar.gz" \
         "MyMine-26.3.mrpack" \
-        "MyMine-Engineering-0.1.0.mrpack" \
+        "MyMine-Engineering-0.2.0.mrpack" \
         > SHA256SUMS
 )
 

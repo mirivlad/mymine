@@ -51,7 +51,16 @@ jobs:
           [ "$healthy" = true ] || { echo "NeoForge did not become healthy" >&2; exit 1; }
           docker exec mymine-engineering mc-health
           docker exec mymine-engineering sh -ec '
-            test "$(find /data/mods -maxdepth 1 -type f -name "*.jar" | wc -l)" -eq 9
+            test -f /data/world/serverconfig/timecontrol-server.toml
+            grep -Eq "day_length_minutes = 20" /data/world/serverconfig/timecontrol-server.toml
+            grep -Eq "night_length_minutes = 10" /data/world/serverconfig/timecontrol-server.toml
+            test -f /data/mods/FallingTree-1.21.1-1.21.1.11.jar
+            test -f /data/mods/timecontrol-1.21.1-1.6.0.jar
+            test ! -e /data/mods/xaeroworldmap-neoforge-1.21.1-1.47.0.jar
+          '
+
+          docker exec mymine-engineering sh -ec '
+            test "$(find /data/mods -maxdepth 1 -type f -name "*.jar" | wc -l)" -eq 11
             ls -l /data/mods | grep -iE "minecolonies|create|aeronautics|sable"
           '
           docker logs mymine-engineering > engineering-server.log 2>&1
