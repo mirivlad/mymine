@@ -23,6 +23,7 @@ jobs:
           set -euo pipefail
           docker compose -f compose.yml config >/dev/null
           python3 -m unittest discover -s tests -v
+          python3 engineering/validate.py
           docker compose -f compose.yml config --format json | jq -e '
             (.services.landing.environment | has("MC_VERSION") | not) and
             (.services.minecraft.environment | has("MC_VERSION") | not) and

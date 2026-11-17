@@ -1,0 +1,49 @@
+# Separate MyMine Engineering world; never downgrade the original world.
+services:
+  engineering:
+    image: itzg/minecraft-server:java21
+    container_name: mymine-engineering
+    restart: "no"
+    stop_grace_period: 2m
+    ports:
+      - "127.0.0.1:${ENGINEERING_PORT:-25566}:25565/tcp"
+    environment:
+      EULA: "TRUE"
+      TYPE: NEOFORGE
+      VERSION: "1.21.1"
+      NEOFORGE_VERSION: "21.1.265"
+      MEMORY: "${ENGINEERING_MEMORY:-4G}"
+      TZ: "${TZ:-Asia/Irkutsk}"
+      ONLINE_MODE: "true"
+      ENFORCE_SECURE_PROFILE: "false"
+      MOTD: "MyMine Engineering — Minecraft 1.21.1"
+      SERVER_NAME: "MyMine Engineering"
+      MAX_PLAYERS: "12"
+      VIEW_DISTANCE: "6"
+      SIMULATION_DISTANCE: "4"
+      SPAWN_PROTECTION: "0"
+      ENABLE_WHITELIST: "false"
+      JVM_OPTS: >-
+        -Dminecraft.api.env=custom
+        -Dminecraft.api.auth.host=http://drasl:25585/auth
+        -Dminecraft.api.account.host=http://drasl:25585/account
+        -Dminecraft.api.profiles.host=http://drasl:25585/account
+        -Dminecraft.api.session.host=http://drasl:25585/session
+        -Dminecraft.api.services.host=http://drasl:25585/services
+        -Dminecraft.api.discovery.host=http://drasl:25585/discovery/minecraft/client
+    volumes:
+      - "./data:/data"
+      - "./mods:/data/mods:ro"
+    mem_limit: "5g"
+    networks:
+      - mymine
+    healthcheck:
+      test: ["CMD", "mc-health"]
+      interval: 30s
+      timeout: 12s
+      start_period: 4m
+      retries: 8
+networks:
+  mymine:
+    external: true
+    name: "${ENGINEERING_NETWORK:-mymine_default}"

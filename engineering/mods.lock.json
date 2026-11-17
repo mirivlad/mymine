@@ -1,0 +1,118 @@
+{
+  "pack": {
+    "name": "MyMine Engineering",
+    "version": "0.1.0",
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.265"
+  },
+  "mods": [
+    {
+      "name": "Create",
+      "source": "curseforge",
+      "filename": "create-1.21.1-6.0.10.jar",
+      "url": "https://mediafilez.forgecdn.net/files/7963/363/create-1.21.1-6.0.10.jar",
+      "hashes": {
+        "sha1": "0e97e49837bed766e6f28a4c95b04885d6acc353",
+        "sha256": "ef87fe5709f1ba1f5b8bb20a2925b5afb4669e178fd6d8bf10c167759eefe37a",
+        "sha512": "11cc8fc049d2f67f6548c7abfada6b82a3adb5c7ca410a742de04bbca76e03862c518721b88d806f6e6d768a4d68531fdb903a85859b25d1484d550cc7bafd4b"
+      },
+      "fileSize": 19123767
+    },
+    {
+      "name": "Sable",
+      "source": "curseforge",
+      "filename": "sable-neoforge-1.21.1-2.0.6.jar",
+      "url": "https://mediafilez.forgecdn.net/files/9043/865/sable-neoforge-1.21.1-2.0.6.jar",
+      "hashes": {
+        "sha1": "cf46f7e8c1511f170abcdbee739944f0540549bf",
+        "sha256": "9c199157843bf953a47dff625fc5bb41c01a90538d35ad18e6996bbcb8a617c2",
+        "sha512": "76d293ce751a01cb9c095a3659b0a41e03e005480bc9d76dfdc73ec7c2eabf7923740c7b077921d42616673c496cd5143569f2085ddcebe174fd91d81e2a04b8"
+      },
+      "fileSize": 12986135
+    },
+    {
+      "name": "Create Aeronautics",
+      "source": "curseforge",
+      "filename": "create-aeronautics-bundled-1.21.1-1.3.2.jar",
+      "url": "https://mediafilez.forgecdn.net/files/8763/471/create-aeronautics-bundled-1.21.1-1.3.2.jar",
+      "hashes": {
+        "sha1": "ddbe9cbc25e8f663218aa1e9fdfc4b99f0e11e4b",
+        "sha256": "a3f330d4757640f8715d991a43eedb826e4d0e51558d859c843ae6693bd35f1e",
+        "sha512": "dc7e8e1148fa442243889ba29412207137e1bb86206e6c92bc0a589f1374a466e93de22bdbf14f753984d86c29308fbbdc0f14a4b9618b14c0ac1666a36b46f5"
+      },
+      "fileSize": 33123131
+    },
+    {
+      "name": "MineColonies",
+      "source": "curseforge",
+      "filename": "minecolonies-1.1.1403-1.21.1.jar",
+      "url": "https://mediafilez.forgecdn.net/files/9058/295/minecolonies-1.1.1403-1.21.1.jar",
+      "hashes": {
+        "sha1": "3be2b5521f45271c77671673e834c57c2296d3e4",
+        "sha256": "c8d4373ffc8a76638c8edf2bb6716f9209599032209c48d0d559b787f69a0561",
+        "sha512": "9f19bbb911e9aeabbcbfaefc0947a0b0e492bfa006a0808726e80e87180c5da69d8e70ef40cb3d41394566ddf5bd359cf4962439e4ee00e3c7aaabe82b3e8f1f"
+      },
+      "fileSize": 78325447
+    },
+    {
+      "name": "Structurize",
+      "source": "curseforge",
+      "filename": "structurize-1.0.839-1.21.1.jar",
+      "url": "https://mediafilez.forgecdn.net/files/9556/249/structurize-1.0.839-1.21.1.jar",
+      "hashes": {
+        "sha1": "2959f37afb78e987dcf7b7279ce7322baff308e1",
+        "sha256": "9b3e1837e9cf9b13a094fe92d5f26aa61e55e6f55ba67d7e61c1fc9abdcd7e43",
+        "sha512": "36c2689f3e2bb6df204a6d2e0cfd2d448ab06a07de41f059b14a35c041c930c86a3fec899a9736796d66e240c9a1cb6db2c16a25f6d8cac29a24507faf045d32"
+      },
+      "fileSize": 1064211
+    },
+    {
+      "name": "BlockUI",
+      "source": "curseforge",
+      "filename": "blockui-1.0.212-1.21.1-snapshot.jar",
+      "url": "https://mediafilez.forgecdn.net/files/8883/780/blockui-1.0.212-1.21.1-snapshot.jar",
+      "hashes": {
+        "sha1": "b2ab39fc854baaf8eba3b95305b05e2aa2ca6e33",
+        "sha256": "35f44cb349edb1d55d2a530e07705fe088b1695d1854355cbb12236b26f4311e",
+        "sha512": "589b0687d5ef6cdf4aa536224b1451195c1fc4060d7536fce68d1cec720dcc0b450e815f1650d688da07e1826aae8b937922db62c3ec1a5c68933ba5c1829188"
+      },
+      "fileSize": 468142
+    },
+    {
+      "name": "Domum Ornamentum",
+      "source": "curseforge",
+      "filename": "domum-ornamentum-1.0.237-snapshot-main.jar",
+      "url": "https://mediafilez.forgecdn.net/files/9394/376/domum-ornamentum-1.0.237-snapshot-main.jar",
+      "hashes": {
+        "sha1": "49b92eb1f5b20fb127406fb848a62cb6afdcfea3",
+        "sha256": "1c420344edbf2c78837dfa3137a29bb65cffe24c01b5c57df9546c33ae24bb77",
+        "sha512": "f0d56073a6053ff1318701ec1b9bfcb5aae40be658ec6e7cb4211613dfb170288e4cf408c8ff676d5369bf3789492d1a629ba8736422ee8d2fb9fa0d019e9d60"
+      },
+      "fileSize": 1151617
+    },
+    {
+      "name": "MultiPiston",
+      "source": "curseforge",
+      "filename": "multipiston-1.2.58-1.21.1.jar",
+      "url": "https://mediafilez.forgecdn.net/files/7097/877/multipiston-1.2.58-1.21.1.jar",
+      "hashes": {
+        "sha1": "2b63be739da24247328e4052ec91c928230d0390",
+        "sha256": "7ca26db4648589b7f76694c249d5096c0c0afb7615fe6adf9f638c6c825c15e7",
+        "sha512": "60007e72516857228c45cbfee14ec18c9c4e89b626ecdd659fff3a146d5dc527d52563645e3348b79820f7eeb0b6d3aeab4394e7b6d6a065666ed04333c05a48"
+      },
+      "fileSize": 34139
+    },
+    {
+      "name": "FerriteCore",
+      "source": "curseforge",
+      "filename": "ferritecore-7.0.3-neoforge.jar",
+      "url": "https://mediafilez.forgecdn.net/files/7524/151/ferritecore-7.0.3-neoforge.jar",
+      "hashes": {
+        "sha1": "9563692efb708b6b568df27a01ec52f6311928ef",
+        "sha256": "d87ea28262715ebff45b8a82d493e6b468e7a4521bc021df5d88302196d030a8",
+        "sha512": "19af89a2075bb10a63884fa853ebf84b02c79dc3242430ecdad056fd764fdcde367a7303276b329df01b0736e2ef264c5d80c7dc92c6aebd244f556a230bb417"
+      },
+      "fileSize": 121559
+    }
+  ]
+}

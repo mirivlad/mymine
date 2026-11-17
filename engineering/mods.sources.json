@@ -1,0 +1,64 @@
+{
+  "pack": {
+    "name": "MyMine Engineering",
+    "version": "0.1.0",
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.265"
+  },
+  "mods": [
+    {
+      "name": "Create",
+      "source": "curseforge",
+      "file_id": 7963363,
+      "filename": "create-1.21.1-6.0.10.jar"
+    },
+    {
+      "name": "Sable",
+      "source": "curseforge",
+      "file_id": 9043865,
+      "filename": "sable-neoforge-1.21.1-2.0.6.jar"
+    },
+    {
+      "name": "Create Aeronautics",
+      "source": "curseforge",
+      "file_id": 8763471,
+      "filename": "create-aeronautics-bundled-1.21.1-1.3.2.jar"
+    },
+    {
+      "name": "MineColonies",
+      "source": "curseforge",
+      "file_id": 9058295,
+      "filename": "minecolonies-1.1.1403-1.21.1.jar"
+    },
+    {
+      "name": "Structurize",
+      "source": "curseforge",
+      "file_id": 9556249,
+      "filename": "structurize-1.0.839-1.21.1.jar"
+    },
+    {
+      "name": "BlockUI",
+      "source": "curseforge",
+      "file_id": 8883780,
+      "filename": "blockui-1.0.212-1.21.1-snapshot.jar"
+    },
+    {
+      "name": "Domum Ornamentum",
+      "source": "curseforge",
+      "file_id": 9394376,
+      "filename": "domum-ornamentum-1.0.237-snapshot-main.jar"
+    },
+    {
+      "name": "MultiPiston",
+      "source": "curseforge",
+      "file_id": 7097877,
+      "filename": "multipiston-1.2.58-1.21.1.jar"
+    },
+    {
+      "name": "FerriteCore",
+      "source": "curseforge",
+      "file_id": 7524151,
+      "filename": "ferritecore-7.0.3-neoforge.jar"
+    }
+  ]
+}
