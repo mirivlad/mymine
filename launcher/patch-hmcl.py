@@ -8,6 +8,9 @@ root = Path(sys.argv[1])
 auth_url = os.environ.get("MYMINE_AUTH_URL", "https://auth.mymine.mirv.top/")
 server_name = os.environ.get("MYMINE_SERVER_NAME", "MyMine")
 server_address = os.environ.get("MYMINE_SERVER_ADDRESS", "mymine.mirv.top:25565")
+edition = os.environ.get("MYMINE_EDITION", "classic")
+if edition not in ("classic", "engineering"):
+    raise SystemExit("MYMINE_EDITION must be classic or engineering")
 if not auth_url.endswith("/"):
     auth_url += "/"
 
@@ -218,6 +221,7 @@ public final class MyMineInstance {
     public static final String AUTH_URL;
     public static final String SERVER_NAME;
     public static final String SERVER_ADDRESS;
+    public static final String EDITION;
 
     static {
         Properties properties = new Properties();
@@ -234,6 +238,11 @@ public final class MyMineInstance {
         AUTH_URL = authUrl.endsWith("/") ? authUrl : authUrl + "/";
         SERVER_NAME = require(properties, "server.name");
         SERVER_ADDRESS = require(properties, "server.address");
+        String edition = properties.getProperty("edition", "classic").trim();
+        if (!"classic".equals(edition) && !"engineering".equals(edition)) {
+            throw new IllegalStateException("Unknown MyMine edition: " + edition);
+        }
+        EDITION = edition;
     }
 
     private MyMineInstance() {
@@ -257,7 +266,8 @@ instance_resource.parent.mkdir(parents=True, exist_ok=True)
 instance_resource.write_text(
     "auth.url=" + auth_url + "\n"
     "server.name=" + server_name + "\n"
-    "server.address=" + server_address + "\n",
+    "server.address=" + server_address + "\n" +
+    "edition=" + edition + "\n",
     encoding="utf-8",
 )
 
@@ -472,3 +482,40 @@ test.write_text(test_source, encoding="utf-8")
 print(f"Patched HMCL for MyMine auth: {auth_url}")
 print(f"MyMine multiplayer server: {server_name} ({server_address})")
 print("Microsoft hidden, LittleSkin removed, MyMine promoted to the first auth method")
+
+# The engineering launcher contains a Modrinth-compatible .mrpack resource.
+# On first start, install it via HMCL's own verified modpack installer into a
+# NEW instance, retaining all previously installed classic profiles.
+root_page = root / "HMCL/src/main/java/org/jackhuang/hmcl/ui/main/RootPage.java"
+replace_exact(
+    root_page,
+    '''                if (repository.getVersionCount() == 0) {
+                    Path zipModpack = Metadata.CURRENT_DIRECTORY.resolve("modpack.zip");''',
+    '''                Path bundledEngineering = null;
+                if ("engineering".equals(org.jackhuang.hmcl.mymine.MyMineInstance.EDITION)
+                        && !repository.versionIdConflicts("MyMine Engineering")) {
+                    try (java.io.InputStream resource = RootPage.class.getResourceAsStream(
+                            "/mymine-engineering.mrpack")) {
+                        if (resource == null) {
+                            throw new java.io.IOException("Missing bundled MyMine Engineering profile");
+                        }
+                        bundledEngineering = org.jackhuang.hmcl.setting.SettingsManager
+                                .localConfigDirectory().resolve("MyMine-Engineering-0.1.0.mrpack");
+                        Files.copy(resource, bundledEngineering,
+                                java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    } catch (java.io.IOException e) {
+                        LOG.warning("Cannot extract MyMine Engineering install profile", e);
+                    }
+                }
+                if (repository.getVersionCount() == 0 || bundledEngineering != null) {
+                    Path zipModpack = Metadata.CURRENT_DIRECTORY.resolve("modpack.zip");''',
+)
+replace_exact(
+    root_page,
+    '''                    if (Files.exists(zipModpack)) {
+                        modpackFile = zipModpack;''',
+    '''                    if (bundledEngineering != null) {
+                        modpackFile = bundledEngineering;
+                    } else if (Files.exists(zipModpack)) {
+                        modpackFile = zipModpack;''',
+)

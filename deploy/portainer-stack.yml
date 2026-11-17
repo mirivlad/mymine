@@ -1,6 +1,45 @@
 name: mymine
 
 services:
+  world-config:
+    image: alpine@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc1f695dce
+    restart: "no"
+    environment:
+      MYMINE_EDITION: "${MYMINE_EDITION:-classic}"
+      DATA_DIR: "${DATA_DIR:-/home/mirivlad/mymine/data}"
+      MYMINE_WORLDS_ROOT: "${MYMINE_WORLDS_ROOT:-/home/mirivlad/mymine}"
+    volumes:
+      - "${MYMINE_WORLDS_ROOT:-/home/mirivlad/mymine}:/worlds"
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        case "$${MYMINE_EDITION}" in classic|engineering) ;; *)
+          echo "MYMINE_EDITION must be classic or engineering" >&2; exit 1 ;;
+        esac
+        case "$${DATA_DIR}" in
+          "$${MYMINE_WORLDS_ROOT}/data") ;;
+          *) echo "DATA_DIR must equal MYMINE_WORLDS_ROOT/data; refusing to move a world" >&2; exit 1 ;;
+        esac
+        if [ -L /worlds/data-classic ]; then
+          [ "$(readlink /worlds/data-classic)" = "data" ] || {
+            echo "Unexpected data-classic symlink; refusing to overwrite" >&2; exit 1;
+          }
+        elif [ -e /worlds/data-classic ]; then
+          echo "data-classic already exists and is not a protected old world link" >&2; exit 1
+        else
+          if [ ! -d /worlds/data ]; then
+            echo "No classic world found in configured directory; creating a NEW empty classic world" >&2
+            mkdir -p /worlds/data
+          fi
+          ln -s data /worlds/data-classic
+        fi
+        [ ! -L /worlds/data-engineering ] || {
+          echo "data-engineering cannot be a symlink" >&2; exit 1;
+        }
+        mkdir -p /worlds/data-engineering
+        echo "MyMine edition=$${MYMINE_EDITION}; classic save preserved; Engineering isolated"
+
   auth-config:
     image: alpine@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc1f695dce
     restart: "no"
@@ -106,12 +145,13 @@ services:
     mem_limit: "${AUTH_MEMORY_LIMIT:-384m}"
 
   landing:
-    image: ghcr.io/mirivlad/mymine-landing:${IMAGE_TAG:-0.4.10}
+    image: ghcr.io/mirivlad/mymine-landing:${IMAGE_TAG:-latest}
     container_name: mymine-landing
     restart: unless-stopped
     ports:
       - "127.0.0.1:${LANDING_PORT:-44445}:80/tcp"
     environment:
+      MYMINE_EDITION: "${MYMINE_EDITION:-classic}"
       AUTH_BASE_URL: "${AUTH_BASE_URL:-https://auth.mymine.mirv.top}"
       MC_ADDRESS: "${MC_ADDRESS:-mymine.mirv.top:25565}"
       SERVER_NAME: "${SERVER_NAME:-MyMine}"
@@ -127,10 +167,12 @@ services:
     mem_limit: "${LANDING_MEMORY_LIMIT:-128m}"
 
   minecraft:
-    image: ghcr.io/mirivlad/mymine:${IMAGE_TAG:-0.4.10}
+    image: ghcr.io/mirivlad/mymine:${MYMINE_EDITION:-classic}-${IMAGE_TAG:-latest}
     container_name: mymine
     restart: unless-stopped
     depends_on:
+      world-config:
+        condition: service_completed_successfully
       drasl:
         condition: service_started
       bluemap-config:
@@ -139,6 +181,7 @@ services:
       - "${MC_PORT:-25565}:25565/tcp"
       - "127.0.0.1:${MAP_PORT:-44447}:8100/tcp"
     environment:
+      MYMINE_EDITION: "${MYMINE_EDITION:-classic}"
       EULA: "TRUE"
       TZ: "${TZ:-Asia/Irkutsk}"
       MEMORY: "${MEMORY:-4G}"
@@ -167,6 +210,6 @@ services:
         -Dminecraft.api.services.host=http://drasl:25585/services
         -Dminecraft.api.discovery.host=http://drasl:25585/discovery/minecraft/client
     volumes:
-      - "${DATA_DIR:-/home/mirivlad/mymine/data}:/data"
+      - "${MYMINE_WORLDS_ROOT:-/home/mirivlad/mymine}/data-${MYMINE_EDITION:-classic}:/data"
     mem_limit: "${CONTAINER_MEMORY_LIMIT:-6g}"
     stop_grace_period: 2m

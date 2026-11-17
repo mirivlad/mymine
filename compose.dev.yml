@@ -8,6 +8,7 @@ services:
 
   landing:
     build:
-      context: ./landing
+      context: .
+      dockerfile: ./landing/Dockerfile
     image: mymine-landing:test
     container_name: ${LANDING_CONTAINER_NAME:-mymine-landing-test}

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'feat/engineering-*'
+      - 'feat/portainer-editions'
   workflow_dispatch:
 
 permissions:
@@ -30,7 +31,8 @@ jobs:
             docker network rm mymine_default || true
           }
           trap cleanup EXIT
-          ENGINEERING_MEMORY=3G docker compose -p mymine-engineering -f engineering/compose.yml up -d
+          docker build -f engineering/Dockerfile -t mymine:engineering-ci .
+          ENGINEERING_MEMORY=3G ENGINEERING_IMAGE=mymine:engineering-ci docker compose -p mymine-engineering -f engineering/compose.yml up -d
           healthy=false
           for i in $(seq 1 140); do
             status=$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' mymine-engineering 2>/dev/null || true)

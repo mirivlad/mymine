@@ -25,7 +25,8 @@ COPY docker/server-entrypoint.sh /opt/mymine/server-entrypoint.sh
 COPY docker/server-env.sh /opt/mymine/server-env.sh
 RUN chmod +x /opt/mymine/server-entrypoint.sh
 
-ENV TYPE=FABRIC \
+ENV MYMINE_BAKED_EDITION=classic \
+    TYPE=FABRIC \
     FABRIC_LOADER_VERSION=0.20.1 \
     FABRIC_LAUNCHER_VERSION=1.1.2 \
     COPY_MODS_SRC=/opt/mymine/mods \

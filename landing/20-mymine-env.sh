@@ -3,8 +3,14 @@ set -eu
 
 : "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
 : "${MC_ADDRESS:?MC_ADDRESS is required}"
-# Ignore MC_VERSION from old stacks and read the baked version.
-MC_VERSION=$(tr -d '\r\n' </opt/mymine/minecraft-version.txt)
+# The image contains BOTH independently pinned game versions. Selection is
+# edition-driven only; stale MC_VERSION / VERSION from Portainer are ignored.
+: "${MYMINE_EDITION:=classic}"
+case "$MYMINE_EDITION" in
+  classic) MC_VERSION=$(tr -d '\r\n' </opt/mymine/minecraft-version.txt) ;;
+  engineering) MC_VERSION=$(tr -d '\r\n' </opt/mymine/engineering-version.txt) ;;
+  *) echo "MYMINE_EDITION must be classic or engineering" >&2; exit 1 ;;
+esac
 case "$MC_VERSION" in
   ''|*[!0-9a-zA-Z._+-]*) echo "MyMine landing: invalid baked Minecraft version" >&2; exit 1 ;;
 esac
@@ -19,8 +25,14 @@ resolve_mymine_launcher_version
 : "${LANDING_GALLERY_IMAGE_2:=/assets/bluemap.webp}"
 : "${LANDING_GALLERY_IMAGE_3:=/assets/voxel-world.webp}"
 
+# Engineering has its own accurate install instructions and media. Do not
+# leave "Vanilla client" notices from a stale classic landing template.
+if [ "$MYMINE_EDITION" = engineering ]; then
+  LANDING_TEMPLATE=engineering
+fi
+
 case "$LANDING_TEMPLATE" in
-  showcase|adventure|atlas|modern|terminal|classic)
+  engineering|showcase|adventure|atlas|modern|terminal|classic)
     TEMPLATE="/opt/mymine/templates/${LANDING_TEMPLATE}.html.template"
     ;;
   *)
@@ -54,7 +66,7 @@ case "$VERIFY_MINECRAFT_OWNERSHIP" in
     ;;
 esac
 
-export AUTH_BASE_URL MC_ADDRESS MC_VERSION SERVER_NAME HMCL_VERSION MAP_URL VERIFY_MINECRAFT_OWNERSHIP LANDING_TEMPLATE
+export AUTH_BASE_URL MC_ADDRESS MC_VERSION SERVER_NAME HMCL_VERSION MAP_URL VERIFY_MINECRAFT_OWNERSHIP LANDING_TEMPLATE MYMINE_EDITION
 export LANDING_HERO_IMAGE LANDING_GALLERY_IMAGE_1 LANDING_GALLERY_IMAGE_2 LANDING_GALLERY_IMAGE_3
 export OWNERSHIP_MODE_LABEL OWNERSHIP_LEAD OWNERSHIP_NOTICE_TITLE OWNERSHIP_NOTICE_TEXT
 export OWNERSHIP_STEP_TEXT OWNERSHIP_STEP_BADGE OWNERSHIP_FAQ
@@ -67,6 +79,6 @@ AUTH_URL="${AUTH_BASE_URL%/}/"
 printf '{\n  "urls": ["%s"]\n}\n' "$AUTH_URL" \
   > /usr/share/nginx/html/authlib-injectors.json
 
-printf '{"minecraft":"%s","auth":"%s","version":"%s","map":"%s","ownershipVerification":%s,"template":"%s"}\n' \
-  "$MC_ADDRESS" "$AUTH_URL" "$MC_VERSION" "$MAP_URL" "$VERIFY_MINECRAFT_OWNERSHIP" "$LANDING_TEMPLATE" \
+printf '{"minecraft":"%s","auth":"%s","version":"%s","edition":"%s","map":"%s","ownershipVerification":%s,"template":"%s"}\n' \
+  "$MC_ADDRESS" "$AUTH_URL" "$MC_VERSION" "$MYMINE_EDITION" "$MAP_URL" "$VERIFY_MINECRAFT_OWNERSHIP" "$LANDING_TEMPLATE" \
   > /usr/share/nginx/html/server.json
