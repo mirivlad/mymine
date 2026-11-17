@@ -87,6 +87,13 @@
       "file_id": 9067277,
       "filename": "xaeroworldmap-neoforge-1.21.1-1.47.0.jar",
       "side": "client"
+    },
+    {
+      "name": "Chunky",
+      "source": "modrinth",
+      "project": "fALzjamp",
+      "version": "1.4.23",
+      "side": "server"
     }
   ]
 }

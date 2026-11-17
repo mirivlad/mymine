@@ -203,7 +203,7 @@ services:
       SPAWN_PROTECTION: "${SPAWN_PROTECTION:-0}"
       ENABLE_COMMAND_BLOCK: "${ENABLE_COMMAND_BLOCK:-false}"
       ALLOW_FLIGHT: "${ALLOW_FLIGHT:-true}"
-      ENABLE_RCON: "${ENABLE_RCON:-false}"
+      ENABLE_RCON: "${ENABLE_RCON:-true}"
       JVM_OPTS: >-
         -Dminecraft.api.env=custom
         -Dminecraft.api.auth.host=http://drasl:25585/auth
