@@ -302,3 +302,14 @@ MyMine Launcher основан на **Hello Minecraft! Launcher (HMCL)** и со
 Сторонние серверные компоненты и моды **не перелицензируются** под GPL MyMine и сохраняют собственные лицензии. Список прямых компонентов, лицензий, атрибуций и upstream links: [`THIRD_PARTY.md`](THIRD_PARTY.md).
 
 Minecraft является товарным знаком Mojang/Microsoft. MyMine не является официальным продуктом Mojang или Microsoft и не одобрен ими.
+
+
+## MyMine Engineering (experimental)
+
+Optional, separate NeoForge 1.21.1 world with Create Aeronautics, MineColonies and Create,
+without changing the existing Minecraft 26.3 world. The official client
+profile is a small [MyMine Engineering .mrpack](engineering/releases/MyMine-Engineering-0.1.0.mrpack)
+that references original upstream files, with pinned cryptographic checksums.
+See [Engineering setup and memory safeguards](engineering/README.md) for details.
+Never run both heavyweight servers on low-memory hosts (tomas has ~8 GiB RAM).
+The engineering world is not started or exposed automatically.
