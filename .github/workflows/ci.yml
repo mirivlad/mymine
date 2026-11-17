@@ -127,7 +127,8 @@ jobs:
       - name: Boot Minecraft with public mod set
         env:
           AUTH_DATA_DIR: ${{ runner.temp }}/mymine-auth-smoke
-          DATA_DIR: ${{ runner.temp }}/mymine-data-smoke
+          MYMINE_WORLDS_ROOT: ${{ runner.temp }}/mymine-smoke
+          DATA_DIR: ${{ runner.temp }}/mymine-smoke/data
         run: |
           set -euo pipefail
           cleanup() {
