@@ -1,13 +1,14 @@
 # Separate MyMine Engineering world; never downgrade the original world.
 services:
   engineering:
-    image: itzg/minecraft-server:java21
+    image: "${ENGINEERING_IMAGE:-itzg/minecraft-server:java21}"
     container_name: mymine-engineering
     restart: "no"
     stop_grace_period: 2m
     ports:
       - "127.0.0.1:${ENGINEERING_PORT:-25566}:25565/tcp"
     environment:
+      MYMINE_EDITION: engineering
       EULA: "TRUE"
       TYPE: NEOFORGE
       VERSION: "1.21.1"

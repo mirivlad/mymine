@@ -24,6 +24,20 @@ jobs:
           docker compose -f compose.yml config >/dev/null
           python3 -m unittest discover -s tests -v
           python3 engineering/validate.py
+          for edition in classic engineering; do
+            MYMINE_EDITION="$edition" docker compose -f compose.yml config >/dev/null
+            MYMINE_EDITION="$edition" docker compose -f deploy/portainer-stack.yml config >/dev/null
+          done
+          for edition in classic engineering; do
+            tmp=$(mktemp -d)
+            mkdir -p "$tmp/data/world"
+            echo retained-world > "$tmp/data/world/level.dat"
+            MYMINE_EDITION="$edition" MYMINE_WORLDS_ROOT="$tmp" DATA_DIR="$tmp/data"               docker compose -f compose.yml run --rm --no-deps world-config
+            test "$(readlink "$tmp/data-classic")" = data
+            test "$(cat "$tmp/data/world/level.dat")" = retained-world
+            test -d "$tmp/data-engineering"
+            rm -rf "$tmp"
+          done
           docker compose -f compose.yml config --format json | jq -e '
             (.services.landing.environment | has("MC_VERSION") | not) and
             (.services.minecraft.environment | has("MC_VERSION") | not) and
@@ -113,7 +127,8 @@ jobs:
       - name: Boot Minecraft with public mod set
         env:
           AUTH_DATA_DIR: ${{ runner.temp }}/mymine-auth-smoke
-          DATA_DIR: ${{ runner.temp }}/mymine-data-smoke
+          MYMINE_WORLDS_ROOT: ${{ runner.temp }}/mymine-smoke
+          DATA_DIR: ${{ runner.temp }}/mymine-smoke/data
         run: |
           set -euo pipefail
           cleanup() {
@@ -149,6 +164,8 @@ jobs:
           grep -q '^auth.url=https://auth.example.org/$' <<<"$props"
           grep -q '^server.name=MyMine CI$' <<<"$props"
           grep -q '^server.address=mc.example.org:25565$' <<<"$props"
+          grep -q '^edition=classic$' <<<"$props"
+
 
           # The launcher ships a reproducible Modrinth manifest, not proprietary packs.
           python3 - "$dist" <<'PY_PACK'
@@ -161,6 +178,13 @@ jobs:
               entries = artifact.read("mymine-client-files.tsv").decode().splitlines()
               assert len([line for line in entries if line and not line.startswith("#")]) >= 16
               assert "org/jackhuang/hmcl/game/MyMineClientPacks.class" in artifact.namelist()
+              assert "mymine-engineering.mrpack" in artifact.namelist()
+              with zipfile.ZipFile(__import__("io").BytesIO(artifact.read("mymine-engineering.mrpack"))) as embedded:
+                  idx = json.loads(embedded.read("modrinth.index.json"))
+                  assert idx["dependencies"]["minecraft"] == "1.21.1"
+                  assert idx["dependencies"]["neoforge"] == "21.1.265"
+                  assert len(idx["files"]) == 9
+
           with zipfile.ZipFile(dist / "MyMine-26.3.mrpack") as pack:
               index = json.loads(pack.read("modrinth.index.json"))
               assert index["dependencies"]["minecraft"] == "26.3"
@@ -189,6 +213,16 @@ jobs:
           dist="${RUNNER_TEMP}/mymine-launcher"
           cp "$dist"/* landing/downloads/
           docker build -f landing/Dockerfile -t mymine-landing-instance-test .
+
+          # Edition changes the landing and never requires editing game version.
+          docker run --rm --entrypoint /bin/sh             -e MYMINE_EDITION=engineering             -e LANDING_TEMPLATE=showcase             -e AUTH_BASE_URL=https://auth.fork.example             -e MC_ADDRESS=play.fork.example:25577             mymine-landing-instance-test -ec '
+              /docker-entrypoint.d/20-mymine-env.sh
+              grep -Fq "\"version\":\"1.21.1\"" /usr/share/nginx/html/server.json
+              grep -Fq "\"edition\":\"engineering\"" /usr/share/nginx/html/server.json
+              grep -Fq "MyMine Engineering" /usr/share/nginx/html/index.html
+              grep -Fq "/downloads/MyMine-Engineering-0.1.0.mrpack" /usr/share/nginx/html/index.html
+              ! grep -Fq "Vanilla client" /usr/share/nginx/html/index.html
+            '
 
           for template in showcase adventure atlas modern terminal classic; do
             docker run --rm --entrypoint /bin/sh \
@@ -310,6 +344,10 @@ jobs:
             context: .
             dockerfile: ./Dockerfile
             tag: mymine:ci
+          - name: engineering-server
+            context: .
+            dockerfile: ./engineering/Dockerfile
+            tag: mymine-engineering:ci
           - name: landing
             context: .
             dockerfile: ./landing/Dockerfile

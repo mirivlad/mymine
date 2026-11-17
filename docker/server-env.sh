@@ -10,6 +10,17 @@ mymine_configure_server() {
     esac
     export VERSION
 
+    MYMINE_EDITION=${MYMINE_EDITION:-classic}
+    case "$MYMINE_EDITION" in
+      classic|engineering) ;;
+      *) echo "Invalid MYMINE_EDITION=$MYMINE_EDITION (use classic or engineering)" >&2; return 1 ;;
+    esac
+    MYMINE_BAKED_EDITION=${MYMINE_BAKED_EDITION:-classic}
+    if [ "$MYMINE_EDITION" != "$MYMINE_BAKED_EDITION" ]; then
+        echo "Wrong server image: selected $MYMINE_EDITION, image contains $MYMINE_BAKED_EDITION" >&2
+        return 1
+    fi
+
     # Preserve a custom MOTD, but always render the actual server version.
     # Legacy generated messages with an outdated version are repaired.
     case "${MOTD-}" in
@@ -22,6 +33,15 @@ mymine_configure_server() {
         *)
             MOTD="$MOTD · Minecraft $VERSION" ;;
     esac
+    if [ "$MYMINE_EDITION" = engineering ]; then
+        # Old classic Portainer defaults must not follow into the new world.
+        case "$MOTD" in
+          "MyMine — Minecraft "*|"MyMine — мир приключений"*|"MyMine — Fabric "*)
+            MOTD="MyMine Engineering — Minecraft $VERSION" ;;
+          *"Engineering"*) ;;
+          *) MOTD="MyMine Engineering — Minecraft $VERSION" ;;
+        esac
+    fi
     export MOTD
-    printf 'MyMine: Minecraft %s; MOTD: %s\n' "$VERSION" "$MOTD"
+    printf 'MyMine [%s]: Minecraft %s; MOTD: %s\n' "$MYMINE_EDITION" "$VERSION" "$MOTD"
 }

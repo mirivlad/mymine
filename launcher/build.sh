@@ -6,6 +6,7 @@ HMCL_VERSION=${HMCL_VERSION:-3.16.4}
 MYMINE_AUTH_URL=${MYMINE_AUTH_URL:-https://auth.mymine.mirv.top/}
 MYMINE_SERVER_NAME=${MYMINE_SERVER_NAME:-MyMine}
 MYMINE_SERVER_ADDRESS=${MYMINE_SERVER_ADDRESS:-mymine.mirv.top:25565}
+MYMINE_EDITION=${MYMINE_EDITION:-classic}
 WORKDIR=${WORKDIR:-$ROOT/.build/hmcl}
 DIST_DIR=${DIST_DIR:-$ROOT/landing/downloads}
 VERSION_ROOT=${HMCL_VERSION%.*}
@@ -22,8 +23,13 @@ python3 "$ROOT/launcher/build-client-pack.py" \
   --manifest "$WORKDIR/HMCL/src/main/resources/mymine-client-files.tsv" \
   --mrpack "$DIST_DIR/MyMine-26.3.mrpack"
 
+# One embedded, checksum-verified Engineering profile; never distribute mod JARs.
+cp "$ROOT/engineering/releases/MyMine-Engineering-0.1.0.mrpack" "$WORKDIR/HMCL/src/main/resources/mymine-engineering.mrpack"
+cp "$ROOT/engineering/releases/MyMine-Engineering-0.1.0.mrpack" "$DIST_DIR/MyMine-Engineering-0.1.0.mrpack"
+
 MYMINE_AUTH_URL="$MYMINE_AUTH_URL" \
 MYMINE_SERVER_NAME="$MYMINE_SERVER_NAME" \
+MYMINE_EDITION="$MYMINE_EDITION" \
 MYMINE_SERVER_ADDRESS="$MYMINE_SERVER_ADDRESS" \
   python3 "$ROOT/launcher/patch-hmcl.py" "$WORKDIR"
 
@@ -169,6 +175,7 @@ tar \
     MyMineLauncher-${HMCL_VERSION}.sh \
     MyMineLauncher-${HMCL_VERSION}-source.tar.gz \
     MyMine-26.3.mrpack \
+    MyMine-Engineering-0.1.0.mrpack \
     > SHA256SUMS
 )
 

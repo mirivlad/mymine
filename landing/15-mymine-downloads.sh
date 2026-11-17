@@ -4,6 +4,8 @@ set -eu
 : "${AUTH_BASE_URL:?AUTH_BASE_URL is required}"
 : "${MC_ADDRESS:?MC_ADDRESS is required}"
 : "${SERVER_NAME:=MyMine}"
+: "${MYMINE_EDITION:=classic}"
+case "$MYMINE_EDITION" in classic|engineering) ;; *) echo "Invalid MYMINE_EDITION" >&2; exit 1 ;; esac
 
 DOWNLOAD_DIR=/usr/share/nginx/html/downloads
 . /opt/mymine/launcher-version.sh
@@ -16,6 +18,7 @@ cat > "$TMP/mymine-instance.properties" <<EOF_CONFIG
 auth.url=$AUTH_URL
 server.name=$SERVER_NAME
 server.address=$MC_ADDRESS
+edition=$MYMINE_EDITION
 EOF_CONFIG
 
 patch_zip_artifact() {
@@ -49,6 +52,7 @@ mv "$TMP/launcher.deb" "$DEB"
         "MyMineLauncher-${HMCL_VERSION}.sh" \
         "MyMineLauncher-${HMCL_VERSION}-source.tar.gz" \
         "MyMine-26.3.mrpack" \
+        "MyMine-Engineering-0.1.0.mrpack" \
         > SHA256SUMS
 )
 

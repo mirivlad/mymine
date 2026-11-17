@@ -77,7 +77,7 @@ Drasl разрешает создание самостоятельного MyMin
 4. Установить Minecraft Java 26.3 без модлоадера, либо профиль Fabric 26.3 для шейдеров.
 5. Запустить игру и открыть «Сетевая игра» — адрес MyMine добавляется лаунчером в список один раз.
 
-**Версию Minecraft при установке указывать не нужно.** Достаточно выбрать IMAGE_TAG (0.4.10 или latest): сервер и лендинг получают версию из общего minecraft-version.txt, встроенного в оба образа при сборке. Старый MC_VERSION из Portainer игнорируется. Устаревший автоматически сгенерированный MOTD с номером версии исправляется при старте с использованием версии встроенного сервера.
+**Версию Minecraft при установке указывать не нужно.** Достаточно выбрать IMAGE_TAG (0.4.10 или latest): каждая редакция использует собственную встроенную версию Minecraft, а лендинг опрашивает запущенный сервер при сборке. Старый MC_VERSION из Portainer игнорируется. Устаревший автоматически сгенерированный MOTD с номером версии исправляется при старте с использованием версии встроенного сервера.
 
 **Minecraft 26.3 и Drasl 4.0.1:** authlib 10 запрашивает URL проверки игровых сессий через Minecraft Services discovery. minecraft.api.discovery.host настроен автоматически. Образ Drasl закреплён по digest; его обновление выполняет миграцию базы 5→6 с резервной копией. Перед переходом рекомендуется отдельно сохранить AUTH_DATA_DIR и мир (DATA_DIR).
 
@@ -170,13 +170,36 @@ ghcr.io/mirivlad/mymine-landing:<version>
 Для production рекомендуется конкретный semver tag, а не `latest`.
 
 ## Portainer / Docker Compose
+### Переключение Classic / Engineering одной переменной
+
+Начиная с **MyMine 0.4.11**, один Portainer-стек поддерживает две редакции:
+
+| MYMINE_EDITION | Minecraft / загрузчик | Модификации | Сохранение |
+| --- | --- | --- | --- |
+| classic (по умолчанию) | 26.3, Fabric | нынешний игровой мир и серверные моды | data (старый мир, через ссылку data-classic) |
+| engineering | 1.21.1, NeoForge | Create Aeronautics, Create, Sable, MineColonies | data-engineering (отдельный мир) |
+
+В Portainer достаточно изменить **MYMINE_EDITION=classic** на **MYMINE_EDITION=engineering** и нажать Update Stack с обновлением образов. Не нужно устанавливать MC_VERSION, VERSION, TYPE или редактировать список модов; Compose выбирает образ ghcr.io/mirivlad/mymine:classic-<тег> либо engineering-<тег>. Тег latest имеет две независимые редакции: classic-latest и engineering-latest. Существующий ghcr.io/mirivlad/mymine:latest остаётся Classic для обратной совместимости.
+
+При первом обновлении init-контейнер world-config создаёт только символьную ссылку data-classic → data и отдельный каталог data-engineering. Старый мир не переносится и не копируется. Каждый серверный контейнер получает **только один каталог сохранений**. При возврате в Classic старый мир доступен без изменений. Переключение перезапускает Minecraft: уведомите игроков и сделайте резервную копию.
+
+Для переносимого стека MYMINE_WORLDS_ROOT должен быть родительским каталогом DATA_DIR; например MYMINE_WORLDS_ROOT=/srv/mymine, DATA_DIR=/srv/mymine/data. Несовпадение блокирует запуск, а не создаёт случайный пустой мир. На tomas используются прежние пути /home/mirivlad/mymine и /home/mirivlad/mymine/data.
+
+**Клиент:** лендинг автоматически выбирает редакцию. Для Engineering он показывает отдельную страницу и отдаёт MyMine Launcher (Windows EXE, Linux DEB, Java JAR). В лаунчере встроен проверенный профиль Modrinth: при первом запуске Engineering штатный установщик HMCL загружает Minecraft 1.21.1, NeoForge 21.1.265 и нужные моды без затрагивания старых профилей. Профиль MRPACK также доступен отдельным файлом для других лаунчеров. Потребуется Java 21 для игры и интернет для первоначального скачивания; чужие JAR не включены в архив лаунчера.
+
+**Память:** на tomas менее 8 ГиБ ОЗУ, поэтому переключение в одном стеке безопаснее параллельного запуска двух тяжёлых Minecraft. Для Engineering остаётся лимит JVM 4 ГиБ по умолчанию.
+
+**Проверки:** CI подтверждает, что NeoForge 1.21.1 успешно запускается с Create Aeronautics и MineColonies. Вход реального клиента через Drasl и взаимодействие техники с жителями требуют отдельной игровой проверки.
+
 
 Основной переносимый stack — корневой `compose.yml`. Для Portainer его можно использовать напрямую как Git stack и передать значения через Environment variables.
 
 Минимально значимые переменные:
 
 ```dotenv
-IMAGE_TAG=0.4.10
+IMAGE_TAG=0.4.11
+MYMINE_EDITION=classic
+MYMINE_WORLDS_ROOT=/srv/mymine
 AUTH_DOMAIN=auth.mymine.example.org
 AUTH_BASE_URL=https://auth.mymine.example.org
 DRASL_ADMIN=mymine-admin

@@ -3,6 +3,7 @@ FROM nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e591939
 RUN apk add --no-cache dpkg python3 zstd
 
 COPY minecraft-version.txt /opt/mymine/minecraft-version.txt
+COPY engineering/minecraft-version.txt /opt/mymine/engineering-version.txt
 COPY landing/templates/ /opt/mymine/templates/
 COPY landing/assets/ /usr/share/nginx/html/assets/
 COPY landing/patch-launcher.py /opt/mymine/patch-launcher.py

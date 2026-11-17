@@ -30,6 +30,14 @@ This populates the ignored engineering/mods/ folder, writes engineering/mods.loc
 
 For the client, import the .mrpack into **MyMine Launcher / HMCL**, Prism or another compatible launcher to make a separate NeoForge **1.21.1** installation, with Java **21**. Use a separate game directory. All nine mods must match the server. Allocate 5–6 GiB RAM on a client PC if available. In HMCL add a MyMine Drasl account and select the new profile.
 
+## Готовое переключение в Portainer (рекомендуется)
+
+Начиная с MyMine v0.4.11 Engineering входит в официальный стек Portainer. Чтобы переключить мир, установите MYMINE_EDITION=engineering и выполните Update Stack с обновлением образов. Ручная установка NeoForge и серверных JAR больше не нужна.
+
+Лендинг автоматически переключается на страницу Engineering 1.21.1, лаунчер содержит установочный профиль, а мир хранится в отдельном каталоге data-engineering. Для возврата поставьте MYMINE_EDITION=classic.
+
+Следующая инструкция описывает отдельный экспериментальный Compose для разработчиков; обычным администраторам Portainer он больше не нужен.
+
 ## Safe trial on tomas
 
 The test world lives only in engineering/data/ (ignored by Git). It connects to the existing mymine_default Docker network so the existing **Drasl** service can authenticate players. It does not change the existing Minecraft server, Drasl database or public landing, and the test port binds to **127.0.0.1:25566** by default — not exposed on the public Internet.
