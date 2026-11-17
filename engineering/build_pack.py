@@ -67,6 +67,31 @@ def resolve_mod(spec, version):
     raise ValueError("Unknown source: " + str(spec["source"]))
 
 
+def verify_create_bundled_dependencies(path):
+    """Create 6.0.10 ships required Flywheel/Ponder/Registrate as jar-in-jar."""
+    with zipfile.ZipFile(path) as archive:
+        metadata = json.loads(archive.read("META-INF/jarjar/metadata.json"))
+        embedded = {
+            item["identifier"]["artifact"]: item["version"]["artifactVersion"]
+            for item in metadata["jars"]
+        }
+        expected = {
+            "flywheel-neoforge-1.21.1": "1.0.6",
+            "ponder-neoforge": "1.0.82+mc1.21.1",
+            "Registrate": "MC1.21-1.3.0+67",
+        }
+        for name, version in expected.items():
+            if embedded.get(name) != version:
+                raise ValueError(f"Create requires bundled {name} {version}")
+            jar_path = next(
+                (item["path"] for item in metadata["jars"]
+                 if item["identifier"]["artifact"] == name), None
+            )
+            if jar_path not in archive.namelist():
+                raise ValueError(f"Missing Create nested JAR: {jar_path}")
+    print("Create embedded Flywheel, Ponder and Registrate: verified", flush=True)
+
+
 def hash_file(path):
     hashes = {name: hashlib.new(name) for name in ("sha1", "sha256", "sha512")}
     total = 0
@@ -108,6 +133,8 @@ def get_mod(record, existing):
         raise ValueError("Lockfile checksum mismatch: " + dest.name)
     if not zipfile.is_zipfile(dest) or size < 10000:
         raise ValueError("Not a valid mod JAR: " + dest.name)
+    if record["name"] == "Create":
+        verify_create_bundled_dependencies(dest)
     print(f"OK: {record['name']}: {dest.name} ({size / 1048576:.1f} MiB)", flush=True)
     return {"name": record["name"], "source": record["source"],
             "filename": record["filename"], "url": record["url"],
@@ -164,6 +191,8 @@ def main():
             path = MODS / mod["filename"]
             if not path.exists() or hash_file(path)[0]["sha512"] != mod["hashes"]["sha512"]:
                 raise ValueError("Missing or corrupted JAR: " + mod["filename"])
+        create = next(m for m in previous["mods"] if m["name"] == "Create")
+        verify_create_bundled_dependencies(MODS / create["filename"])
         build_pack(config, previous["mods"])
         return
     with ThreadPoolExecutor(max_workers=5) as pool:

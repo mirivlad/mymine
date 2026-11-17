@@ -6,7 +6,7 @@ Experimental, optional Minecraft **1.21.1 / NeoForge 21.1.265 / Java 21** world 
 
 | Mod | Version |
 | --- | --- |
-| Create | 6.0.10 |
+| Create | 6.0.10 (includes Flywheel 1.0.6, Ponder 1.0.82 and Registrate as nested JARs) |
 | Sable | 2.0.6 |
 | Create Aeronautics | 1.3.2 |
 | MineColonies | 1.1.1403 |
@@ -40,7 +40,7 @@ The test world lives only in engineering/data/ (ignored by Git). It connects to 
     ./engineering/start.sh
     docker logs -f mymine-engineering
 
-The engineering JVM defaults to 4 GiB, with a 5 GiB container memory limit. To stop the experimental server:
+The engineering JVM defaults to 4 GiB, with a 5 GiB container memory limit. Mod JARs are mounted read-only at /mods and synchronized into the independent /data/mods directory by the itzg entrypoint; the server never writes to the verified upstream mod cache. To stop the experimental server:
 
     docker compose -p mymine-engineering -f engineering/compose.yml down
 

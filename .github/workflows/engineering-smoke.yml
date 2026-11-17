@@ -1,0 +1,64 @@
+name: MyMine Engineering server smoke
+
+on:
+  push:
+    branches:
+      - 'feat/engineering-*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  neoforge-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify pinned client profile
+        run: python3 engineering/validate.py
+      - name: Download and verify official mod files
+        run: python3 engineering/build_pack.py
+      - name: Boot isolated NeoForge 1.21.1 with Create Aeronautics and MineColonies
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker network create mymine_default
+          cleanup() {
+            docker compose -p mymine-engineering -f engineering/compose.yml logs --tail=150 || true
+            docker compose -p mymine-engineering -f engineering/compose.yml down --timeout 45 || true
+            docker network rm mymine_default || true
+          }
+          trap cleanup EXIT
+          ENGINEERING_MEMORY=3G docker compose -p mymine-engineering -f engineering/compose.yml up -d
+          healthy=false
+          for i in $(seq 1 140); do
+            status=$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' mymine-engineering 2>/dev/null || true)
+            running=$(docker inspect -f '{{.State.Running}}' mymine-engineering 2>/dev/null || true)
+            echo "NeoForge health: $status / running: $running"
+            if [ "$status" = healthy ]; then
+              healthy=true
+              break
+            fi
+            if [ "$running" = false ]; then
+              echo "NeoForge process exited before it became healthy" >&2
+              exit 1
+            fi
+            sleep 5
+          done
+          [ "$healthy" = true ] || { echo "NeoForge did not become healthy" >&2; exit 1; }
+          docker exec mymine-engineering mc-health
+          docker exec mymine-engineering sh -ec '
+            test "$(find /data/mods -maxdepth 1 -type f -name "*.jar" | wc -l)" -eq 9
+            ls -l /data/mods | grep -iE "minecolonies|create|aeronautics|sable"
+          '
+          docker logs mymine-engineering > engineering-server.log 2>&1
+          grep -F 'Starting minecraft server version 1.21.1' engineering-server.log >/dev/null || {
+            echo 'Wrong Minecraft version in server log' >&2
+            exit 1
+          }
+          grep -F 'Done (' engineering-server.log >/dev/null || {
+            echo "No Minecraft server ready message found" >&2
+            exit 1
+          }
+          echo "ENGINEERING_NEOFORGE_SERVER_BOOT=PASS"
